@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "dorapizza/finalproject_3"
+        DOCKER_IMAGE = "dltlgud/finalproject_3"
         CONTAINER_NAME = "finalproject_3"
     }
 
