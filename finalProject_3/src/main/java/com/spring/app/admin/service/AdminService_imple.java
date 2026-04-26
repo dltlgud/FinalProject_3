@@ -191,6 +191,22 @@ public class AdminService_imple implements AdminService {
 		public List<AdDTO> getAdList() {
 			return dao.selectAdList();
 		}
+
+		// 광고 목록 페이징
+		@Override
+		public Map<String, Object> getAdListPaged(int page, int size) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("start", (page - 1) * size);
+			params.put("end", page * size);
+			int total = dao.countAds();
+			int totalPages = (int) Math.ceil((double) total / size);
+			if (totalPages == 0) totalPages = 1;
+			Map<String, Object> result = new HashMap<>();
+			result.put("list", dao.selectAdListPaged(params));
+			result.put("total", total);
+			result.put("totalPages", totalPages);
+			return result;
+		}
 		//광고 상세보기
 		@Override
 		public AdDTO getAd(Long adId) {
@@ -272,7 +288,22 @@ public class AdminService_imple implements AdminService {
 	    public List<InquiryDTO> getAllInquiries() {
 	        return dao.getAllInquiries();
 	    }
-	    
+
+	    @Override
+	    public Map<String, Object> getUserInquiriesPaged(int page, int size) {
+	        Map<String, Object> params = new HashMap<>();
+	        params.put("start", (page - 1) * size);
+	        params.put("end", page * size);
+	        int total = dao.countUserInquiries();
+	        int totalPages = (int) Math.ceil((double) total / size);
+	        if (totalPages == 0) totalPages = 1;
+	        Map<String, Object> result = new HashMap<>();
+	        result.put("list", dao.getUserInquiriesPaged(params));
+	        result.put("total", total);
+	        result.put("totalPages", totalPages);
+	        return result;
+	    }
+
 	    //==============================================================================
 	    @Override
 	    public int getReportedProductCount() {
@@ -686,6 +717,17 @@ public class AdminService_imple implements AdminService {
 		}
 		stats.put("monthlyLabels", labels);
 		stats.put("monthlyRevenues", revenues);
+
+		List<Map<String, Object>> weeklyRaw = dao.getWeeklyAdApplications();
+		List<String> weekLabels = new ArrayList<>();
+		List<Long> weekCounts = new ArrayList<>();
+		for (Map<String, Object> row : weeklyRaw) {
+			weekLabels.add(String.valueOf(row.get("WEEK_LABEL")) + "~");
+			weekCounts.add(((Number) row.get("CNT")).longValue());
+		}
+		stats.put("weeklyLabels", weekLabels);
+		stats.put("weeklyCounts", weekCounts);
+
 		return stats;
 	}
 

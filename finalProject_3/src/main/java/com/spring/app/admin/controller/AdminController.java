@@ -296,6 +296,8 @@ public class AdminController {
     public String getDashboard(
             @RequestParam(value="year", defaultValue="0") Integer year,
             @RequestParam(value="month", defaultValue="0") Integer month,
+            @RequestParam(value="page", defaultValue="1") int page,
+            @RequestParam(value="size", defaultValue="10") int size,
             Model model) {
 
         LocalDate now = LocalDate.now();
@@ -307,11 +309,14 @@ public class AdminController {
 
         List<List<LocalDate>> calendarWeeks = generateCalendar(firstDay);
 
-        List<AdDTO> adList = adminService.getAdList();
+        Map<String, Object> adData = adminService.getAdListPaged(page, size);
         Map<String, Object> adStats = adminService.getAdMonthlyStats();
 
         model.addAttribute("calendarWeeks", calendarWeeks);
-        model.addAttribute("adList", adList);
+        model.addAttribute("adList", adData.get("list"));
+        model.addAttribute("totalCount", adData.get("total"));
+        model.addAttribute("totalPages", adData.get("totalPages"));
+        model.addAttribute("currentPage", page);
         model.addAttribute("year", year);
         model.addAttribute("month", month);
         model.addAttribute("chartLabels", adStats.get("labels"));
@@ -642,20 +647,22 @@ public class AdminController {
   //=========================================================================================================================
 	 // 사용자 문의내역 게시판 
 	
-	 @GetMapping("/user_inquiry") 
-	 public String inquiryList(Model model) {
-	     
-	     // 1. 데이터 가져오기
-	 List<InquiryDTO> faqList = adminService.getTop3FAQ();
-	 List<InquiryDTO> inquiryList = adminService.getAllInquiries();
-	
-	 // 2. 데이터 전달 (Null 방지)
-	 model.addAttribute("faqList", faqList != null ? faqList : new ArrayList<>());
-	 model.addAttribute("inquiryList", inquiryList != null ? inquiryList : new ArrayList<>());
-	
-	 // 3. 화면 리턴 (templates/admin/user_inquiry.html)
-	 return "admin/user_inquiry";
-	 }
+    @GetMapping("/user_inquiry")
+    public String inquiryList(Model model,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
+
+        List<InquiryDTO> faqList = adminService.getTop3FAQ();
+        Map<String, Object> inquiryData = adminService.getUserInquiriesPaged(page, size);
+
+        model.addAttribute("faqList", faqList != null ? faqList : new ArrayList<>());
+        model.addAttribute("inquiryList", inquiryData.get("list"));
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", inquiryData.get("totalPages"));
+        model.addAttribute("totalCount", inquiryData.get("total"));
+
+        return "admin/user_inquiry";
+    }
 	    
 	    //문의하기 글쓰기 페이지
 	 @GetMapping("/inquiry_write")
