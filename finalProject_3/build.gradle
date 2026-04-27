@@ -195,6 +195,9 @@ dependencies {
 	// Swagger (Springdoc OpenAPI)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
 
+	// Prometheus 메트릭 수집
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
 	// Eureka Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
