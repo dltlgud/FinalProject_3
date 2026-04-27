@@ -111,7 +111,10 @@ public class SecurityConfig {
                     "/product/product_detail/**",
                     "/product/wordSearchShow",
                     "/actuator/**",
-                    "/adminupload/**"
+                    "/adminupload/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
                 ).permitAll()
 
                 .anyRequest().authenticated()
