@@ -294,7 +294,7 @@
 							</button>
 
 							<img th:src="@{${p.imgUrl != null ? p.imgUrl.replace('/images/', '/images/thumb_') : ''}}"
-								 th:onerror="|this.onerror=null; this.src='${p.imgUrl}'|"
+								 onerror="this.onerror=null; this.src=this.src.replace('/images/thumb_', '/images/')"
 								 alt="">
 						</div>
 
@@ -1274,7 +1274,7 @@ $(function () {
 					        data-login="${isLogin}">
 						<i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i>
 					</button>
-					<img src="${escapeHtml(thumbImgUrl)}" onerror="this.onerror=null; this.src='${escapeHtml(finalImgUrl)}'" alt="">
+					<img src="${escapeHtml(thumbImgUrl)}" onerror="this.onerror=null; this.src=this.src.replace('/images/thumb_', '/images/')" alt="">
 				</div>
 				<div class="card-body">
 					<div class="item-title">${escapeHtml(p.productName)}</div>

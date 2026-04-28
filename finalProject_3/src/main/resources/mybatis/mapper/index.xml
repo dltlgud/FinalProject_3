@@ -35,15 +35,12 @@
                     PRODUCTS.REG_DATE,
                     PRODUCTS.VIEW_COUNT,
 
-                    NVL(
-                        (
-                            SELECT PRODUCT_IMAGE.IMG_URL
-                            FROM PRODUCT_IMAGE
-                            WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
-                              AND PRODUCT_IMAGE.IS_MAIN = 'Y'
-                              AND ROWNUM = 1
-                        ),
-                        '/images/no_image.png'
+                    (
+                        SELECT PRODUCT_IMAGE.IMG_URL
+                        FROM PRODUCT_IMAGE
+                        WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
+                          AND PRODUCT_IMAGE.IS_MAIN = 'Y'
+                          AND ROWNUM = 1
                     ) AS IMG_URL,
 
                     NVL(
@@ -80,6 +77,11 @@
 
                 FROM PRODUCTS
                 WHERE PRODUCTS.TRADE_STATUS IN ('판매중', '예약중', '판매완료')
+                  AND EXISTS (
+                      SELECT 1 FROM PRODUCT_IMAGE
+                      WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
+                        AND PRODUCT_IMAGE.IS_MAIN = 'Y'
+                  )
                 ORDER BY PRODUCTS.REG_DATE DESC
             ) T
             WHERE ROWNUM <![CDATA[ <= ]]> 5
@@ -103,15 +105,12 @@
                     PRODUCTS.REG_DATE,
                     PRODUCTS.VIEW_COUNT,
 
-                    NVL(
-                        (
-                            SELECT PRODUCT_IMAGE.IMG_URL
-                            FROM PRODUCT_IMAGE
-                            WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
-                              AND PRODUCT_IMAGE.IS_MAIN = 'Y'
-                              AND ROWNUM = 1
-                        ),
-                        '/images/no_image.png'
+                    (
+                        SELECT PRODUCT_IMAGE.IMG_URL
+                        FROM PRODUCT_IMAGE
+                        WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
+                          AND PRODUCT_IMAGE.IS_MAIN = 'Y'
+                          AND ROWNUM = 1
                     ) AS IMG_URL,
 
                     NVL(
@@ -180,15 +179,12 @@
                     PRODUCTS.REG_DATE,
                     PRODUCTS.VIEW_COUNT,
 
-                    NVL(
-                        (
-                            SELECT PRODUCT_IMAGE.IMG_URL
-                            FROM PRODUCT_IMAGE
-                            WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
-                              AND PRODUCT_IMAGE.IS_MAIN = 'Y'
-                              AND ROWNUM = 1
-                        ),
-                        '/images/no_image.png'
+                    (
+                        SELECT PRODUCT_IMAGE.IMG_URL
+                        FROM PRODUCT_IMAGE
+                        WHERE PRODUCT_IMAGE.PRODUCT_NO = PRODUCTS.PRODUCT_NO
+                          AND PRODUCT_IMAGE.IS_MAIN = 'Y'
+                          AND ROWNUM = 1
                     ) AS IMG_URL,
 
                     NVL(
