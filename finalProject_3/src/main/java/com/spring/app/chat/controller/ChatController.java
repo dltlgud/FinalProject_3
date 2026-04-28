@@ -12,6 +12,7 @@ import com.spring.app.chat.service.ReportService;
 import com.spring.app.noti.service.NotiPushService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping; 
@@ -36,9 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController // 데이터를 JSON으로 바로 반환하기 위해 @RestController 사용
+@RestController
 @RequestMapping("/api/chat")
 @RequiredArgsConstructor
+@Slf4j
 public class ChatController {
 
     private final ChatService chatService;
@@ -152,12 +154,7 @@ public class ChatController {
             String sellerEmail = payload.get("sellerEmail").toString();
             String buyerEmail = principal.getName(); // 현재 로그인한 내 이메일
             
-            // ★ 디버깅용 로그: 서버에 진짜 무슨 값이 도착했는지 눈으로 확인!
-            System.out.println("====== [채팅방 생성 요청 도착] ======");
-            System.out.println("넘어온 상품번호: " + productNo);
-            System.out.println("판매자: " + sellerEmail);
-            System.out.println("구매자: " + buyerEmail);
-            System.out.println("=====================================");
+            log.debug("[채팅방 생성] productNo={}, seller={}, buyer={}", productNo, sellerEmail, buyerEmail);
 
             // 내 상품에 내가 채팅을 걸 수는 없도록 방어 로직
             if (buyerEmail.equals(sellerEmail)) {
