@@ -390,135 +390,140 @@
             .then(data => {
                 if (!data.ad) return;
                 const ad = data.ad;
-
-                // 기본 정보
-                document.getElementById('brandName').innerText    = ad.brandName    || '';
-                document.getElementById('managerName').innerText  = ad.managerName  || '';
-                document.getElementById('phone').innerText        = ad.phone        || '';
-                document.getElementById('companyEmail').innerText = ad.companyEmail || '';
-                document.getElementById('targetEmail').value      = ad.companyEmail || '';
-                document.getElementById('content').innerText      = ad.content      || '';
-                document.getElementById('period').innerText       = (ad.startDate || '') + ' ~ ' + (ad.endDate || '');
-                document.getElementById('durationWeeks').innerText = ad.durationWeeks || '';
-                document.getElementById('amount').innerText       = Number(ad.amount).toLocaleString();
-                // 요약 미니 카드
-                document.getElementById('summaryWeeks').innerText  = (ad.durationWeeks || '-') + '주';
-                document.getElementById('summaryAmount').innerText = Number(ad.amount).toLocaleString() + '원';
-
-                // 이미지
-                const adImage   = document.getElementById('adImage');
-                const noImgText = document.getElementById('noImageText');
-                const dlBtn     = document.getElementById('downloadBtn');
-                if (ad.filePath) {
-                    adImage.src          = base + ad.filePath;
-                    adImage.style.display = 'block';
-                    noImgText.style.display = 'none';
-                    dlBtn.href           = base + '/admin/ad/download?adId=' + selectedAdId;
-                    dlBtn.style.display  = '';
-                } else {
-                    adImage.style.display   = 'none';
-                    noImgText.style.display = '';
-                    dlBtn.style.display     = 'none';
-                }
-
-                // 상태 배지 (헤더)
-                const badge = document.getElementById('adStatusBadge');
-                if (ad.status === 'CONFIRM') {
-                    badge.className   = 'badge bg-success fs-6 px-3 py-1';
-                    badge.textContent = '✓ 확정';
-                } else if (ad.status === 'WAIT') {
-                    badge.className   = 'badge bg-warning text-dark fs-6 px-3 py-1';
-                    badge.textContent = '⏳ 대기중';
-                } else {
-                    badge.className   = 'badge bg-danger fs-6 px-3 py-1';
-                    badge.textContent = '✗ 반려';
-                }
-
-                // 확정/반려 시 액션 잠금
-                const actionArea      = document.getElementById('actionArea');
-                const withdrawArea    = document.getElementById('withdrawArea');
-                const statusCompleted = document.getElementById('statusCompleted');
-                const statusIcon      = document.getElementById('statusIcon');
-                const statusText      = document.getElementById('statusText');
-                const processedAtText = document.getElementById('processedAtText');
-
-                const rejectReasonBox  = document.getElementById('rejectReasonBox');
-                const rejectReasonText = document.getElementById('rejectReasonText');
-
-                if (ad.status === 'CONFIRM') {
-                    actionArea.classList.add('d-none');
-                    rejectReasonBox.classList.add('d-none');
-                    statusCompleted.classList.remove('d-none');
-
-                    // 기간만료 여부 체크
-                    const _end = ad.endDate ? new Date(ad.endDate) : null;
-                    const _today = new Date(); _today.setHours(0,0,0,0);
-                    const _expired = _end && _end < _today;
-
-                    if (_expired) {
-                        if (withdrawArea) withdrawArea.classList.add('d-none');
-                        statusCompleted.style.background = '#f5f5f5';
-                        statusIcon.textContent  = '⏰';
-                        statusText.textContent  = '기간 만료';
-                        statusText.style.color  = '#888';
-                        processedAtText.textContent = ad.endDate ? '만료일: ' + ad.endDate : '';
-                    } else {
-                        if (withdrawArea) withdrawArea.classList.remove('d-none');
-                        statusCompleted.style.background = '#e8faf4';
-                        statusIcon.textContent  = '✅';
-                        statusText.textContent  = '광고 확정 완료';
-                        statusText.style.color  = '#1cc88a';
-                        processedAtText.textContent = ad.approvedAt ? '승인일시: ' + ad.approvedAt : '';
-                    }
-                } else if (ad.status === 'CANCEL') {
-                    actionArea.classList.add('d-none');
-                    if (withdrawArea) withdrawArea.classList.add('d-none');
-                    statusCompleted.classList.remove('d-none');
-                    statusCompleted.style.background = '#fff8e1';
-                    statusIcon.textContent  = '🚫';
-                    statusText.textContent  = '조기 철회됨';
-                    statusText.style.color  = '#f6c23e';
-                    processedAtText.textContent = '';
-                    if (ad.rejectedReason) {
-                        rejectReasonBox.classList.remove('d-none');
-                        rejectReasonText.textContent = ad.rejectedReason;
-                    } else {
-                        rejectReasonBox.classList.add('d-none');
-                    }
-                } else if (ad.status === 'REJECT') {
-                    actionArea.classList.add('d-none');
-                    if (withdrawArea) withdrawArea.classList.add('d-none');
-                    statusCompleted.classList.remove('d-none');
-                    statusCompleted.style.background = '#fff2f1';
-                    statusIcon.textContent  = '❌';
-                    statusText.textContent  = '반려됨';
-                    statusText.style.color  = '#e74a3b';
-                    processedAtText.textContent = '';
-                    if (ad.rejectedReason) {
-                        rejectReasonBox.classList.remove('d-none');
-                        rejectReasonText.textContent = ad.rejectedReason;
-                    } else {
-                        rejectReasonBox.classList.add('d-none');
-                    }
-                } else {
-                    actionArea.classList.remove('d-none');
-                    if (withdrawArea) withdrawArea.classList.add('d-none');
-                    statusCompleted.classList.add('d-none');
-                    rejectReasonBox.classList.add('d-none');
-                    document.getElementById('mailTitle').value   = '';
-                    document.getElementById('mailContent').value = '';
-                }
-
-                // 겹침 알림
-                const conflictBox = document.getElementById('conflictMessage');
-                if (data.conflictAds && data.conflictAds.length > 0) {
-                    const names = data.conflictAds.map(a => a.brandName).join(', ');
-                    conflictBox.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> <b>${names}</b> 광고와 일정이 겹칩니다.`;
-                    conflictBox.classList.remove('d-none');
-                } else {
-                    conflictBox.classList.add('d-none');
-                }
+                _fillAdBasicInfo(ad);
+                _updateAdImageSection(ad);
+                _updateAdStatusBadge(ad);
+                _updateAdActionArea(ad);
+                _updateConflictAlert(data);
             });
+    }
+
+    function _fillAdBasicInfo(ad) {
+        document.getElementById('brandName').innerText     = ad.brandName    || '';
+        document.getElementById('managerName').innerText   = ad.managerName  || '';
+        document.getElementById('phone').innerText         = ad.phone        || '';
+        document.getElementById('companyEmail').innerText  = ad.companyEmail || '';
+        document.getElementById('targetEmail').value       = ad.companyEmail || '';
+        document.getElementById('content').innerText       = ad.content      || '';
+        document.getElementById('period').innerText        = (ad.startDate || '') + ' ~ ' + (ad.endDate || '');
+        document.getElementById('durationWeeks').innerText = ad.durationWeeks || '';
+        document.getElementById('amount').innerText        = Number(ad.amount).toLocaleString();
+        document.getElementById('summaryWeeks').innerText  = (ad.durationWeeks || '-') + '주';
+        document.getElementById('summaryAmount').innerText = Number(ad.amount).toLocaleString() + '원';
+    }
+
+    function _updateAdImageSection(ad) {
+        const adImage   = document.getElementById('adImage');
+        const noImgText = document.getElementById('noImageText');
+        const dlBtn     = document.getElementById('downloadBtn');
+        if (ad.filePath) {
+            adImage.src             = base + ad.filePath;
+            adImage.style.display   = 'block';
+            noImgText.style.display = 'none';
+            dlBtn.href              = base + '/admin/ad/download?adId=' + selectedAdId;
+            dlBtn.style.display     = '';
+        } else {
+            adImage.style.display   = 'none';
+            noImgText.style.display = '';
+            dlBtn.style.display     = 'none';
+        }
+    }
+
+    function _updateAdStatusBadge(ad) {
+        const badge = document.getElementById('adStatusBadge');
+        if (ad.status === 'CONFIRM') {
+            badge.className   = 'badge bg-success fs-6 px-3 py-1';
+            badge.textContent = '✓ 확정';
+        } else if (ad.status === 'WAIT') {
+            badge.className   = 'badge bg-warning text-dark fs-6 px-3 py-1';
+            badge.textContent = '⏳ 대기중';
+        } else {
+            badge.className   = 'badge bg-danger fs-6 px-3 py-1';
+            badge.textContent = '✗ 반려';
+        }
+    }
+
+    function _updateAdActionArea(ad) {
+        const actionArea      = document.getElementById('actionArea');
+        const withdrawArea    = document.getElementById('withdrawArea');
+        const statusCompleted = document.getElementById('statusCompleted');
+        const rejectReasonBox = document.getElementById('rejectReasonBox');
+        if (ad.status === 'CONFIRM') {
+            _applyConfirmStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox);
+        } else if (ad.status === 'CANCEL') {
+            _applyCancelOrRejectStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox,
+                '🚫', '조기 철회됨', '#fff8e1', '#f6c23e');
+        } else if (ad.status === 'REJECT') {
+            _applyCancelOrRejectStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox,
+                '❌', '반려됨', '#fff2f1', '#e74a3b');
+        } else {
+            actionArea.classList.remove('d-none');
+            if (withdrawArea) withdrawArea.classList.add('d-none');
+            statusCompleted.classList.add('d-none');
+            rejectReasonBox.classList.add('d-none');
+            document.getElementById('mailTitle').value   = '';
+            document.getElementById('mailContent').value = '';
+        }
+    }
+
+    function _applyConfirmStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox) {
+        const statusIcon      = document.getElementById('statusIcon');
+        const statusText      = document.getElementById('statusText');
+        const processedAtText = document.getElementById('processedAtText');
+        actionArea.classList.add('d-none');
+        rejectReasonBox.classList.add('d-none');
+        statusCompleted.classList.remove('d-none');
+        const endDate = ad.endDate ? new Date(ad.endDate) : null;
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const expired = endDate && endDate < today;
+        if (expired) {
+            if (withdrawArea) withdrawArea.classList.add('d-none');
+            statusCompleted.style.background = '#f5f5f5';
+            statusIcon.textContent  = '⏰';
+            statusText.textContent  = '기간 만료';
+            statusText.style.color  = '#888';
+            processedAtText.textContent = ad.endDate ? '만료일: ' + ad.endDate : '';
+        } else {
+            if (withdrawArea) withdrawArea.classList.remove('d-none');
+            statusCompleted.style.background = '#e8faf4';
+            statusIcon.textContent  = '✅';
+            statusText.textContent  = '광고 확정 완료';
+            statusText.style.color  = '#1cc88a';
+            processedAtText.textContent = ad.approvedAt ? '승인일시: ' + ad.approvedAt : '';
+        }
+    }
+
+    function _applyCancelOrRejectStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox,
+                                         icon, text, bgColor, textColor) {
+        const statusIcon      = document.getElementById('statusIcon');
+        const statusText      = document.getElementById('statusText');
+        const processedAtText = document.getElementById('processedAtText');
+        const rejectReasonText = document.getElementById('rejectReasonText');
+        actionArea.classList.add('d-none');
+        if (withdrawArea) withdrawArea.classList.add('d-none');
+        statusCompleted.classList.remove('d-none');
+        statusCompleted.style.background = bgColor;
+        statusIcon.textContent  = icon;
+        statusText.textContent  = text;
+        statusText.style.color  = textColor;
+        processedAtText.textContent = '';
+        if (ad.rejectedReason) {
+            rejectReasonBox.classList.remove('d-none');
+            rejectReasonText.textContent = ad.rejectedReason;
+        } else {
+            rejectReasonBox.classList.add('d-none');
+        }
+    }
+
+    function _updateConflictAlert(data) {
+        const conflictBox = document.getElementById('conflictMessage');
+        if (data.conflictAds && data.conflictAds.length > 0) {
+            const names = data.conflictAds.map(a => a.brandName).join(', ');
+            conflictBox.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-1"></i> <b>${names}</b> 광고와 일정이 겹칩니다.`;
+            conflictBox.classList.remove('d-none');
+        } else {
+            conflictBox.classList.add('d-none');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function () {

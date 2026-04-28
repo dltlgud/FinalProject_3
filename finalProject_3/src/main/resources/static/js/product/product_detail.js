@@ -147,96 +147,82 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+        function _setupKakaoMap() {
+            let defaultLat = 37.5665;
+            let defaultLng = 126.9780;
+            let defaultPlace = "위치 정보 없음";
+
+            if (mapPlaceButtons.length > 0) {
+                defaultLat = parseFloat(mapPlaceButtons[0].dataset.lat);
+                defaultLng = parseFloat(mapPlaceButtons[0].dataset.lng);
+                defaultPlace = mapPlaceButtons[0].dataset.place || "거래 희망 위치";
+            }
+
+            if (isNaN(defaultLat) || isNaN(defaultLng)) {
+                defaultLat = 37.5665;
+                defaultLng = 126.9780;
+            }
+
+            const map = new kakao.maps.Map(container, {
+                center: new kakao.maps.LatLng(defaultLat, defaultLng),
+                level: 3
+            });
+
+            const marker = new kakao.maps.Marker({
+                position: new kakao.maps.LatLng(defaultLat, defaultLng)
+            });
+            marker.setMap(map);
+
+            const infoWindow = new kakao.maps.InfoWindow({
+                content: '<div style="padding:6px 10px; font-size:12px;">' + defaultPlace + "</div>"
+            });
+            infoWindow.open(map, marker);
+
+            function setActiveMapPlaceButton(place) {
+                mapPlaceButtons.forEach(function (btn) {
+                    btn.classList.remove("is-active");
+                    if ((btn.dataset.place || "") === place) {
+                        btn.classList.add("is-active");
+                    }
+                });
+            }
+
+            function moveMapTo(lat, lng, place, shouldScroll) {
+                if (isNaN(lat) || isNaN(lng)) {
+                    return;
+                }
+                const position = new kakao.maps.LatLng(lat, lng);
+                map.panTo(position);
+                marker.setPosition(position);
+                infoWindow.close();
+                infoWindow.setContent('<div style="padding:6px 10px; font-size:12px;">' + place + "</div>");
+                infoWindow.open(map, marker);
+                setActiveMapPlaceButton(place);
+                if (shouldScroll && locWrap) {
+                    locWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }
+
+            mapPlaceButtons.forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    moveMapTo(parseFloat(btn.dataset.lat), parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", false);
+                });
+            });
+
+            pdLocationButtons.forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    moveMapTo(parseFloat(btn.dataset.lat), parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", true);
+                });
+            });
+
+            setActiveMapPlaceButton(defaultPlace);
+        }
+
         try {
             if (!(window.kakao && kakao.maps && kakao.maps.load)) {
                 return;
             }
-
-            kakao.maps.load(function () {
-                let defaultLat = 37.5665;
-                let defaultLng = 126.9780;
-                let defaultPlace = "위치 정보 없음";
-
-                if (mapPlaceButtons.length > 0) {
-                    defaultLat = parseFloat(mapPlaceButtons[0].dataset.lat);
-                    defaultLng = parseFloat(mapPlaceButtons[0].dataset.lng);
-                    defaultPlace = mapPlaceButtons[0].dataset.place || "거래 희망 위치";
-                }
-
-                if (isNaN(defaultLat) || isNaN(defaultLng)) {
-                    defaultLat = 37.5665;
-                    defaultLng = 126.9780;
-                }
-
-                const map = new kakao.maps.Map(container, {
-                    center: new kakao.maps.LatLng(defaultLat, defaultLng),
-                    level: 3
-                });
-
-                const marker = new kakao.maps.Marker({
-                    position: new kakao.maps.LatLng(defaultLat, defaultLng)
-                });
-                marker.setMap(map);
-
-                const infoWindow = new kakao.maps.InfoWindow({
-                    content: '<div style="padding:6px 10px; font-size:12px;">' + defaultPlace + "</div>"
-                });
-                infoWindow.open(map, marker);
-
-                function setActiveMapPlaceButton(place) {
-                    mapPlaceButtons.forEach(function (btn) {
-                        btn.classList.remove("is-active");
-
-                        if ((btn.dataset.place || "") === place) {
-                            btn.classList.add("is-active");
-                        }
-                    });
-                }
-
-                function moveMapTo(lat, lng, place, shouldScroll) {
-                    if (isNaN(lat) || isNaN(lng)) {
-                        return;
-                    }
-
-                    const position = new kakao.maps.LatLng(lat, lng);
-
-                    map.panTo(position);
-                    marker.setPosition(position);
-
-                    infoWindow.close();
-                    infoWindow.setContent('<div style="padding:6px 10px; font-size:12px;">' + place + "</div>");
-                    infoWindow.open(map, marker);
-
-                    setActiveMapPlaceButton(place);
-
-                    if (shouldScroll && locWrap) {
-                        locWrap.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
-                    }
-                }
-
-                mapPlaceButtons.forEach(function (btn) {
-                    btn.addEventListener("click", function () {
-                        const lat = parseFloat(btn.dataset.lat);
-                        const lng = parseFloat(btn.dataset.lng);
-                        const place = btn.dataset.place || "거래 희망 위치";
-                        moveMapTo(lat, lng, place, false);
-                    });
-                });
-
-                pdLocationButtons.forEach(function (btn) {
-                    btn.addEventListener("click", function () {
-                        const lat = parseFloat(btn.dataset.lat);
-                        const lng = parseFloat(btn.dataset.lng);
-                        const place = btn.dataset.place || "거래 희망 위치";
-                        moveMapTo(lat, lng, place, true);
-                    });
-                });
-
-                setActiveMapPlaceButton(defaultPlace);
-            });
+            kakao.maps.load(_setupKakaoMap);
         } catch (e) {
             console.warn("Kakao map load failed:", e);
         }
@@ -245,6 +231,31 @@ document.addEventListener("DOMContentLoaded", function () {
     function bindWishlist() {
         if (typeof window.jQuery === "undefined") {
             return;
+        }
+
+        function handleWishSuccess(json, $btn) {
+            if (!json.success) {
+                alert(json.message || "찜 처리에 실패했습니다.");
+                return;
+            }
+            const $icon = $btn.find("i");
+            const wishCountTargets = document.querySelectorAll(".wish-count-text, #wishCountText");
+            let currentCount = 0;
+            if (wishCountTargets.length > 0) {
+                const parsed = parseInt(wishCountTargets[0].textContent, 10);
+                currentCount = isNaN(parsed) ? 0 : parsed;
+            }
+            if (json.wished) {
+                $btn.addClass("is-active");
+                $icon.removeClass("fa-regular").addClass("fa-solid");
+                wishCountTargets.forEach(function (el) { el.textContent = String(currentCount + 1); });
+                alert("찜 성공");
+            } else {
+                $btn.removeClass("is-active");
+                $icon.removeClass("fa-solid").addClass("fa-regular");
+                wishCountTargets.forEach(function (el) { el.textContent = String(Math.max(0, currentCount - 1)); });
+                alert("찜 취소");
+            }
         }
 
         $(document).on("click", ".pd-like", function (e) {
@@ -266,37 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 type: "post",
                 data: { productNo: productNo },
                 dataType: "json",
-                success: function (json) {
-                    if (!json.success) {
-                        alert(json.message || "찜 처리에 실패했습니다.");
-                        return;
-                    }
-
-                    const $icon = $btn.find("i");
-                    const wishCountTargets = document.querySelectorAll(".wish-count-text, #wishCountText");
-                    let currentCount = 0;
-
-                    if (wishCountTargets.length > 0) {
-                        const parsed = parseInt(wishCountTargets[0].textContent, 10);
-                        currentCount = isNaN(parsed) ? 0 : parsed;
-                    }
-
-                    if (json.wished) {
-                        $btn.addClass("is-active");
-                        $icon.removeClass("fa-regular").addClass("fa-solid");
-                        wishCountTargets.forEach(function (el) {
-                            el.textContent = String(currentCount + 1);
-                        });
-                        alert("찜 성공");
-                    } else {
-                        $btn.removeClass("is-active");
-                        $icon.removeClass("fa-solid").addClass("fa-regular");
-                        wishCountTargets.forEach(function (el) {
-                            el.textContent = String(Math.max(0, currentCount - 1));
-                        });
-                        alert("찜 취소");
-                    }
-                },
+                success: function (json) { handleWishSuccess(json, $btn); },
                 error: function (request, status, error) {
                     console.log("찜 AJAX ERROR");
                     console.log("status =", request.status);

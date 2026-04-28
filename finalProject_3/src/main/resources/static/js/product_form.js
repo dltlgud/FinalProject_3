@@ -687,113 +687,88 @@
       cautionsWrap.appendChild(ul);
     }
 
-    async function requestAiDescription() {
-      if (busy) return;
-
+    function _validateBeforeAi() {
       if (!titleEl || isBlank(titleEl.value)) {
         alertAndFocus("상품명을 먼저 입력해 주세요.", titleEl);
-        return;
+        return false;
       }
-
-	  const isShare = document.querySelector("input[name='saleType']")?.value === "나눔";
-
-	  if (!isShare) {
-	    if (!priceEl || isBlank(priceEl.value)) {
-	      alertAndFocus("판매가격을 먼저 입력해 주세요.", priceEl);
-	      return;
-	    }
-
-	    const priceV = window.PF.Price?.validate?.();
-	    if (priceV && priceV.ok === false) {
-	      alertAndFocus(priceV.msg, window.PF.Price?.el);
-	      return;
-	    }
-	  }
-
-      const priceV = window.PF.Price?.validate?.();
-      if (priceV && priceV.ok === false) {
-        alertAndFocus(priceV.msg, window.PF.Price?.el);
-        return;
+      const isShare = document.querySelector("input[name='saleType']")?.value === "나눔";
+      if (!isShare) {
+        if (!priceEl || isBlank(priceEl.value)) {
+          alertAndFocus("판매가격을 먼저 입력해 주세요.", priceEl);
+          return false;
+        }
+        const priceV = window.PF.Price?.validate?.();
+        if (priceV && priceV.ok === false) {
+          alertAndFocus(priceV.msg, window.PF.Price?.el);
+          return false;
+        }
       }
+      return true;
+    }
 
-	  const payload = {
-	    productName: String(titleEl?.value ?? "").trim(),
-	    categoryName: getCategoryName(),
-	    productPrice: isShare ? "0" : String(priceEl?.value ?? "").trim(),
-	    productDesc: String(descEl?.value ?? "").trim()
-	  };
+    function _applyAiResult(data) {
+      const nextTitle = String(data.titleSuggestion ?? data.title ?? "").trim();
+      const nextDesc = String(data.description ?? "").trim();
+
+      console.log("titleSuggestion =", nextTitle);
+      console.log("description =", nextDesc);
+
+      if (!nextTitle && !nextDesc) {
+        throw new Error("AI가 작성 결과를 반환하지 않았습니다.");
+      }
+      if (titleEl && nextTitle) titleEl.value = nextTitle;
+      if (descEl && nextDesc) {
+        descEl.value = nextDesc;
+        const now = $(".pf-count-now");
+        if (now) now.textContent = String(descEl.value.length);
+      }
+      renderCautions(data.cautions);
+      if (statusEl) {
+        statusEl.textContent = "AI 판매글이 적용되었습니다.";
+        setTimeout(() => {
+          if (statusEl.textContent === "AI 판매글이 적용되었습니다.") statusEl.textContent = "";
+        }, 2500);
+      }
+    }
+
+    async function requestAiDescription() {
+      if (busy) return;
+      if (!_validateBeforeAi()) return;
+
+      const isShare = document.querySelector("input[name='saleType']")?.value === "나눔";
+      const payload = {
+        productName: String(titleEl?.value ?? "").trim(),
+        categoryName: getCategoryName(),
+        productPrice: isShare ? "0" : String(priceEl?.value ?? "").trim(),
+        productDesc: String(descEl?.value ?? "").trim()
+      };
 
       const ctxPath = getContextPath();
       const url = ctxPath + "/ai/sell/description";
 
       try {
         setBusy(true);
-
         const res = await fetch(url, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-
         const data = await res.json().catch(() => null);
-
         console.log("AI 응답 status =", res.status);
         console.log("AI 응답 data =", data);
-
         if (!res.ok || data?.success === false) {
-          const msg =
-            data?.message ||
-            `AI 판매글 작성 요청에 실패했습니다. (${res.status})`;
-          throw new Error(msg);
+          throw new Error(data?.message || `AI 판매글 작성 요청에 실패했습니다. (${res.status})`);
         }
-
         if (!data || typeof data !== "object") {
           throw new Error("AI 응답 형식이 올바르지 않습니다.");
         }
-
-        const nextTitle = String(
-          data.titleSuggestion ?? data.title ?? ""
-        ).trim();
-
-        const nextDesc = String(data.description ?? "").trim();
-
-        console.log("titleSuggestion =", nextTitle);
-        console.log("description =", nextDesc);
-
-        if (!nextTitle && !nextDesc) {
-          throw new Error("AI가 작성 결과를 반환하지 않았습니다.");
-        }
-
-        if (titleEl && nextTitle) {
-          titleEl.value = nextTitle;
-        }
-
-        if (descEl && nextDesc) {
-          descEl.value = nextDesc;
-
-          const now = $(".pf-count-now");
-          if (now) now.textContent = String(descEl.value.length);
-        }
-
-        renderCautions(data.cautions);
-
-        if (statusEl) {
-          statusEl.textContent = "AI 판매글이 적용되었습니다.";
-          setTimeout(() => {
-            if (statusEl.textContent === "AI 판매글이 적용되었습니다.") {
-              statusEl.textContent = "";
-            }
-          }, 2500);
-        }
-      }
-      catch (err) {
+        _applyAiResult(data);
+      } catch (err) {
         console.error(err);
         alert(err?.message || "AI 판매글 작성 중 오류가 발생했습니다.");
         if (statusEl) statusEl.textContent = "";
-      }
-      finally {
+      } finally {
         setBusy(false);
       }
     }
