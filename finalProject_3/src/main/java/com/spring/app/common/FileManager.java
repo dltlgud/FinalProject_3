@@ -1,6 +1,7 @@
 package com.spring.app.common;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+
+import net.coobird.thumbnailator.Thumbnails;
 
 import org.springframework.stereotype.Component;
 
@@ -97,11 +100,13 @@ public class FileManager {
 		// 이러한 일을 하는 FileOutputStream 객체 fos 를 생성한다.
 		
 		fos.write(bytes);
-		// write(byte[] bytes) 메소드가 해당 경로 파일명(pathname)에 실제로 데이터 내용(byte[] bytes)을 기록해주는 일을 하는 것이다.
-		
 		fos.close();
-		// 생성된 FileOutputStream 객체 fos 가 더이상 사용되지 않도록 소멸 시킨다.
-		
+
+		// 이미지 파일인 경우 썸네일 자동 생성
+		if (isImageFile(fileExt)) {
+			createThumbnail(bytes, newFileName, path);
+		}
+
 		return newFileName;
 		// 파일을 업로드 한 이후에 
 		// 업로드 되어진 파일명(현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든것)을 알아온다. 
@@ -262,7 +267,24 @@ public class FileManager {
 		
 	}// end of public void doFileDelete(String filename, String path) throws Exception------
 
-	
+	private boolean isImageFile(String ext) {
+		String lower = ext.toLowerCase();
+		return lower.equals(".jpg") || lower.equals(".jpeg") || lower.equals(".png")
+				|| lower.equals(".gif") || lower.equals(".bmp") || lower.equals(".webp");
+	}
+
+	private void createThumbnail(byte[] bytes, String savedFileName, String path) {
+		try {
+			String thumbPathname = path + File.separator + "thumb_" + savedFileName;
+			Thumbnails.of(new ByteArrayInputStream(bytes))
+					.size(400, 400)
+					.keepAspectRatio(true)
+					.toFile(new File(thumbPathname));
+		} catch (Exception e) {
+			// 썸네일 생성 실패는 업로드 자체를 막지 않음
+		}
+	}
+
 }
 
 

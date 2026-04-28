@@ -293,7 +293,9 @@
 							    <i th:class="${p.wished} ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
 							</button>
 
-							<img th:src="@{${p.imgUrl}}" alt="">
+							<img th:src="@{${p.imgUrl != null ? p.imgUrl.replace('/images/', '/images/thumb_') : ''}}"
+								 th:onerror="|this.onerror=null; this.src='${p.imgUrl}'|"
+								 alt="">
 						</div>
 
 						<div class="card-body">
@@ -1256,6 +1258,8 @@ $(function () {
 			? (imgUrl.startsWith("http://") || imgUrl.startsWith("https://") ? imgUrl : ctxPath + imgUrl)
 			: ctxPath + "/images/no-image.png";
 
+		const thumbImgUrl = finalImgUrl.replace('/images/', '/images/thumb_');
+
 		return `
 			<a class="card"
 			   href="${ctxPath}/product/product_detail/${p.productNo}"
@@ -1270,7 +1274,7 @@ $(function () {
 					        data-login="${isLogin}">
 						<i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i>
 					</button>
-					<img src="${escapeHtml(finalImgUrl)}" alt="">
+					<img src="${escapeHtml(thumbImgUrl)}" onerror="this.onerror=null; this.src='${escapeHtml(finalImgUrl)}'" alt="">
 				</div>
 				<div class="card-body">
 					<div class="item-title">${escapeHtml(p.productName)}</div>
