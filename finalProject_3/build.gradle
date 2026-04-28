@@ -198,6 +198,10 @@ dependencies {
 	// Prometheus 메트릭 수집
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 
+	// 캐시 (Caffeine - in-process, 별도 서버 불필요)
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'com.github.ben-manes.caffeine:caffeine'
+
 	// Eureka Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
