@@ -43,8 +43,8 @@
 
   function getContextPath() {
     const raw =
-      document.documentElement.getAttribute("data-context-path") ||
-      document.body.getAttribute("data-context-path") ||
+      document.documentElement.dataset.contextPath ||
+      document.body.dataset.contextPath ||
       window.ctxPath ||
       "";
     return String(raw).replace(/\/$/, "");
@@ -1257,7 +1257,7 @@
       const btn = e.target.closest(".area-item");
       if (!btn) return;
 
-      const val = btn.getAttribute("data-area-value") || btn.textContent.trim();
+      const val = btn.dataset.areaValue || btn.textContent.trim();
       pushRecentArea(val);
 
       const sp = splitPlaceAndAddress(val);
@@ -1333,7 +1333,7 @@
   function validateFeeRangeForInput(inp) {
     if (!inp) return { ok: true };
 
-    const type = inp.getAttribute("data-fee-for");
+    const type = inp.dataset.feeFor;
     const range = getRange(type);
     if (!range) return { ok: true };
 

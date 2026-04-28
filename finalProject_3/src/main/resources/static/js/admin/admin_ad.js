@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.addEventListener("show.bs.modal", function (event) {
 
             const button = event.relatedTarget;
-            const adId = button.getAttribute("data-adid");
+            const adId = button.dataset.adid;
             currentAdId = adId;
 
             console.log("Fetching Detail for ID:", adId);

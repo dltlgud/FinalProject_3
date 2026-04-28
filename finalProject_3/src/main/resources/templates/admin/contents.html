@@ -563,7 +563,7 @@
 
         // 달력 태그 색상
         document.querySelectorAll('.ad-tag').forEach(tag => {
-            const bn = tag.getAttribute('data-brand');
+            const bn = tag.dataset.brand;
             if (bn) {
                 const c = getBrandColor(bn);
                 tag.style.backgroundColor = c.bg;
@@ -574,7 +574,7 @@
 
         // 테이블 브랜드 dot 색상
         document.querySelectorAll('.brand-dot').forEach(dot => {
-            const bn = dot.getAttribute('data-brand');
+            const bn = dot.dataset.brand;
             if (bn) dot.style.background = getBrandColor(bn).text;
         });
 

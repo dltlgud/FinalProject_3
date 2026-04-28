@@ -62,7 +62,7 @@
             var path = window.location.pathname;
             var links = document.querySelectorAll('.nav-menu-item');
             links.forEach(function(link) {
-                var key = link.getAttribute('data-key');
+                var key = link.dataset.key;
                 if (key && path.indexOf('/admin/' + key) !== -1) {
                     link.classList.add('active');
                 }

@@ -25,7 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getMainData(name) {
         const mainEl = getMainElement();
-        return mainEl ? mainEl.getAttribute(name) : "";
+        if (!mainEl) return "";
+        const key = name.replace(/^data-/, '').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+        return mainEl.dataset[key] ?? "";
     }
 
     function buildImageUrl(path, defaultUrl) {
@@ -418,9 +420,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         chatBtn.addEventListener("click", function () {
-            const productNo = this.getAttribute("data-product-no");
-            const sellerEmail = this.getAttribute("data-seller-email");
-            const productName = this.getAttribute("data-product-name");
+            const productNo = this.dataset.productNo;
+            const sellerEmail = this.dataset.sellerEmail;
+            const productName = this.dataset.productName;
 
             startChat(productNo, sellerEmail, productName);
         });
