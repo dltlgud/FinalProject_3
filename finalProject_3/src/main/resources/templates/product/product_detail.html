@@ -252,14 +252,8 @@
 
                 <div class="pd-main-img">
                     <img id="pdMainImage"
-                         th:if="${product.imageList != null and !#lists.isEmpty(product.imageList)}"
-                         th:src="@{${product.imageList[0].imgUrl}}"
+                         th:src="@{${(product.imageList != null and !#lists.isEmpty(product.imageList)) ? product.imageList[0].imgUrl : '/images/no_image.png'}}"
                          alt="상품 대표 이미지">
-
-                    <img id="pdMainImage"
-                         th:if="${product.imageList == null or #lists.isEmpty(product.imageList)}"
-                         th:src="@{/images/no_image.png}"
-                         alt="상품 이미지">
                 </div>
 
                 <!-- 썸네일(0번=대표 제외) -->
@@ -515,14 +509,8 @@
                        <div class="pdinfo-seller-top">
 						    <div class="pdinfo-avatar">
 						        <img id="pdinfoSellerImg"
-						             th:if="${product.sellerProfileImg != null and product.sellerProfileImg != ''}"
-						             th:src="@{${product.sellerProfileImg}}"
+						             th:src="@{${(product.sellerProfileImg != null and product.sellerProfileImg != '') ? product.sellerProfileImg : '/images/default_profile.png'}}"
 						             alt="판매자 프로필">
-						
-						        <img id="pdinfoSellerImg"
-						             th:if="${product.sellerProfileImg == null or product.sellerProfileImg == ''}"
-						             th:src="@{/images/default_profile.png}"
-						             alt="기본 프로필">
 						    </div>
 						
 						    <div class="pdinfo-seller-name" id="pdinfoSellerName" th:text="${product.sellerName}">판매자 이름</div>
