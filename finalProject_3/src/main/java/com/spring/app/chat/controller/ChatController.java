@@ -9,6 +9,7 @@ import com.spring.app.chat.domain.ReportDTO;
 import com.spring.app.chat.service.ChatService;
 import com.spring.app.chat.service.FirebaseService;
 import com.spring.app.chat.service.ReportService;
+import com.spring.app.noti.service.NotiPushService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,9 +43,10 @@ public class ChatController {
 
     private final ChatService chatService;
     private final FirebaseService firebaseService;
-    
+    private final NotiPushService notiPushService;
+
     // 특정 구독자들에게 웹소켓 메시지를 쏴주는 스프링 내장 객체
-    private final SimpMessagingTemplate messagingTemplate; 
+    private final SimpMessagingTemplate messagingTemplate;
 
     // 1. 나의 채팅방 목록 가져오기 API 
     @PreAuthorize("isAuthenticated()") 
@@ -98,7 +100,7 @@ public class ChatController {
         // 3) 웹소켓을 통해 해당 방("/topic/room/방ID")을 열고 있는 모든 사람에게 즉시 메시지 쏘기!
         messagingTemplate.convertAndSend("/topic/room/" + message.getRoomId(), message);
 
-        // 4) 수신자의 채팅 뱃지 카운트 증가 알림 + DB 저장
+        // 4) 수신자의 채팅 뱃지 카운트 증가 알림 + DB 저장 + 벨 알림 푸시
         try {
             ChatRoomDTO room = chatService.getRoomById(message.getRoomId());
             if (room != null && message.getSender() != null) {
@@ -108,8 +110,14 @@ public class ChatController {
                 if (recipient != null) {
                     // DB에 미읽음 카운트 저장
                     chatService.incrementUnread(message.getRoomId(), recipient, room.getSellerEmail());
-                    // WebSocket으로 실시간 알림
+                    // WebSocket으로 채팅 배지 카운트 알림
                     messagingTemplate.convertAndSend("/topic/chat-unread/" + recipient, Map.of("count", 1));
+                    // 시스템 메시지가 아닌 경우에만 벨 알림 푸시
+                    String content = message.getContent();
+                    if (content != null && !content.startsWith("__")) {
+                        String preview = content.length() > 30 ? content.substring(0, 30) + "..." : content;
+                        notiPushService.push(recipient, "채팅", "새 메시지", preview);
+                    }
                 }
             }
         } catch (Exception ignored) {}
@@ -315,6 +323,13 @@ public class ChatController {
             msg.setTimestamp(now);
             firebaseService.saveMessage(msg);
             messagingTemplate.convertAndSend("/topic/room/" + roomId, msg);
+            // 판매자에게 거래완료 알림
+            try {
+                ChatRoomDTO room = chatService.getRoomById(roomId);
+                if (room != null && room.getSellerEmail() != null) {
+                    notiPushService.push(room.getSellerEmail(), "거래완료", "거래완료", "직거래가 완료되었습니다.");
+                }
+            } catch (Exception ignored) {}
             resultMap.put("success", true);
         } catch (Exception e) {
             resultMap.put("success", false);

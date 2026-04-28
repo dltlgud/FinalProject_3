@@ -1,6 +1,7 @@
 package com.spring.app.noti.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,5 +38,10 @@ public class NotiDAO_imple implements NotiDAO {
     @Override
     public void markAllAsRead(String email) {
         sqlsession.update(ns + ".markAllAsRead", email);
+    }
+
+    @Override
+    public void insertNotification(Map<String, Object> params) {
+        sqlsession.insert(ns + ".insertNotification", params);
     }
 }

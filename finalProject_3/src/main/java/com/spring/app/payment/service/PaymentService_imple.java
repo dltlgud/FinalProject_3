@@ -19,6 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.app.noti.service.NotiPushService;
 import com.spring.app.payment.domain.SettlementDTO;
 import com.spring.app.payment.domain.TransactionDTO;
 import com.spring.app.payment.model.PaymentDAO;
@@ -35,6 +36,7 @@ public class PaymentService_imple implements PaymentService {
     private final PaymentDAO paymentDAO;
     private final MemberDAO  memberDAO;       // 캐시 잔액 업데이트용
     private final ObjectMapper objectMapper;
+    private final NotiPushService notiPushService;
 
     @Value("${toss.payments.secret-key:test_sk_XXXXXXXXXXXXXXXXXXXXXXXX}")
     private String tossSecretKey;
@@ -224,6 +226,12 @@ public class PaymentService_imple implements PaymentService {
             result.put("paymentKey", paymentKey);
             result.put("orderId", orderId);
 
+            // 판매자에게 결제 완료 알림
+            String productName = txn.getProductName() != null ? txn.getProductName() : "상품";
+            notiPushService.push(txn.getSellerEmail(), "결제",
+                    "결제 완료",
+                    "[" + productName + "] 결제가 완료되었습니다.");
+
         } catch (HttpClientErrorException e) {
             log.error("토스 결제 승인 실패: {}", e.getResponseBodyAsString(), e);
 
@@ -365,6 +373,12 @@ public class PaymentService_imple implements PaymentService {
             log.error("[정산-미처리] transactionId={} paymentType={} — 정산 로직 없음, 수동 처리 필요",
                     transactionId, paymentType);
         }
+
+        // 판매자에게 구매확정 알림
+        String productName = txn.getProductName() != null ? txn.getProductName() : "상품";
+        notiPushService.push(txn.getSellerEmail(), "구매확정",
+                "구매확정",
+                "[" + productName + "] 구매가 확정되었습니다.");
 
         result.put("success", true);
         result.put("message", "구매확인이 완료되었습니다.");

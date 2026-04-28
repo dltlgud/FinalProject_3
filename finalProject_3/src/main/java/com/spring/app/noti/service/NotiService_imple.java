@@ -1,6 +1,7 @@
 package com.spring.app.noti.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -33,5 +34,10 @@ public class NotiService_imple implements NotiService {
     @Override
     public void markAllAsRead(String email) {
         dao.markAllAsRead(email);
+    }
+
+    @Override
+    public void insertNotification(Map<String, Object> params) {
+        dao.insertNotification(params);
     }
 }
