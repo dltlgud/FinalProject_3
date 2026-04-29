@@ -244,7 +244,7 @@
                     <button class="month-nav-btn" onclick="moveMonth(-1)">
                         <i class="bi bi-chevron-left" style="font-size:.75rem;"></i>
                     </button>
-                    <h6 class="m-0" th:text="${year} + '년 ' + ${month} + '월'"></h6>
+                    <h6 class="m-0" th:text="${year} + '년 ' + ${month} + '월'">날짜</h6>
                     <button class="month-nav-btn" onclick="moveMonth(1)">
                         <i class="bi bi-chevron-right" style="font-size:.75rem;"></i>
                     </button>
@@ -589,7 +589,7 @@
         const todayDay = new Date().getDate();
         document.querySelectorAll('.calendar-table td').forEach(td => {
             const dayEl = td.querySelector('.day-num');
-            if (dayEl && parseInt(dayEl.textContent) === todayDay) {
+            if (dayEl && Number.parseInt(dayEl.textContent, 10) === todayDay) {
                 // 현재 달 표시 중일 때만 today 하이라이트
                 if (year === new Date().getFullYear() && month === new Date().getMonth() + 1) {
                     td.classList.add('today-cell');

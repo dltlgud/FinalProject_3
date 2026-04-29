@@ -293,7 +293,7 @@
 
         const timeSection = document.getElementById('mTimeSection');
         if (d.status === '거래중') {
-            const hoursLeft = parseInt(d.hoursLeft) || 0;
+            const hoursLeft = Number.parseInt(d.hoursLeft, 10) || 0;
             const pct = Math.min(100, (hoursLeft / 72) * 100);
             const color = hoursLeft < 12 ? '#e74a3b' : hoursLeft < 24 ? '#f6c23e' : '#1cc88a';
             document.getElementById('mHoursLeft').textContent = hoursLeft + '시간 남음';

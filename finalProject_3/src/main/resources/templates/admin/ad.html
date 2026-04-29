@@ -78,23 +78,23 @@
         <section>
           <div class="field-row">
             <div class="field">
-              <label>브랜드명 (회사명)<span class="required-mark">*</span></label>
-              <input type="text" name="brandName" placeholder="브랜드명을 입력해 주세요" required />
+              <label for="brandName">브랜드명 (회사명)<span class="required-mark">*</span></label>
+              <input type="text" id="brandName" name="brandName" placeholder="브랜드명을 입력해 주세요" required />
             </div>
             <div class="field">
-              <label>담당자명<span class="required-mark">*</span></label>
-              <input type="text" name="managerName" th:value="${loginUser != null ? loginUser.userName : ''}" placeholder="담당자명을 입력해 주세요" required />
+              <label for="managerName">담당자명<span class="required-mark">*</span></label>
+              <input type="text" id="managerName" name="managerName" th:value="${loginUser != null ? loginUser.userName : ''}" placeholder="담당자명을 입력해 주세요" required />
             </div>
           </div>
 
           <div class="field-row">
             <div class="field">
-              <label>이메일<span class="required-mark">*</span></label>
-              <input type="email" name="companyEmail" th:value="${loginUser != null ? loginUser.email : ''}" placeholder="이메일을 입력해 주세요" required />
+              <label for="companyEmail">이메일<span class="required-mark">*</span></label>
+              <input type="email" id="companyEmail" name="companyEmail" th:value="${loginUser != null ? loginUser.email : ''}" placeholder="이메일을 입력해 주세요" required />
             </div>
             <div class="field">
-              <label>전화번호</label>
-              <input type="text" name="phone" th:value="${loginUser != null ? loginUser.phone : ''}" placeholder="전화번호를 입력해 주세요" />
+              <label for="phone">전화번호</label>
+              <input type="text" id="phone" name="phone" th:value="${loginUser != null ? loginUser.phone : ''}" placeholder="전화번호를 입력해 주세요" />
             </div>
           </div>
         </section>
@@ -103,11 +103,11 @@
           <div class="section-title"><span>게시기간 설정</span></div>
           <div class="field-row">
             <div class="field">
-              <label>시작 날짜 선택<span class="required-mark">*</span></label>
+              <label for="startDate">시작 날짜 선택<span class="required-mark">*</span></label>
               <input type="text" id="startDate" name="startDate" required />
             </div>
             <div class="field">
-              <label>게시 기간 선택<span class="required-mark">*</span></label>
+              <label for="weekSelect">게시 기간 선택<span class="required-mark">*</span></label>
               <select id="weekSelect" name="durationWeeks">
                 <option value="1">1주일 (7일)</option>
                 <option value="2">2주일 (14일)</option>
@@ -126,13 +126,13 @@
         </section>
 
         <div class="field">
-          <label>문의내용<span class="required-mark">*</span></label>
-          <textarea name="content" placeholder="내용을 입력해 주세요" required></textarea>
+          <label for="content">문의내용<span class="required-mark">*</span></label>
+          <textarea id="content" name="content" placeholder="내용을 입력해 주세요" required></textarea>
         </div>
 
         <div class="field">
-          <label>첨부파일</label>
-          <input type="file" name="attachment" />
+          <label for="attachment">첨부파일</label>
+          <input type="file" id="attachment" name="attachment" />
         </div>
 
         <section>
@@ -193,7 +193,7 @@
 
     function calculatePeriod(selectedDate) {
       const start = selectedDate || startMin;
-      const weeks = parseInt(weekSelect.value, 10);
+      const weeks = Number.parseInt(weekSelect.value, 10);
       const end = new Date(start);
       end.setDate(start.getDate() + (weeks * 7) - 1);
 
