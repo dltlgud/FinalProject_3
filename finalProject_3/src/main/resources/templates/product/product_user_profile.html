@@ -177,8 +177,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const ctxPath = /*[[@{/}]]*/ "";
     const ctxBase = ctxPath.replace(/\/$/, "");
     const main = document.querySelector("main");
-    const productNo = main ? main.getAttribute("data-product-no") : "";
-    const isLogin = main ? String(main.getAttribute("data-login")) === "true" : false;
+    const productNo = main ? main.dataset.productNo : "";
+    const isLogin = main ? String(main.dataset.login) === "true" : false;
 
     const sellerNameEl = document.querySelector(".spx-sellerName");
     const avatarEl = document.querySelector(".spx-avatar");
@@ -461,15 +461,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function initSortButtons() {
         sortBtns.forEach(btn => {
             btn.addEventListener("click", function () {
-                sortBtns.forEach(el => {
-                    el.classList.remove("is-active");
-                    el.setAttribute("aria-selected", "false");
-                });
-
+                for (let i = 0; i < sortBtns.length; i++) {
+                    sortBtns[i].classList.remove("is-active");
+                    sortBtns[i].setAttribute("aria-selected", "false");
+                }
                 this.classList.add("is-active");
                 this.setAttribute("aria-selected", "true");
-
-                currentSort = this.getAttribute("data-sort");
+                currentSort = this.dataset.sort;
                 loadSellerProducts(true);
             });
         });
@@ -491,15 +489,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function initTabs() {
         tabs.forEach(tab => {
             tab.addEventListener("click", function () {
-                tabs.forEach(el => {
-                    el.classList.remove("is-active");
-                    el.setAttribute("aria-selected", "false");
-                });
-
+                for (let i = 0; i < tabs.length; i++) {
+                    tabs[i].classList.remove("is-active");
+                    tabs[i].setAttribute("aria-selected", "false");
+                }
                 this.classList.add("is-active");
                 this.setAttribute("aria-selected", "true");
 
-                const tabName = this.getAttribute("data-tab");
+                const tabName = this.dataset.tab;
 
                 if (tabName === "sell") {
                     sellPanel.classList.add("is-show");
@@ -804,11 +801,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function initReviewSortButtons() {
         reviewSortBtns.forEach(btn => {
             btn.addEventListener("click", function () {
-                reviewSortBtns.forEach(el => {
-                    el.classList.remove("is-active");
-                    el.setAttribute("aria-selected", "false");
-                });
-
+                for (let i = 0; i < reviewSortBtns.length; i++) {
+                    reviewSortBtns[i].classList.remove("is-active");
+                    reviewSortBtns[i].setAttribute("aria-selected", "false");
+                }
                 this.classList.add("is-active");
                 this.setAttribute("aria-selected", "true");
 
@@ -849,7 +845,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             chip.classList.add("is-active");
 
-            currentReviewCategory = chip.getAttribute("data-category") || "";
+            currentReviewCategory = chip.dataset.category || "";
             loadSellerReviews(true);
         });
     }
@@ -926,8 +922,8 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
             e.stopPropagation();
 
-            const login = String(likeBtn.getAttribute("data-login")) === "true";
-            const targetProductNo = likeBtn.getAttribute("data-product-no");
+            const login = String(likeBtn.dataset.login) === "true";
+            const targetProductNo = likeBtn.dataset.productNo;
 
             if (!login) {
                 alert("로그인이 필요합니다.");
