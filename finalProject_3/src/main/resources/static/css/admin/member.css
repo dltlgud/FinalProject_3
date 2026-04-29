@@ -4,8 +4,6 @@ body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; font-siz
 .chart-wrapper { position: relative; width: 100%; }
 
 /* stat cards */
-.stat-card-link { display:block; text-decoration:none; color:inherit; border-radius:12px; box-shadow:0 0.15rem 1.75rem rgba(58,59,69,.1); padding:16px 20px; background:white; transition:transform .15s,box-shadow .15s; border-left:4px solid #dee2e6; }
-.stat-card-link:hover { transform:translateY(-2px); box-shadow:0 0.5rem 2rem rgba(58,59,69,.2); color:inherit; }
 .stat-card-link.border-primary  { border-left-color:#4e73df !important; }
 .stat-card-link.border-success  { border-left-color:#1cc88a !important; }
 .stat-card-link.border-warning  { border-left-color:#f6c23e !important; }
@@ -38,23 +36,23 @@ body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; font-siz
     text-decoration: none; transition: all .15s;
 }
 .status-tab:hover { border-color: #4e73df; color: #4e73df; }
-.status-tab.active-all { background: #4e73df; color: #fff; border-color: #4e73df; }
-.status-tab.active-act { background: #1cc88a; color: #fff; border-color: #1cc88a; }
-.status-tab.active-stp { background: #e74a3b; color: #fff; border-color: #e74a3b; }
+.status-tab.active-all { background: #2e59c8; color: #fff; border-color: #2e59c8; }
+.status-tab.active-act { background: #1cc88a; color: #212529; border-color: #1cc88a; }
+.status-tab.active-stp { background: #c0392b; color: #fff; border-color: #c0392b; }
 
 .search-bar { background:#fff;border-radius:14px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:20px; }
 
 /* status filter pills */
 .filter-pill { border-radius:20px;font-size:.8rem;padding:5px 16px;font-weight:600;text-decoration:none;display:inline-block;transition:all .15s; }
 .filter-pill.all     { background:#212529;color:#fff; }
-.filter-pill.all.off { background:#f8f9fa;color:#6c757d;border:1px solid #dee2e6; }
+.filter-pill.all.off { background:#f8f9fa;color:#495057;border:1px solid #dee2e6; }
 .filter-pill.act     { background:#198754;color:#fff; }
-.filter-pill.act.off { background:#f8f9fa;color:#198754;border:1px solid #198754; }
+.filter-pill.act.off { background:#f8f9fa;color:#146c43;border:1px solid #146c43; }
 .filter-pill.stp     { background:#dc3545;color:#fff; }
-.filter-pill.stp.off { background:#f8f9fa;color:#dc3545;border:1px solid #dc3545; }
+.filter-pill.stp.off { background:#f8f9fa;color:#b02a37;border:1px solid #b02a37; }
 
 .table-card { background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);overflow:hidden; }
-.table thead th { background:#f8f9fc;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:#6c757d;border-bottom:2px solid #e9ecef;padding:12px 14px; }
+.table thead th { background:#f8f9fc;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:#495057;border-bottom:2px solid #e9ecef;padding:12px 14px; }
 .table tbody td { padding:12px 14px;vertical-align:middle;font-size:.88rem; }
 .table tbody tr:hover { background:#f8f9fc; }
 
@@ -76,18 +74,18 @@ body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; font-siz
 .modal-top-bar { height:4px;background:linear-gradient(90deg,#4e73df,#a29bfe); }
 .modal-header-bar { background:#fff;padding:20px 24px;border-bottom:1px solid #f1f3f9; }
 .modal-avatar { width:60px;height:60px;border-radius:16px;object-fit:cover; }
-.modal-avatar-placeholder { width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#4e73df,#764ba2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0; }
+.modal-avatar-placeholder { width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#2e59c8,#764ba2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0; }
 
 /* status pills - 모달용 */
 .status-pill { display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:600; }
 .status-pill::before { content:'';width:6px;height:6px;border-radius:50%;display:inline-block; }
 .status-pill.sp-active { background:transparent;color:#1cc88a; }
 .status-pill.sp-active::before { background:transparent; }
-.status-pill.sp-suspended { background:#fdf0ef;color:#e74a3b; }
+.status-pill.sp-suspended { background:#fdf0ef;color:#b02a37; }
 .status-pill.sp-suspended::before { background:#e74a3b; }
-.status-pill.sp-idle { background:#fef9e7;color:#e0a800; }
+.status-pill.sp-idle { background:#fef9e7;color:#856404; }
 .status-pill.sp-idle::before { background:#f6c23e; }
-.status-pill.sp-withdraw { background:#f1f3f5;color:#6c757d; }
+.status-pill.sp-withdraw { background:#f1f3f5;color:#5a6268; }
 .status-pill.sp-withdraw::before { background:#6c757d; }
 .status-pill.sp-pending { background:#fff3cd;color:#856404; }
 .status-pill.sp-pending::before { background:#ffc107; }
