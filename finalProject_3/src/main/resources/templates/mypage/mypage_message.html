@@ -61,7 +61,7 @@
 
             <div class="msg-list-container">
                 <div th:if="${not #lists.isEmpty(messages)}">
-                    <div th:each="msg : ${messages}" class="msg-item" th:classappend="${msg.readStatus == 0 ? 'unread' : ''}" onclick="toggleMsg(this)">
+                    <div th:each="msg : ${messages}" class="msg-item" th:classappend="${msg.readStatus == 0 ? 'unread' : ''}" role="button" tabindex="0" onclick="toggleMsg(this)" onkeydown="if(event.key==='Enter'||event.key===' ')toggleMsg(this)">
                         <div class="msg-header">
                             <span class="msg-title">
                                 <span class="msg-badge badge-admin">OFFICIAL</span>

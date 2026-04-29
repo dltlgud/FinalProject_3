@@ -114,7 +114,9 @@
                 <div class="noti-card"
                      th:classappend="${noti.readStatus == 0} ? 'unread' : 'read'"
                      th:attr="data-no=${noti.notiNo}"
-                     onclick="markRead(this)">
+                     role="button" tabindex="0"
+                     onclick="markRead(this)"
+                     onkeydown="if(event.key==='Enter'||event.key===' ')markRead(this)">
                     <div class="noti-icon"
                          th:classappend="${noti.notiType == 'ADMIN'} ? 'admin' : (${noti.notiType == 'TRADE'} ? 'trade' : 'other')">
                         <i class="bi"
@@ -148,7 +150,7 @@
                     if (dot) dot.remove();
                     const badge = document.querySelector('.mp-count-badge');
                     if (badge) {
-                        const cur = parseInt(badge.textContent) - 1;
+                        const cur = Number.parseInt(badge.textContent, 10) - 1;
                         if (cur <= 0) badge.remove();
                         else badge.textContent = cur + '개 안읽음';
                     }

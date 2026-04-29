@@ -156,8 +156,8 @@
                 </div>
                 
                 <div class="tab-menu">
-                    <div id="tabEmail" class="tab-item tab-active" onclick="switchTab('email')">이메일 찾기</div>
-                    <div id="tabPwd" class="tab-item tab-inactive" onclick="switchTab('pwd')">비밀번호 찾기</div>
+                    <div id="tabEmail" class="tab-item tab-active" role="button" tabindex="0" onclick="switchTab('email')" onkeydown="if(event.key==='Enter'||event.key===' ')switchTab('email')">이메일 찾기</div>
+                    <div id="tabPwd" class="tab-item tab-inactive" role="button" tabindex="0" onclick="switchTab('pwd')" onkeydown="if(event.key==='Enter'||event.key===' ')switchTab('pwd')">비밀번호 찾기</div>
                 </div>
 
                 <div id="findEmailArea">

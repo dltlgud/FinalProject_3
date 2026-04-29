@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const txnId = parseInt(this.dataset.transactionId);
+            const txnId = Number.parseInt(this.dataset.transactionId, 10);
 
             fetch(contextPath + '/payment/escrow/confirm', {
                 method: 'POST',

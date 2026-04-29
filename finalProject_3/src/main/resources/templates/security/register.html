@@ -23,7 +23,7 @@
                             <th>프로필 사진</th>
                             <td>
                                 <div style="text-align: left;">
-                                    <div class="profile-upload-container" onclick="openProfileModal()" style="cursor: pointer;">
+                                    <div class="profile-upload-container" role="button" tabindex="0" onclick="openProfileModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openProfileModal()" style="cursor: pointer;">
                                         <img id="profilePreview" src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="프로필 사진" class="profile-img" 
                                              onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/bottts/svg?seed=1';"/>
                                         <div class="camera-btn"><i class="fas fa-camera"></i></div>

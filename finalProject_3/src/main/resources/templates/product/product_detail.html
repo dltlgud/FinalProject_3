@@ -713,7 +713,7 @@
     </section>
 
     <!-- 상품 신고 오버레이 -->
-    <div id="productReportOverlay" class="product-report-overlay" onclick="closeProductReportModal()"></div>
+    <div id="productReportOverlay" class="product-report-overlay" role="button" tabindex="0" onclick="closeProductReportModal()" onkeydown="if(event.key==='Enter'||event.key===' ')closeProductReportModal()"></div>
 
     <!-- 상품 신고 슬라이드 패널 -->
     <div id="productReportPanel" class="product-report-panel">
@@ -767,7 +767,7 @@
                            style="display:none;"
                            onchange="onProductReportFileSelected(this)">
 
-                    <div class="product-report-photo-btn" onclick="document.getElementById('productReportFileInput').click()">
+                    <div class="product-report-photo-btn" role="button" tabindex="0" onclick="document.getElementById('productReportFileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('productReportFileInput').click()">
                         <span style="font-size:20px;">📷</span>
                         <span id="productReportPhotoCount">0/1</span>
                     </div>

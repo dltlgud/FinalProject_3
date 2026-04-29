@@ -282,9 +282,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function calcTempStyle(temp) {
-        let value = parseFloat(temp);
+        let value = Number.parseFloat(temp);
 
-        if (isNaN(value)) value = 0;
+        if (Number.isNaN(value)) value = 0;
         if (value < 0) value = 0;
         if (value > 100) value = 100;
 
@@ -873,7 +873,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!value) return "";
 
         const date = new Date(value);
-        if (isNaN(date.getTime())) return "";
+        if (Number.isNaN(date.getTime())) return "";
 
         const y = date.getFullYear();
         const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -886,7 +886,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!regDate) return "";
 
         const date = new Date(regDate);
-        if (isNaN(date.getTime())) return "";
+        if (Number.isNaN(date.getTime())) return "";
 
         const now = new Date();
         const diffMs = now - date;

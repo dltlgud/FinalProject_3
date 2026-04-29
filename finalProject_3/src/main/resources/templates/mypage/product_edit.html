@@ -377,7 +377,7 @@ $(document).ready(function() {
     $('#pfSubmitBtn').on('click', function(e) {
 
         // 이미지 최소 1장 확인
-        const existingCount  = parseInt(document.getElementById('existingImgCount').value) || 0;
+        const existingCount  = Number.parseInt(document.getElementById('existingImgCount').value, 10) || 0;
         const deletedCount   = deletedNos.length;
         const keptCount      = existingCount - deletedCount;
         const newCount       = document.querySelectorAll('#pfPreviewWrap .pf-preview-item').length;

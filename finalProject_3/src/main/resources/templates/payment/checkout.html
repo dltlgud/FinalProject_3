@@ -211,13 +211,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const productNo  = document.getElementById('productNo').value;
     const roomId     = document.getElementById('roomId').value;
     const productName = document.getElementById('productName').value;
-    const productPrice = parseInt(document.getElementById('productPrice').value) || 0;
+    const productPrice = Number.parseInt(document.getElementById('productPrice').value, 10) || 0;
     const buyerEmail = document.getElementById('buyerEmail').value;
 
     // 배송비 선택에 따라 총 금액 계산
     function getSelectedShippingFee() {
         const checked = document.querySelector('input[name="shippingOption"]:checked');
-        return checked ? parseInt(checked.value) || 0 : 0;
+        return checked ? Number.parseInt(checked.value, 10) || 0 : 0;
     }
 
     function updateTotalAmount() {
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                productNo: parseInt(productNo),
+                productNo: Number.parseInt(productNo, 10),
                 paymentType: amount === 0 ? '무료나눔' : paymentType,
                 amount: amount,
                 roomId: roomId || null
