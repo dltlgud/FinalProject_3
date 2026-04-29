@@ -68,10 +68,10 @@
                     <button class="tab-btn" onclick="switchInfoTab(this, 'purchase')">내 구매상품</button>
                 </div>
                 <div class="mp-tab-sub-header" id="myProductFilterHeader">
-                    <span class="active" onclick="switchMyProductFilter(this, '전체')">전체</span>
-                    <span onclick="switchMyProductFilter(this, '판매중')">판매중</span>
-                    <span onclick="switchMyProductFilter(this, '예약중')">예약중</span>
-                    <span onclick="switchMyProductFilter(this, '판매완료')">판매완료</span>
+                    <span class="active" role="button" tabindex="0" onclick="switchMyProductFilter(this, '전체')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'전체')">전체</span>
+                    <span role="button" tabindex="0" onclick="switchMyProductFilter(this, '판매중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'판매중')">판매중</span>
+                    <span role="button" tabindex="0" onclick="switchMyProductFilter(this, '예약중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'예약중')">예약중</span>
+                    <span role="button" tabindex="0" onclick="switchMyProductFilter(this, '판매완료')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'판매완료')">판매완료</span>
                 </div>
                 <div id="myProductContent" class="mp-tab-content">
                     <div class="mp-empty"><p>선택된 조건에 해당하는 상품이 없습니다.</p></div>
@@ -131,10 +131,10 @@
                 <div class="mp-section-title">찜내역 <span id="wishCountBadge" style="font-size:15px; color:#999; font-weight:normal;"></span></div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                     <div class="mp-tab-sub-header" id="wishFilterHeader" style="padding:0; margin:0;">
-                        <span class="active" onclick="switchWishFilter(this, '전체')">전체</span>
-                        <span onclick="switchWishFilter(this, '판매중')">판매중</span>
-                        <span onclick="switchWishFilter(this, '예약중')">예약중</span>
-                        <span onclick="switchWishFilter(this, '판매완료')">판매완료</span>
+                        <span class="active" role="button" tabindex="0" onclick="switchWishFilter(this, '전체')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'전체')">전체</span>
+                        <span role="button" tabindex="0" onclick="switchWishFilter(this, '판매중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'판매중')">판매중</span>
+                        <span role="button" tabindex="0" onclick="switchWishFilter(this, '예약중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'예약중')">예약중</span>
+                        <span role="button" tabindex="0" onclick="switchWishFilter(this, '판매완료')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'판매완료')">판매완료</span>
                     </div>
                     <select id="wishSortSelect" onchange="onWishSortChange()" style="padding:8px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; cursor:pointer; outline:none;">
                         <option value="latest">최신순</option>
@@ -190,19 +190,19 @@
             <input type="hidden" id="editProductSaleType">
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">상품명</label>
+                <label for="editProductName" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">상품명</label>
                 <input type="text" id="editProductName" maxlength="50"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
             <div id="editPriceWrap" style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">가격 (원)</label>
+                <label for="editProductPrice" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">가격 (원)</label>
                 <input type="number" id="editProductPrice" min="0"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">거래 상태</label>
+                <label for="editProductStatus" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">거래 상태</label>
                 <select id="editProductStatus"
                         style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none;">
                     <option value="판매중">판매중</option>
@@ -212,7 +212,7 @@
             </div>
 
             <div style="margin-bottom:24px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">상품 설명</label>
+                <label for="editProductDesc" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">상품 설명</label>
                 <textarea id="editProductDesc" rows="4" maxlength="2000"
                           style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box; resize:vertical;"></textarea>
             </div>
@@ -254,7 +254,7 @@
             <input type="hidden" id="accountIdInput" value="">
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">은행명</label>
+                <label for="bankNameInput" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">은행명</label>
                 <select id="bankNameInput" style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none;">
                     <option value="">은행 선택</option>
                     <option>국민은행</option><option>신한은행</option><option>우리은행</option>
@@ -267,13 +267,13 @@
             </div>
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">계좌번호</label>
+                <label for="accountNumInput" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">계좌번호</label>
                 <input type="text" id="accountNumInput" placeholder="- 없이 숫자만 입력"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
             <div style="margin-bottom:24px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">예금주</label>
+                <label for="accountHolderInput" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">예금주</label>
                 <input type="text" id="accountHolderInput" placeholder="예금주명 입력"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
@@ -294,25 +294,25 @@
             <input type="hidden" id="deliveryNoInput" value="">
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">배송지명</label>
+                <label for="deliveryLabelInput" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">배송지명</label>
                 <input type="text" id="deliveryLabelInput" placeholder="집, 회사, 기타" maxlength="20"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">수령인</label>
+                <label for="receiverNameInput" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">수령인</label>
                 <input type="text" id="receiverNameInput" placeholder="수령인 이름"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">연락처</label>
+                <label for="receiverPhoneInput" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">연락처</label>
                 <input type="text" id="receiverPhoneInput" placeholder="010-0000-0000"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
             <div style="margin-bottom:24px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">주소</label>
+                <label for="deliveryPostcode" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">주소</label>
                 <div style="display:flex; gap:8px; margin-bottom:8px;">
                     <input type="text" id="deliveryPostcode" placeholder="우편번호" readonly
                            style="flex:1; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; background:#f9f9f9; outline:none;">
@@ -375,7 +375,7 @@
 
             <!-- 프로필 이미지 -->
             <div style="text-align:center; margin-bottom:20px;">
-                <div onclick="toggleEditAvatarPicker()" style="cursor:pointer; display:inline-block; position:relative;">
+                <div role="button" tabindex="0" onclick="toggleEditAvatarPicker()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleEditAvatarPicker()" style="cursor:pointer; display:inline-block; position:relative;">
                     <img id="editProfilePreview" src="" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #eee;">
                     <div style="position:absolute; bottom:0; right:0; background:#222; color:#fff; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-size:12px;">
                         <i class="fas fa-camera"></i>
@@ -397,7 +397,7 @@
 
             <!-- 닉네임 -->
             <div style="margin-bottom:20px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">닉네임</label>
+                <label for="editNickname" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">닉네임</label>
                 <div style="display:flex; gap:8px;">
                     <input type="text" id="editNickname" maxlength="10"
                            style="flex:1; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none;"
@@ -427,7 +427,7 @@
             </div>
             <input type="hidden" id="invoiceProductNo">
             <div style="margin-bottom:16px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">택배사</label>
+                <label for="invoiceCarrierCode" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">택배사</label>
                 <select id="invoiceCarrierCode" style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none;">
                     <option value="">택배사 선택</option>
                     <option value="04">CJ대한통운</option>
@@ -444,7 +444,7 @@
                 </select>
             </div>
             <div style="margin-bottom:24px;">
-                <label style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">송장번호</label>
+                <label for="invoiceNo" style="font-size:14px; font-weight:bold; display:block; margin-bottom:8px;">송장번호</label>
                 <input type="text" id="invoiceNo" placeholder="송장번호를 입력하세요 (숫자만)"
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
@@ -469,8 +469,8 @@
     (function() {
     const ctxPath = document.getElementById('mypageCtxData').dataset.ctx || '/';
     function calcTempStyle(temp) {
-        let value = parseFloat(temp);
-        if (isNaN(value) || value < 0) value = 0;
+        let value = Number.parseFloat(temp);
+        if (Number.isNaN(value) || value < 0) value = 0;
         if (value > 100) value = 100;
         let color = '#9ca3af';
         if (value >= 65.5) {
@@ -804,10 +804,10 @@
     }
 
     window.saveProductEdit = function() {
-        const productNo = parseInt(document.getElementById('editProductNo').value);
+        const productNo = Number.parseInt(document.getElementById('editProductNo').value, 10);
         const saleType = document.getElementById('editProductSaleType').value;
         const productName = document.getElementById('editProductName').value.trim();
-        const productPrice = parseInt(document.getElementById('editProductPrice').value) || 0;
+        const productPrice = Number.parseInt(document.getElementById('editProductPrice').value, 10) || 0;
         const tradeStatus = document.getElementById('editProductStatus').value;
         const productDesc = document.getElementById('editProductDesc').value.trim();
 
@@ -1483,7 +1483,7 @@
 
         const url = accountId ? `${ctxPath}mypage/account/update` : `${ctxPath}mypage/account/add`;
         const body = { bankName, accountNum, accountHolder };
-        if (accountId) body.accountId = parseInt(accountId);
+        if (accountId) body.accountId = Number.parseInt(accountId, 10);
 
         fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
         .then(r => r.json())
@@ -1604,7 +1604,7 @@
 
         const url = deliveryNo ? `${ctxPath}mypage/delivery/update` : `${ctxPath}mypage/delivery/add`;
         const body = { label, receiverName, receiverPhone, postcode, address, detailAddress, extraAddress };
-        if (deliveryNo) body.deliveryNo = parseInt(deliveryNo);
+        if (deliveryNo) body.deliveryNo = Number.parseInt(deliveryNo, 10);
 
         fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
         .then(r => r.json())
@@ -1641,7 +1641,7 @@
     }
 
     window.saveInvoice = function() {
-        const transactionId = parseInt(document.getElementById('invoiceProductNo').value);
+        const transactionId = Number.parseInt(document.getElementById('invoiceProductNo').value, 10);
         const carrierCode = document.getElementById('invoiceCarrierCode').value;
         const invoiceNo = document.getElementById('invoiceNo').value.trim();
 

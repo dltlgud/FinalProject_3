@@ -99,7 +99,7 @@
                   client.subscribe('/topic/noti/' + userEmail, function(frame) {
                     const p = JSON.parse(frame.body);
                     const b = document.getElementById('bellBadge');
-                    updateBadge((parseInt(b.textContent)||0)+1);
+                    updateBadge((Number.parseInt(b.textContent, 10)||0)+1);
                     showToast(p.title, p.message);
                   });
                 }, function(){ setTimeout(connectWs,3000); });
@@ -155,7 +155,7 @@
                   client.subscribe('/topic/chat-unread/' + userEmail, function() {
                     const b = document.getElementById('chatBadge');
                     if (!b) return;
-                    const cur = parseInt(b.textContent) || 0;
+                    const cur = Number.parseInt(b.textContent, 10) || 0;
                     b.textContent = cur + 1 > 99 ? '99+' : cur + 1;
                     b.style.display = '';
                   });
