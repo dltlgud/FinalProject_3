@@ -62,7 +62,7 @@ textarea { resize: none; }
 }
 
 /* =============== section title =============== */
-.pf-section { margin-top: 18px; }
+.pf-section { margin-top: 18px; padding: 6px 0 24px; border-bottom: 1px solid #eef2f7; }
 
 .pf-title {
   font-size: 18px;
@@ -114,7 +114,7 @@ textarea { resize: none; }
   padding: 10px 14px;
   border-radius: 8px;
 
-  background: #22c55e; /* 요청 색상 */
+  background: #15803d;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -339,14 +339,17 @@ textarea { resize: none; }
 
 .pf-radio {
   display: inline-flex;
-  gap: 8px;
-  align-items: center;
+  align-items: flex-start;
+  gap: 12px;
   cursor: pointer;
+  user-select: none;
+  position: relative;
+  width: 100%;
   font-size: 14px;
   color: #333;
 }
 
-.pf-radio input { display: none; }
+.pf-radio input { position: absolute; opacity: 0; pointer-events: none; }
 
 .pf-dot {
   width: 16px;
@@ -393,10 +396,7 @@ textarea { resize: none; }
   color: #111827;
 }
 
-.pf-section {
-  padding: 6px 0 24px;
-  border-bottom: 1px solid #eef2f7;
-}
+
 
 .pf-section:last-child { border-bottom: 0; }
 
@@ -516,18 +516,6 @@ textarea { resize: none; }
 .pf-ship-option + .pf-ship-option { border-top: 1px solid #eef2f7; }
 
 /* 라디오 UI */
-.pf-radio {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 12px;
-  cursor: pointer;
-  user-select: none;
-  position: relative;
-  width: 100%;
-}
-
-.pf-radio input { position: absolute; opacity: 0; pointer-events: none; }
-
 .pf-radio-ui {
   width: 20px;
   height: 20px;
@@ -896,7 +884,7 @@ textarea { resize: none; }
 
 .area-geo {
   background: #fff3ea;
-  color: #ff6a00;
+  color: #a84400;
   border: 1px solid rgba(255, 106, 0, .25);
 }
 
@@ -1088,7 +1076,7 @@ textarea { resize: none; }
   height: 22px;
   border: 0;
   border-radius: 999px;
-  background: rgba(0, 0, 0, .08);
+  background: #ebebeb;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
