@@ -757,7 +757,7 @@ $(function () {
 				const btn = document.createElement("button");
 				btn.type = "button";
 				btn.className = "area-item";
-				btn.setAttribute("data-area-value", x.value);
+				btn.dataset.areaValue = x.value;
 				btn.textContent = x.value;
 				li.appendChild(btn);
 				ul.appendChild(li);
@@ -893,6 +893,46 @@ $(function () {
 			});
 		}
 
+		function _onSearchResultClick(p, regionName) {
+			const lat = Number(p.y);
+			const lng = Number(p.x);
+
+			if (!regionName) {
+				alert("지역 정보를 찾지 못했어요. 다른 위치를 선택해 주세요.");
+				return;
+			}
+
+			waitForKakaoServices(() => {
+				ensureMap();
+				const latlng = new kakao.maps.LatLng(lat, lng);
+				map.setCenter(latlng);
+				map.setLevel(3);
+				pickMarker.setPosition(latlng);
+				pickMarker.setMap(map);
+			});
+
+			pushRecentArea(regionName);
+			renderRecentAreaList();
+			setAreaLabel(regionName);
+			closeModal();
+		}
+
+		function _renderSearchResultItem(p) {
+			const li = document.createElement("li");
+			const btn = document.createElement("button");
+			btn.type = "button";
+
+			const roadAddress = (p.road_address_name || "").trim();
+			const jibunAddress = (p.address_name || "").trim();
+			const regionName = pickRegionName(roadAddress, jibunAddress);
+
+			btn.textContent = regionName || jibunAddress || roadAddress || "선택";
+			btn.addEventListener("click", () => _onSearchResultClick(p, regionName));
+
+			li.appendChild(btn);
+			resultUl.appendChild(li);
+		}
+
 		function renderSearchResults(items) {
 			if (!resultUl) return;
 
@@ -907,45 +947,45 @@ $(function () {
 				return;
 			}
 
-			items.forEach((p) => {
-				const li = document.createElement("li");
-				const btn = document.createElement("button");
-				btn.type = "button";
+			items.forEach(_renderSearchResultItem);
+		}
 
-				const roadAddress = (p.road_address_name || "").trim();
-				const jibunAddress = (p.address_name || "").trim();
-				const regionName = pickRegionName(roadAddress, jibunAddress);
+		function _onMarkerClick(regionName, latlng) {
+			if (!regionName) {
+				alert("지역 정보를 찾지 못했어요. 다른 위치를 선택해 주세요.");
+				return;
+			}
+			pickMarker.setPosition(latlng);
+			pickMarker.setMap(map);
+			pushRecentArea(regionName);
+			renderRecentAreaList();
+			setAreaLabel(regionName);
+			closeModal();
+		}
 
-				btn.textContent = regionName || jibunAddress || roadAddress || "선택";
+		function _addSearchMarker(p, bounds) {
+			const latlng = new kakao.maps.LatLng(Number(p.y), Number(p.x));
+			const roadAddress = (p.road_address_name || "").trim();
+			const jibunAddress = (p.address_name || "").trim();
+			const regionName = pickRegionName(roadAddress, jibunAddress);
 
-				btn.addEventListener("click", () => {
-					const lat = Number(p.y);
-					const lng = Number(p.x);
+			const marker = new kakao.maps.Marker({ position: latlng });
+			marker.setMap(map);
+			markers.push(marker);
+			bounds.extend(latlng);
+			kakao.maps.event.addListener(marker, "click", () => _onMarkerClick(regionName, latlng));
+		}
 
-					if (!regionName) {
-						alert("지역 정보를 찾지 못했어요. 다른 위치를 선택해 주세요.");
-						return;
-					}
-
-					waitForKakaoServices(() => {
-						ensureMap();
-
-						const latlng = new kakao.maps.LatLng(lat, lng);
-						map.setCenter(latlng);
-						map.setLevel(3);
-						pickMarker.setPosition(latlng);
-						pickMarker.setMap(map);
-					});
-
-					pushRecentArea(regionName);
-					renderRecentAreaList();
-					setAreaLabel(regionName);
-					closeModal();
-				});
-
-				li.appendChild(btn);
-				resultUl.appendChild(li);
-			});
+		function _onKeywordSearchDone(data, status) {
+			if (status !== kakao.maps.services.Status.OK) {
+				renderSearchResults([]);
+				return;
+			}
+			clearMarkers();
+			const bounds = new kakao.maps.LatLngBounds();
+			data.forEach(p => _addSearchMarker(p, bounds));
+			map.setBounds(bounds);
+			renderSearchResults(data);
 		}
 
 		function searchKeyword() {
@@ -959,53 +999,7 @@ $(function () {
 
 			waitForKakaoServices(() => {
 				ensureMap();
-
-				places.keywordSearch(keyword, (data, status) => {
-					if (status !== kakao.maps.services.Status.OK) {
-						renderSearchResults([]);
-						return;
-					}
-
-					clearMarkers();
-
-					const bounds = new kakao.maps.LatLngBounds();
-
-					data.forEach((p) => {
-						const lat = Number(p.y);
-						const lng = Number(p.x);
-						const latlng = new kakao.maps.LatLng(lat, lng);
-
-						const roadAddress = (p.road_address_name || "").trim();
-						const jibunAddress = (p.address_name || "").trim();
-						const regionName = pickRegionName(roadAddress, jibunAddress);
-
-						const marker = new kakao.maps.Marker({
-							position: latlng
-						});
-
-						marker.setMap(map);
-						markers.push(marker);
-						bounds.extend(latlng);
-
-						kakao.maps.event.addListener(marker, "click", () => {
-							if (!regionName) {
-								alert("지역 정보를 찾지 못했어요. 다른 위치를 선택해 주세요.");
-								return;
-							}
-
-							pickMarker.setPosition(latlng);
-							pickMarker.setMap(map);
-
-							pushRecentArea(regionName);
-							renderRecentAreaList();
-							setAreaLabel(regionName);
-							closeModal();
-						});
-					});
-
-					map.setBounds(bounds);
-					renderSearchResults(data);
-				});
+				places.keywordSearch(keyword, _onKeywordSearchDone);
 			});
 		}
 
@@ -1033,6 +1027,35 @@ $(function () {
 			kwInput?.focus();
 		}
 
+		function _onGeoSuccess(pos) {
+			const lat = pos.coords.latitude;
+			const lng = pos.coords.longitude;
+
+			waitForKakaoServices(() => {
+				ensureMap();
+
+				const latlng = new kakao.maps.LatLng(lat, lng);
+				map.setCenter(latlng);
+				map.setLevel(3);
+				pickMarker.setPosition(latlng);
+				pickMarker.setMap(map);
+
+				coordToAddressInfo(lat, lng, ({ roadAddress, jibunAddress }) => {
+					const regionName = pickRegionName(roadAddress, jibunAddress);
+
+					if (!regionName) {
+						alert("현재 위치의 지역 정보를 찾지 못했어요.");
+						return;
+					}
+
+					pushRecentArea(regionName);
+					renderRecentAreaList();
+					setAreaLabel(regionName);
+					closeModal();
+				});
+			});
+		}
+
 		function setMyLocation() {
 			if (!navigator.geolocation) {
 				alert("이 브라우저에서는 위치 기능을 사용할 수 없어요.");
@@ -1040,41 +1063,9 @@ $(function () {
 			}
 
 			navigator.geolocation.getCurrentPosition(
-				(pos) => {
-					const lat = pos.coords.latitude;
-					const lng = pos.coords.longitude;
-
-					waitForKakaoServices(() => {
-						ensureMap();
-
-						const latlng = new kakao.maps.LatLng(lat, lng);
-						map.setCenter(latlng);
-						map.setLevel(3);
-						pickMarker.setPosition(latlng);
-						pickMarker.setMap(map);
-
-						coordToAddressInfo(lat, lng, ({ roadAddress, jibunAddress }) => {
-							const regionName = pickRegionName(roadAddress, jibunAddress);
-
-							if (!regionName) {
-								alert("현재 위치의 지역 정보를 찾지 못했어요.");
-								return;
-							}
-
-							pushRecentArea(regionName);
-							renderRecentAreaList();
-							setAreaLabel(regionName);
-							closeModal();
-						});
-					});
-				},
-				() => {
-					alert("위치 권한이 거부되었거나 위치를 가져오지 못했어요.");
-				},
-				{
-					enableHighAccuracy: true,
-					timeout: 8000
-				}
+				_onGeoSuccess,
+				() => { alert("위치 권한이 거부되었거나 위치를 가져오지 못했어요."); },
+				{ enableHighAccuracy: true, timeout: 8000 }
 			);
 		}
 
@@ -1082,7 +1073,7 @@ $(function () {
 			const btn = e.target.closest(".area-item");
 			if (!btn) return;
 
-			const raw = btn.getAttribute("data-area-value") || btn.textContent.trim();
+			const raw = btn.dataset.areaValue || btn.textContent.trim();
 			const regionName = String(raw || "").trim();
 
 			if (!regionName) return;

@@ -467,7 +467,7 @@
 </main>
 <script>
     (function() {
-    const ctxPath = document.getElementById('mypageCtxData').getAttribute('data-ctx') || '/';
+    const ctxPath = document.getElementById('mypageCtxData').dataset.ctx || '/';
     function calcTempStyle(temp) {
         let value = parseFloat(temp);
         if (isNaN(value) || value < 0) value = 0;
@@ -867,6 +867,29 @@
         });
     }
 
+    function _buildPurchaseReviewHtml(p, reviewModalArgs) {
+        if (p.hasReview) {
+            return `<button class="mp-purchase-btn" style="background:#eee; color:#aaa; border:none; cursor:default;" disabled>리뷰완료</button>`;
+        }
+        if (p.tradeStatus === '거래완료') {
+            return `<button class="mp-purchase-btn" style="background:#ff6b35; color:#fff; border:none; cursor:pointer;"
+                    onclick="openReviewModal(${reviewModalArgs})">리뷰작성</button>`;
+        }
+        if (p.tradeMethod === '택배') {
+            return `<div id="review-area-${p.transactionId}" style="flex:1;">
+                    <button class="mp-purchase-btn" style="width:100%; background:#1976d2; color:#fff; border:none; cursor:pointer;"
+                        onclick="confirmPayment(${p.productNo}, ${reviewModalArgs})">구매확정</button>
+                </div>`;
+        }
+        return `<button class="mp-purchase-btn" style="background:#eee; color:#aaa; border:none; cursor:default;" disabled>리뷰작성</button>`;
+    }
+
+    function _buildPurchasePriceText(p) {
+        if (p.amount != null) return p.amount.toLocaleString() + '원';
+        if (p.productPrice) return p.productPrice.toLocaleString() + '원';
+        return '가격 미정';
+    }
+
     function renderMyPurchasesPage(page) {
         myPurchasePage = page;
         const total = myPurchaseAllData.length;
@@ -892,25 +915,10 @@
             const imgSrc = p.imgUrl
                 ? (p.imgUrl.startsWith('http') ? p.imgUrl : ctxPath.replace(/\/$/, '') + p.imgUrl)
                 : `${ctxPath}images/no_image.png`;
-            const priceText = p.amount != null ? p.amount.toLocaleString() + '원' : (p.productPrice ? p.productPrice.toLocaleString() + '원' : '가격 미정');
+            const priceText = _buildPurchasePriceText(p);
             const st = statusMap[p.tradeStatus] || { cls: 'rp-status-pending', label: p.tradeStatus || '-' };
-            const isDone = p.tradeStatus === '거래완료';
-            const isParcel = p.tradeMethod === '택배';
             const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replace(/'/g, "\\'")}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
-            let reviewAreaHtml;
-            if (p.hasReview) {
-                reviewAreaHtml = `<button class="mp-purchase-btn" style="background:#eee; color:#aaa; border:none; cursor:default;" disabled>리뷰완료</button>`;
-            } else if (isDone) {
-                reviewAreaHtml = `<button class="mp-purchase-btn" style="background:#ff6b35; color:#fff; border:none; cursor:pointer;"
-                    onclick="openReviewModal(${reviewModalArgs})">리뷰작성</button>`;
-            } else if (isParcel) {
-                reviewAreaHtml = `<div id="review-area-${p.transactionId}" style="flex:1;">
-                    <button class="mp-purchase-btn" style="width:100%; background:#1976d2; color:#fff; border:none; cursor:pointer;"
-                        onclick="confirmPayment(${p.productNo}, ${reviewModalArgs})">구매확정</button>
-                </div>`;
-            } else {
-                reviewAreaHtml = `<button class="mp-purchase-btn" style="background:#eee; color:#aaa; border:none; cursor:default;" disabled>리뷰작성</button>`;
-            }
+            const reviewAreaHtml = _buildPurchaseReviewHtml(p, reviewModalArgs);
             return `
                 <div class="mp-wish-card">
                     <a href="${ctxPath}product/product_detail/${p.productNo}" class="mp-wish-img-wrap">
@@ -947,6 +955,18 @@
         renderMyProductsPage(1);
     }
 
+    function _buildProductPriceText(p) {
+        if (p.saleType === '나눔') return '나눔';
+        if (p.saleType === '경매') return '경매';
+        return p.productPrice ? p.productPrice.toLocaleString() + '원' : '가격 미정';
+    }
+
+    function _buildProductStatusClass(tradeStatus) {
+        if (tradeStatus === '판매중') return 'wish-status-sale';
+        if (tradeStatus === '예약중') return 'wish-status-reserve';
+        return 'wish-status-done';
+    }
+
     function renderMyProductsPage(page) {
         myProductPage = page;
         const filtered = myProductFilter === '전체'
@@ -968,12 +988,8 @@
             const imgSrc = p.imgUrl
                 ? (p.imgUrl.startsWith('http') ? p.imgUrl : ctxPath.replace(/\/$/, '') + p.imgUrl)
                 : `${ctxPath}images/no_image.png`;
-            const priceText = p.saleType === '나눔' ? '나눔'
-                : p.saleType === '경매' ? '경매'
-                : (p.productPrice ? p.productPrice.toLocaleString() + '원' : '가격 미정');
-            const statusClass = p.tradeStatus === '판매중' ? 'wish-status-sale'
-                : p.tradeStatus === '예약중' ? 'wish-status-reserve'
-                : 'wish-status-done';
+            const priceText = _buildProductPriceText(p);
+            const statusClass = _buildProductStatusClass(p.tradeStatus);
             const showInvoice = p.tradeStatus === '예약중' || p.tradeStatus === '판매완료';
             const hasInvoice = p.invoiceNo && p.invoiceNo.length > 0;
             return `
