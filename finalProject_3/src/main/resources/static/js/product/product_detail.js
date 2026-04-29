@@ -137,17 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateBtns();
     }
 
-    function bindKakaoMap() {
-        const container = document.getElementById("locMapKakao");
-        const pdLocationButtons = document.querySelectorAll(".pd-location[data-lat][data-lng]");
-        const mapPlaceButtons = document.querySelectorAll(".loc-map-place[data-lat][data-lng]");
-        const locWrap = document.getElementById("locWrap");
-
-        if (!container) {
-            return;
-        }
-
-        function _setupKakaoMap() {
+    function _setupKakaoMap(container, mapPlaceButtons, pdLocationButtons, locWrap) {
             let defaultLat = 37.5665;
             let defaultLng = 126.9780;
             let defaultPlace = "위치 정보 없음";
@@ -218,11 +208,17 @@ document.addEventListener("DOMContentLoaded", function () {
             setActiveMapPlaceButton(defaultPlace);
         }
 
+    function bindKakaoMap() {
+        const container = document.getElementById("locMapKakao");
+        const pdLocationButtons = document.querySelectorAll(".pd-location[data-lat][data-lng]");
+        const mapPlaceButtons = document.querySelectorAll(".loc-map-place[data-lat][data-lng]");
+        const locWrap = document.getElementById("locWrap");
+        if (!container) { return; }
         try {
-            if (!(window.kakao && kakao.maps && kakao.maps.load)) {
-                return;
-            }
-            kakao.maps.load(_setupKakaoMap);
+            if (!(window.kakao && kakao.maps && kakao.maps.load)) { return; }
+            kakao.maps.load(function () {
+                _setupKakaoMap(container, mapPlaceButtons, pdLocationButtons, locWrap);
+            });
         } catch (e) {
             console.warn("Kakao map load failed:", e);
         }
@@ -533,7 +529,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (tempValueEl) {
                     tempValueEl.textContent = mannerTemp.toFixed(1) + "°C";
-                    tempValueEl.setAttribute("data-temp", String(mannerTemp));
+                    tempValueEl.dataset.temp = String(mannerTemp);
                 }
 
                 const tempInfo = calcTempStyle(mannerTemp);

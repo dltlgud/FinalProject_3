@@ -115,7 +115,7 @@
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "area-item";
-      btn.setAttribute("data-area-value", x.value);
+      btn.dataset.areaValue = x.value;
       btn.textContent = x.value;
       li.appendChild(btn);
       ulEl.appendChild(li);
@@ -274,53 +274,58 @@
       render();
     }
 
+    function renderPreviewItem(file, idx) {
+      const url = URL.createObjectURL(file);
+
+      const item = document.createElement("div");
+      item.className = "pf-preview-item" + (idx === mainIndex ? " is-main" : "");
+
+      const img = document.createElement("img");
+      img.className = "pf-preview-img";
+      img.src = url;
+      img.alt = file.name || "업로드 이미지";
+      img.addEventListener("click", () => setMain(idx));
+
+      const badge = document.createElement("label");
+      badge.className = "pf-main-badge";
+      badge.innerHTML = `
+          <input type="radio" name="pfMainImagePick" class="pf-main-radio" ${idx === mainIndex ? "checked" : ""}>
+          <span class="pf-main-text">대표</span>
+        `;
+      const radio = badge.querySelector("input");
+      if (radio) radio.addEventListener("change", () => setMain(idx));
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "pf-preview-remove";
+      del.textContent = "×";
+      del.setAttribute("aria-label", "이미지 삭제");
+      del.addEventListener("click", () => {
+        URL.revokeObjectURL(url);
+
+        const next = [];
+        for (let i = 0; i < selectedFiles.length; i++) {
+          if (i !== idx) next.push(selectedFiles[i]);
+        }
+        selectedFiles = next;
+        if (idx === mainIndex) mainIndex = 0;
+        else if (idx < mainIndex) mainIndex -= 1;
+
+        clampMain();
+        render();
+      });
+
+      item.appendChild(img);
+      item.appendChild(badge);
+      item.appendChild(del);
+      previewWrap.appendChild(item);
+    }
+
     function render() {
       previewWrap.innerHTML = "";
       previewWrap.classList.toggle("is-on", selectedFiles.length > 0);
       mainHidden.value = String(mainIndex);
-
-      selectedFiles.forEach((file, idx) => {
-        const url = URL.createObjectURL(file);
-
-        const item = document.createElement("div");
-        item.className = "pf-preview-item" + (idx === mainIndex ? " is-main" : "");
-
-        const img = document.createElement("img");
-        img.className = "pf-preview-img";
-        img.src = url;
-        img.alt = file.name || "업로드 이미지";
-        img.addEventListener("click", () => setMain(idx));
-
-        const badge = document.createElement("label");
-        badge.className = "pf-main-badge";
-        badge.innerHTML = `
-          <input type="radio" name="pfMainImagePick" class="pf-main-radio" ${idx === mainIndex ? "checked" : ""}>
-          <span class="pf-main-text">대표</span>
-        `;
-        const radio = badge.querySelector("input");
-        if (radio) radio.addEventListener("change", () => setMain(idx));
-
-        const del = document.createElement("button");
-        del.type = "button";
-        del.className = "pf-preview-remove";
-        del.textContent = "×";
-        del.setAttribute("aria-label", "이미지 삭제");
-        del.addEventListener("click", () => {
-          URL.revokeObjectURL(url);
-
-          selectedFiles = selectedFiles.filter((_, i) => i !== idx);
-          if (idx === mainIndex) mainIndex = 0;
-          else if (idx < mainIndex) mainIndex -= 1;
-
-          clampMain();
-          render();
-        });
-
-        item.appendChild(img);
-        item.appendChild(badge);
-        item.appendChild(del);
-        previewWrap.appendChild(item);
-      });
+      selectedFiles.forEach(renderPreviewItem);
     }
 
     fileInput.addEventListener("change", (e) => {
@@ -472,44 +477,45 @@
       });
     });
 
-    (() => {
-      let lastFeeAlertAt = 0;
+    let lastFeeAlertAt = 0;
 
-      feeInputs.forEach(inp => {
-        inp.addEventListener("input", () => {
-          const before = String(inp.value ?? "");
-          const onlyDigits = before.replace(/[^\d]/g, "");
+    function _onFeeInput(inp) {
+      const before = String(inp.value ?? "");
+      const onlyDigits = before.replace(/[^\d]/g, "");
 
-          if (before !== onlyDigits) {
-            inp.value = onlyDigits;
+      if (before !== onlyDigits) {
+        inp.value = onlyDigits;
 
-            const now = Date.now();
-            if (now - lastFeeAlertAt > 800) {
-              lastFeeAlertAt = now;
-              alertAndFocus("배송비는 숫자만 입력할 수 있습니다.", inp);
-            }
-          }
+        const now = Date.now();
+        if (now - lastFeeAlertAt > 800) {
+          lastFeeAlertAt = now;
+          alertAndFocus("배송비는 숫자만 입력할 수 있습니다.", inp);
+        }
+      }
 
-          syncShipOptionsJson();
-        });
+      syncShipOptionsJson();
+    }
 
-        inp.addEventListener("blur", () => {
-          const raw = String(inp.value ?? "");
-          if (raw.length > 0 && isBlank(raw)) {
-            inp.value = "";
-            alertAndFocus("공백만 입력할 수 없습니다.", inp);
-            return;
-          }
+    function _onFeeBlur(inp) {
+      const raw = String(inp.value ?? "");
+      if (raw.length > 0 && isBlank(raw)) {
+        inp.value = "";
+        alertAndFocus("공백만 입력할 수 없습니다.", inp);
+        return;
+      }
 
-          const r = validateFeeRangeForInput(inp);
-          if (!r.ok) {
-            inp.value = "";
-            alertAndFocus(r.msg, inp);
-            syncShipOptionsJson();
-          }
-        });
-      });
-    })();
+      const r = validateFeeRangeForInput(inp);
+      if (!r.ok) {
+        inp.value = "";
+        alertAndFocus(r.msg, inp);
+        syncShipOptionsJson();
+      }
+    }
+
+    feeInputs.forEach(inp => {
+      inp.addEventListener("input", () => _onFeeInput(inp));
+      inp.addEventListener("blur", () => _onFeeBlur(inp));
+    });
 
     shipToggle.addEventListener("change", setTradeUI);
     meetToggle.addEventListener("change", setTradeUI);
@@ -829,35 +835,42 @@
       return t.length > 28 ? t.slice(0, 28) + "…" : t;
     }
 
+    function _deleteChipAt(idx) {
+      const arr = load();
+      const next = [];
+      for (let i = 0; i < arr.length; i++) {
+        if (i !== idx) next.push(arr[i]);
+      }
+      save(next);
+      renderChips();
+      updateAddButtonState();
+    }
+
+    function renderChipItem(loc, idx) {
+      const chip = document.createElement("div");
+      chip.className = "pf-loc-chip";
+
+      const text = document.createElement("span");
+      text.className = "pf-loc-chip__text";
+      text.title = (loc.placeName || loc.fullAddress || "");
+      text.textContent = shortText(displayNameOf(loc));
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "pf-loc-chip__del";
+      del.setAttribute("aria-label", "삭제");
+      del.textContent = "×";
+      del.addEventListener("click", () => _deleteChipAt(idx));
+
+      chip.appendChild(text);
+      chip.appendChild(del);
+      chipsWrap.appendChild(chip);
+    }
+
     function renderChips() {
       const arr = load();
       chipsWrap.innerHTML = "";
-
-      arr.forEach((loc, idx) => {
-        const chip = document.createElement("div");
-        chip.className = "pf-loc-chip";
-
-        const text = document.createElement("span");
-        text.className = "pf-loc-chip__text";
-        text.title = (loc.placeName || loc.fullAddress || "");
-        text.textContent = shortText(displayNameOf(loc));
-
-        const del = document.createElement("button");
-        del.type = "button";
-        del.className = "pf-loc-chip__del";
-        del.setAttribute("aria-label", "삭제");
-        del.textContent = "×";
-        del.addEventListener("click", () => {
-          const next = load().filter((_, i) => i !== idx);
-          save(next);
-          renderChips();
-          updateAddButtonState();
-        });
-
-        chip.appendChild(text);
-        chip.appendChild(del);
-        chipsWrap.appendChild(chip);
-      });
+      arr.forEach(renderChipItem);
     }
 
     function updateAddButtonState() {
@@ -1007,6 +1020,10 @@
       updateAddButtonState();
     }
 
+    function _triggerMapResize() {
+      try { kakao.maps.event.trigger(map, "resize"); } catch {}
+    }
+
     function openSearchUI() {
       if (!searchWrap) return;
 
@@ -1019,13 +1036,7 @@
 
       waitForKakaoServices(() => {
         ensureMap();
-
-        setTimeout(() => {
-          try {
-            kakao.maps.event.trigger(map, "resize");
-          }
-          catch {}
-        }, 0);
+        setTimeout(_triggerMapResize, 0);
       });
 
       if (kwInput) kwInput.focus();
@@ -1039,6 +1050,19 @@
     function clearMarkers() {
       markers.forEach(m => m.setMap(null));
       markers = [];
+    }
+
+    function _makePickAddrCb(lat, lng) {
+      return function (fullAddr) {
+        const fa = String(fullAddr || "").trim();
+        if (!fa) {
+          alert("주소를 가져오지 못했어요. 다른 지점을 눌러주세요.");
+          return;
+        }
+        pushRecentArea(fa);
+        addLocation("", fa, lat, lng);
+        closeModal();
+      };
     }
 
     function ensureMap() {
@@ -1056,30 +1080,52 @@
         const latlng = mouseEvent.latLng;
         const lat = latlng.getLat();
         const lng = latlng.getLng();
-
         pickMarker.setPosition(latlng);
         pickMarker.setMap(map);
-
-        latLngToFullAddress(lat, lng, (fullAddr) => {
-          const fa = String(fullAddr || "").trim();
-
-          if (!fa) {
-            alert("주소를 가져오지 못했어요. 다른 지점을 눌러주세요.");
-            return;
-          }
-
-          pushRecentArea(fa);
-          addLocation("", fa, lat, lng);
-          closeModal();
-        });
+        latLngToFullAddress(lat, lng, _makePickAddrCb(lat, lng));
       });
+    }
+
+    function _onResultClick(p) {
+      const lat = Number(p.y);
+      const lng = Number(p.x);
+      const placeName = (p.place_name || "").trim();
+      const fullAddress = (p.road_address_name || p.address_name || "").trim();
+
+      waitForKakaoServices(() => {
+        ensureMap();
+        const latlng = new kakao.maps.LatLng(lat, lng);
+        map.setCenter(latlng);
+        map.setLevel(3);
+        pickMarker.setPosition(latlng);
+        pickMarker.setMap(map);
+      });
+
+      if (!placeName && !fullAddress) {
+        alert("선택한 위치의 주소 정보가 부족해요.");
+        return;
+      }
+
+      pushRecentArea(`${placeName}${fullAddress ? " / " + fullAddress : ""}`);
+      addLocation(placeName, fullAddress, lat, lng);
+      closeModal();
+    }
+
+    function _renderSearchResultItem(p) {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      const placeName = (p.place_name || "").trim();
+      const fullAddress = (p.road_address_name || p.address_name || "").trim();
+      btn.textContent = `${placeName}${fullAddress ? " · " + fullAddress : ""}`;
+      btn.addEventListener("click", () => _onResultClick(p));
+      li.appendChild(btn);
+      resultUl.appendChild(li);
     }
 
     function renderSearchResults(items) {
       if (!resultUl) return;
-
       resultUl.innerHTML = "";
-
       if (!items || items.length === 0) {
         const li = document.createElement("li");
         li.style.padding = "10px 8px";
@@ -1088,97 +1134,87 @@
         resultUl.appendChild(li);
         return;
       }
+      items.forEach(_renderSearchResultItem);
+    }
 
-      items.forEach((p) => {
-        const li = document.createElement("li");
-        const btn = document.createElement("button");
-        btn.type = "button";
+    function _onMarkerClick(p, latlng) {
+      const placeName = (p.place_name || "").trim();
+      const fullAddress = (p.road_address_name || p.address_name || "").trim();
+      if (!placeName && !fullAddress) return;
+      pickMarker.setPosition(latlng);
+      pickMarker.setMap(map);
+      pushRecentArea(`${placeName}${fullAddress ? " / " + fullAddress : ""}`);
+      addLocation(placeName, fullAddress, Number(p.y), Number(p.x));
+      closeModal();
+    }
 
-        const placeName = (p.place_name || "").trim();
-        const fullAddress = (p.road_address_name || p.address_name || "").trim();
+    function _addSearchMarker(p, bounds) {
+      const latlng = new kakao.maps.LatLng(Number(p.y), Number(p.x));
+      const m = new kakao.maps.Marker({ position: latlng });
+      m.setMap(map);
+      markers.push(m);
+      bounds.extend(latlng);
+      kakao.maps.event.addListener(m, "click", () => _onMarkerClick(p, latlng));
+    }
 
-        btn.textContent = `${placeName}${fullAddress ? " · " + fullAddress : ""}`;
-
-        btn.addEventListener("click", () => {
-          const lat = Number(p.y);
-          const lng = Number(p.x);
-
-          waitForKakaoServices(() => {
-            ensureMap();
-
-            const latlng = new kakao.maps.LatLng(lat, lng);
-            map.setCenter(latlng);
-            map.setLevel(3);
-            pickMarker.setPosition(latlng);
-            pickMarker.setMap(map);
-          });
-
-          if (!placeName && !fullAddress) {
-            alert("선택한 위치의 주소 정보가 부족해요.");
-            return;
-          }
-
-          pushRecentArea(`${placeName}${fullAddress ? " / " + fullAddress : ""}`);
-          addLocation(placeName, fullAddress, lat, lng);
-          closeModal();
-        });
-
-        li.appendChild(btn);
-        resultUl.appendChild(li);
-      });
+    function _onKeywordSearchDone(data, status) {
+      if (status !== kakao.maps.services.Status.OK) {
+        renderSearchResults([]);
+        return;
+      }
+      clearMarkers();
+      const bounds = new kakao.maps.LatLngBounds();
+      data.forEach(p => _addSearchMarker(p, bounds));
+      map.setBounds(bounds);
+      renderSearchResults(data);
     }
 
     function searchKeyword() {
       const keyword = String(kwInput?.value ?? "").trim();
-
       if (!keyword) {
         alert("검색어를 입력해 주세요.");
         kwInput?.focus?.();
         return;
       }
-
       waitForKakaoServices(() => {
         ensureMap();
-
-        places.keywordSearch(keyword, (data, status) => {
-          if (status !== kakao.maps.services.Status.OK) {
-            renderSearchResults([]);
-            return;
-          }
-
-          clearMarkers();
-          const bounds = new kakao.maps.LatLngBounds();
-
-          data.forEach((p) => {
-            const lat = Number(p.y);
-            const lng = Number(p.x);
-            const latlng = new kakao.maps.LatLng(lat, lng);
-
-            const m = new kakao.maps.Marker({ position: latlng });
-            m.setMap(map);
-            markers.push(m);
-
-            bounds.extend(latlng);
-
-            kakao.maps.event.addListener(m, "click", () => {
-              const placeName = (p.place_name || "").trim();
-              const fullAddress = (p.road_address_name || p.address_name || "").trim();
-
-              if (!placeName && !fullAddress) return;
-
-              pickMarker.setPosition(latlng);
-              pickMarker.setMap(map);
-
-              pushRecentArea(`${placeName}${fullAddress ? " / " + fullAddress : ""}`);
-              addLocation(placeName, fullAddress, lat, lng);
-              closeModal();
-            });
-          });
-
-          map.setBounds(bounds);
-          renderSearchResults(data);
-        });
+        places.keywordSearch(keyword, _onKeywordSearchDone);
       });
+    }
+
+    function _makeGeoAddrCb(lat, lng) {
+      return function (fullAddr) {
+        const fa = (fullAddr || "현재 위치").trim();
+        pushRecentArea(fa);
+        addLocation(fa, fa, lat, lng);
+        closeModal();
+      };
+    }
+
+    function _onGeoSuccess(pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      waitForKakaoServices(() => {
+        ensureMap();
+        const latlng = new kakao.maps.LatLng(lat, lng);
+        map.setCenter(latlng);
+        map.setLevel(3);
+        pickMarker.setPosition(latlng);
+        pickMarker.setMap(map);
+        latLngToFullAddress(lat, lng, _makeGeoAddrCb(lat, lng));
+      });
+    }
+
+    function _onGeoError(err) {
+      if (err.code === 1) {
+        alert("위치 권한이 차단되었습니다.\n브라우저 설정에서 위치 권한을 허용하거나 HTTPS 환경에서 접속해주세요.");
+      } else if (err.code === 2) {
+        alert("위치 정보를 가져올 수 없습니다.");
+      } else if (err.code === 3) {
+        alert("위치 조회 시간이 초과되었습니다.");
+      } else {
+        alert("위치 조회 중 오류가 발생했습니다.");
+      }
     }
 
     function setMyLocation() {
@@ -1186,46 +1222,18 @@
         alert("이 브라우저는 위치 기능을 지원하지 않습니다.");
         return;
       }
-
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-
-          waitForKakaoServices(() => {
-            ensureMap();
-
-            const latlng = new kakao.maps.LatLng(lat, lng);
-            map.setCenter(latlng);
-            map.setLevel(3);
-            pickMarker.setPosition(latlng);
-            pickMarker.setMap(map);
-
-            latLngToFullAddress(lat, lng, (fullAddr) => {
-              const fa = (fullAddr || "현재 위치").trim();
-
-              pushRecentArea(fa);
-              addLocation(fa, fa, lat, lng);
-              closeModal();
-            });
-          });
-        },
-		(err) => {
-		  if (err.code === 1) {
-		    alert("위치 권한이 차단되었습니다.\n브라우저 설정에서 위치 권한을 허용하거나 HTTPS 환경에서 접속해주세요.");
-		  }
-		  else if (err.code === 2) {
-		    alert("위치 정보를 가져올 수 없습니다.");
-		  }
-		  else if (err.code === 3) {
-		    alert("위치 조회 시간이 초과되었습니다.");
-		  }
-		  else {
-		    alert("위치 조회 중 오류가 발생했습니다.");
-		  }
-		},
+        _onGeoSuccess,
+        _onGeoError,
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
+    }
+
+    function _makeAreaSelectCb(sp) {
+      return function (lat, lng) {
+        addLocation(sp.placeName, sp.fullAddress, lat, lng);
+        closeModal();
+      };
     }
 
     list.addEventListener("click", (e) => {
@@ -1239,10 +1247,7 @@
       const query = sp.fullAddress || sp.placeName || val;
 
       waitForKakaoServices(() => {
-        addressToLatLng(query, (lat, lng) => {
-          addLocation(sp.placeName, sp.fullAddress, lat, lng);
-          closeModal();
-        });
+        addressToLatLng(query, _makeAreaSelectCb(sp));
       });
     });
 
