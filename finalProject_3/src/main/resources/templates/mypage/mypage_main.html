@@ -15,16 +15,16 @@
             <h2 class="mp-sidebar-title">마이페이지</h2>
             <nav class="mp-nav">
                 <ul>
-                    <li><a href="#" id="nav-info" class="active" onclick="switchSection('info'); return false;">내 정보</a></li>
-                    <li><a href="#" id="nav-account" onclick="switchSection('account'); return false;">계좌/배송지 관리</a></li>
-                    <li><a href="#" id="nav-review" onclick="switchSection('review'); return false;">후기관리</a></li>
-                    <li><a href="#" id="nav-wish" onclick="switchSection('wish'); return false;">찜내역</a></li>
-                    <li><a href="#" id="nav-report" onclick="switchSection('report'); return false;">신고관리</a></li>
+                    <li><button type="button" id="nav-info" class="active" onclick="switchSection('info')">내 정보</button></li>
+                    <li><button type="button" id="nav-account" onclick="switchSection('account')">계좌/배송지 관리</button></li>
+                    <li><button type="button" id="nav-review" onclick="switchSection('review')">후기관리</button></li>
+                    <li><button type="button" id="nav-wish" onclick="switchSection('wish')">찜내역</button></li>
+                    <li><button type="button" id="nav-report" onclick="switchSection('report')">신고관리</button></li>
                     <li><a th:href="@{/noti/list}" id="nav-noti">메시지함</a></li>
                 </ul>
             </nav>
             <div class="mp-exit-wrap">
-                <a href="#" class="mp-exit-btn" onclick="openWithdrawModal(); return false;">탈퇴하기</a>
+                <button type="button" class="mp-exit-btn" onclick="openWithdrawModal()">탈퇴하기</button>
             </div>
         </aside>
 
@@ -39,7 +39,7 @@
                     <div class="mp-user-text">
                         <div class="mp-nickname">
                             <span id="mypageNickname" th:text="${member.nickname}">닉네임</span>
-                            <a href="#" class="mp-edit-link" onclick="openProfileEditModal(); return false;">프로필 수정</a>
+                            <button type="button" class="mp-edit-link" onclick="openProfileEditModal()">프로필 수정</button>
                         </div>
                         <div class="mp-manner">
                             <span class="label">매너온도</span>
@@ -376,7 +376,7 @@
             <!-- 프로필 이미지 -->
             <div style="text-align:center; margin-bottom:20px;">
                 <div role="button" tabindex="0" onclick="toggleEditAvatarPicker()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleEditAvatarPicker()" style="cursor:pointer; display:inline-block; position:relative;">
-                    <img id="editProfilePreview" src="" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #eee;">
+                    <img id="editProfilePreview" src="" alt="프로필 미리보기" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #eee;">
                     <div style="position:absolute; bottom:0; right:0; background:#222; color:#fff; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-size:12px;">
                         <i class="fas fa-camera"></i>
                     </div>
@@ -917,7 +917,7 @@
                 : `${ctxPath}images/no_image.png`;
             const priceText = _buildPurchasePriceText(p);
             const st = statusMap[p.tradeStatus] || { cls: 'rp-status-pending', label: p.tradeStatus || '-' };
-            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replace(/'/g, "\\'")}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
+            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replaceAll(/'/g, "\\'")}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
             const reviewAreaHtml = _buildPurchaseReviewHtml(p, reviewModalArgs);
             return `
                 <div class="mp-wish-card">
@@ -936,7 +936,7 @@
                     </div>
                     <div style="margin:0 12px 12px; display:flex; gap:6px; flex-wrap:wrap;">
                         ${p.invoiceNo
-                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replace(/'/g, "\\'")}')">배송현황</button>`
+                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replaceAll(/'/g, "\\'")}')">배송현황</button>`
                             : `<button class="mp-purchase-btn" onclick="openNoInvoiceModal()">배송현황</button>`
                         }
                         ${reviewAreaHtml}

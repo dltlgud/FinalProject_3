@@ -209,7 +209,7 @@
                 </div>
 
                 <div class="chat-product-banner">
-                    <img id="bannerImg" src="" alt="상품이미지" onerror="this.style.background='#eee'; this.removeAttribute('src');" style="background:#eee;">
+                    <img id="bannerImg" src="" alt="상품이미지" style="background:#eee;">
                     <div class="product-info">
                         <div class="price-row">
                             <span id="bannerPrice">가격 협의</span>
@@ -251,11 +251,11 @@
                     신고는 신중하게 진행해 주세요. 허위 신고일 경우 서비스 이용이 제한될 수 있습니다.
                 </div>
                 <ul class="report-list">
-                    <li onclick="goReportStep2('불법 행위')"><span>불법 행위</span> <span>❯</span></li>
-                    <li onclick="goReportStep2('사기 피해')"><span>사기 피해</span> <span>❯</span></li>
-                    <li onclick="goReportStep2('비매너 행위')"><span>비매너 행위</span> <span>❯</span></li>
-                    <li onclick="goReportStep2('스팸성 홍보')"><span>스팸성 홍보</span> <span>❯</span></li>
-                    <li onclick="goReportStep2('기타 사유')"><span>기타 사유</span> <span>❯</span></li>
+                    <li role="button" tabindex="0" onclick="goReportStep2('불법 행위')" onkeydown="if(event.key==='Enter'||event.key===' ')goReportStep2('불법 행위')"><span>불법 행위</span> <span>❯</span></li>
+                    <li role="button" tabindex="0" onclick="goReportStep2('사기 피해')" onkeydown="if(event.key==='Enter'||event.key===' ')goReportStep2('사기 피해')"><span>사기 피해</span> <span>❯</span></li>
+                    <li role="button" tabindex="0" onclick="goReportStep2('비매너 행위')" onkeydown="if(event.key==='Enter'||event.key===' ')goReportStep2('비매너 행위')"><span>비매너 행위</span> <span>❯</span></li>
+                    <li role="button" tabindex="0" onclick="goReportStep2('스팸성 홍보')" onkeydown="if(event.key==='Enter'||event.key===' ')goReportStep2('스팸성 홍보')"><span>스팸성 홍보</span> <span>❯</span></li>
+                    <li role="button" tabindex="0" onclick="goReportStep2('기타 사유')" onkeydown="if(event.key==='Enter'||event.key===' ')goReportStep2('기타 사유')"><span>기타 사유</span> <span>❯</span></li>
                 </ul>
             </div>
 
@@ -447,6 +447,7 @@
             document.getElementById('bannerTitle').innerText = productName;
 
             const bannerImg = document.getElementById('bannerImg');
+            bannerImg.onerror = function() { this.style.background='#eee'; this.removeAttribute('src'); };
             if (imgUrl) {
                 bannerImg.src = imgUrl.startsWith('/') ? ctxPath + imgUrl : imgUrl;
             } else {
@@ -892,7 +893,7 @@
             
             // 기존 배너에 있던 가격 숫자를 긁어와서 기본값으로 세팅 (편의성)
             const currentPriceStr = document.getElementById('bannerPrice').innerText;
-            const priceNumber = currentPriceStr.replace(/[^0-9]/g, ""); // 숫자만 추출
+            const priceNumber = currentPriceStr.replaceAll(/[^0-9]/g, ""); // 숫자만 추출
             document.getElementById('reservePrice').value = priceNumber;
         };
 

@@ -208,11 +208,11 @@
                     </div>
                     <div th:if="${product.images != null and not #lists.isEmpty(product.images)}"
                          class="img-gallery">
-                        <img th:each="img : ${product.images}"
-                             th:src="${img}"
-                             class="img-thumb"
-                             alt="상품이미지"
-                             onclick="openImgModal(this.src)">
+                        <button type="button" th:each="img : ${product.images}"
+                                class="p-0 border-0 bg-transparent"
+                                onclick="openImgModal(this.querySelector('img').src)">
+                            <img th:src="${img}" class="img-thumb" alt="상품이미지">
+                        </button>
                     </div>
                 </div>
             </div>

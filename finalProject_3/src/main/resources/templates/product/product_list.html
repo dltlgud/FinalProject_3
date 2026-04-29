@@ -294,8 +294,8 @@
 							</button>
 
 							<img th:src="@{${p.imgUrl != null ? p.imgUrl.replace('/images/', '/images/thumb_') : ''}}"
-								 onerror="this.onerror=null; this.src=this.src.replace('/images/thumb_', '/images/')"
-								 alt="">
+								 class="product-thumb-img"
+								 alt="상품 이미지">
 						</div>
 
 						<div class="card-body">
@@ -334,6 +334,10 @@
 	<script th:inline="javascript">
 /*<![CDATA[*/
 $(function () {
+
+	document.querySelectorAll('.product-thumb-img').forEach(function(img) {
+		img.onerror = function() { this.onerror = null; this.src = this.src.replace('/images/thumb_', '/images/'); };
+	});
 
 	const $searchInput = $("#searchWord");
 	const $searchBtn = $("#searchBtn");
@@ -1265,7 +1269,7 @@ $(function () {
 					        data-login="${isLogin}">
 						<i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i>
 					</button>
-					<img src="${escapeHtml(thumbImgUrl)}" onerror="this.onerror=null; this.src=this.src.replace('/images/thumb_', '/images/')" alt="">
+					<img src="${escapeHtml(thumbImgUrl)}" class="product-thumb-img" alt="상품 이미지">
 				</div>
 				<div class="card-body">
 					<div class="item-title">${escapeHtml(p.productName)}</div>
@@ -1331,6 +1335,10 @@ $(function () {
 						html += makeProductCard(p);
 					});
 					$productGrid.append(html);
+					$productGrid.find('.product-thumb-img').each(function() {
+						var img = this;
+						img.onerror = function() { this.onerror = null; this.src = this.src.replace('/images/thumb_', '/images/'); };
+					});
 
 					if (json.length < pageSize) {
 						$loadMoreWrap.hide();

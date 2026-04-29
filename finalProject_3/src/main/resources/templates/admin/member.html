@@ -256,14 +256,14 @@
             <div class="px-4 pt-3 pb-3">
                 <ul class="nav modal-tabs mb-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#" onclick="switchTab('products',this);return false;">
+                        <button type="button" class="nav-link active" onclick="switchTab('products',this)">
                             <i class="bi bi-box-seam me-1"></i>판매중인 상품
-                        </a>
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="switchTab('message',this);return false;">
+                        <button type="button" class="nav-link" onclick="switchTab('message',this)">
                             <i class="bi bi-chat-dots me-1"></i>메시지 보내기
-                        </a>
+                        </button>
                     </li>
                 </ul>
 
@@ -349,7 +349,7 @@
 
     function formatPhone(p) {
         if (!p) return '-';
-        const d = p.replace(/\D/g, '');
+        const d = p.replaceAll(/\D/g, '');
         if (d.length === 11) return d.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
         if (d.length === 10) return d.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
         return p;

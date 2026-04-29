@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function getMainData(name) {
         const mainEl = getMainElement();
         if (!mainEl) return "";
-        const key = name.replace(/^data-/, '').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+        const key = name.replace(/^data-/, '').replaceAll(/-([a-z])/g, (_, c) => c.toUpperCase());
         return mainEl.dataset[key] ?? "";
     }
 

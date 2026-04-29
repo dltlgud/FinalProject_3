@@ -24,7 +24,7 @@
   window.PF = window.PF || {};
 
   function parseNumber(raw) {
-    const n = String(raw ?? "").replace(/[^\d]/g, "");
+    const n = String(raw ?? "").replaceAll(/[^\d]/g, "");
     return n ? Number(n) : null;
   }
 
@@ -481,7 +481,7 @@
 
     function _onFeeInput(inp) {
       const before = String(inp.value ?? "");
-      const onlyDigits = before.replace(/[^\d]/g, "");
+      const onlyDigits = before.replaceAll(/[^\d]/g, "");
 
       if (before !== onlyDigits) {
         inp.value = onlyDigits;
@@ -569,7 +569,7 @@
 
     priceEl.addEventListener("input", () => {
       const before = String(priceEl.value ?? "");
-      const onlyDigits = before.replace(/[^\d]/g, "");
+      const onlyDigits = before.replaceAll(/[^\d]/g, "");
       if (before !== onlyDigits) {
         priceEl.value = onlyDigits;
 
@@ -592,7 +592,7 @@
     return {
       el: priceEl,
       normalize() {
-        priceEl.value = String(priceEl.value ?? "").replace(/[^\d]/g, "");
+        priceEl.value = String(priceEl.value ?? "").replaceAll(/[^\d]/g, "");
       },
       validate() {
         this.normalize();

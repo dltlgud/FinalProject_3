@@ -197,7 +197,7 @@
                 <!-- 프로필 카드 -->
                 <div class="profile-section d-flex align-items-center mb-4">
                     <img th:src="${member.profileImg != null ? member.profileImg : 'https://via.placeholder.com/100'}"
-                         class="rounded-circle profile-avatar me-4 flex-shrink-0">
+                         class="rounded-circle profile-avatar me-4 flex-shrink-0" alt="회원 프로필">
                     <div>
                         <h5 class="fw-bold mb-2" th:text="${member.nickname}">닉네임</h5>
                         <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -339,14 +339,14 @@
     // 전화번호 하이픈 포맷
     function formatPhone(p) {
         if (!p) return '-';
-        const d = p.replace(/\D/g, '');
+        const d = p.replaceAll(/\D/g, '');
         if (d.length === 11) return d.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
         if (d.length === 10) return d.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
         return p;
     }
     document.querySelectorAll('td').forEach(td => {
         const text = td.textContent.trim();
-        if (/^0\d{9,10}$/.test(text.replace(/-/g,''))) {
+        if (/^0\d{9,10}$/.test(text.replaceAll(/-/g,''))) {
             td.textContent = formatPhone(text);
         }
     });

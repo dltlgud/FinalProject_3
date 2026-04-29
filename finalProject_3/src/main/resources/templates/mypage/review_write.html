@@ -70,9 +70,9 @@ textarea:focus{border-color:#222;outline:none;}
 <div class="partner-profile">
     <img th:if="${sellerProfileImg != null and !#strings.isEmpty(sellerProfileImg)}"
          th:src="${sellerProfileImg.startsWith('http') ? sellerProfileImg : '/finalProject_3/resources/profile_images/' + sellerProfileImg}"
-         onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=seller'">
+         class="rw-profile-img" alt="판매자 프로필">
     <img th:unless="${sellerProfileImg != null and !#strings.isEmpty(sellerProfileImg)}"
-         src="https://api.dicebear.com/7.x/bottts/svg?seed=seller">
+         src="https://api.dicebear.com/7.x/bottts/svg?seed=seller" alt="판매자 프로필">
 </div>
 <div>
 <p class="partner-name">
@@ -91,9 +91,9 @@ textarea:focus{border-color:#222;outline:none;}
 <div class="product-img">
     <img th:if="${imgUrl != null and !#strings.isEmpty(imgUrl)}"
          th:src="${imgUrl.startsWith('http') ? imgUrl : '/finalProject_3' + imgUrl}"
-         onerror="this.src='/finalProject_3/images/no_image.png'">
+         alt="상품 이미지">
     <img th:unless="${imgUrl != null and !#strings.isEmpty(imgUrl)}"
-         src="/finalProject_3/images/no_image.png">
+         src="/finalProject_3/images/no_image.png" alt="상품 이미지">
 </div>
 <div class="product-meta">
 <p class="product-name" th:text="${productName}">상품명</p>
