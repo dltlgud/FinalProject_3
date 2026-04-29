@@ -1,3 +1,11 @@
+function fmtTick(v) {
+    const n = Number(v || 0);
+    if (n === 0) return "0원";
+    if (n < 10000) return fmtMoney(n) + "원";
+    if (n % 10000 === 0) return (n / 10000) + "만원";
+    return (n / 10000).toFixed(1) + "만원";
+}
+
 function fmtMoney(v) {
     return Math.round(Number(v || 0)).toLocaleString("ko-KR");
 }
@@ -303,14 +311,6 @@ if (globalThis.__priceCheckInitialized) {
         let mode = globalThis.priceMode || "all";
         let hitPoints = [];
 
-        function fmtTick(v) {
-            const n = Number(v || 0);
-
-            if (n === 0) return "0원";
-            if (n < 10000) return fmtMoney(n) + "원";
-            if (n % 10000 === 0) return (n / 10000) + "만원";
-            return (n / 10000).toFixed(1) + "만원";
-        }
 
         const DATA = serverChartData.map(function (item) {
             return {

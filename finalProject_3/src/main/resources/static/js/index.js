@@ -85,7 +85,7 @@
       track.style.transform = `translateX(-${dist}px)`;
 
       const list = cards();
-      track.insertBefore(list[list.length - 1], list[0]);
+      track.insertBefore(list.at(-1), list[0]);
 
       track.getBoundingClientRect();
 
@@ -128,12 +128,12 @@
     prevBtn.addEventListener('click', moveToPrevVisual);
     nextBtn.addEventListener('click', moveToNextVisual);
 
-    window.addEventListener('keydown', function (event) {
+    globalThis.addEventListener('keydown', function (event) {
       const eventArea = document.getElementById('eventArea');
       if (!eventArea) return;
 
       const rect = eventArea.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      const inView = rect.top < globalThis.innerHeight && rect.bottom > 0;
       if (!inView) return;
 
       if (event.key === 'ArrowLeft') {
@@ -144,7 +144,7 @@
       }
     });
 
-    window.addEventListener('resize', function () {
+    globalThis.addEventListener('resize', function () {
       if (!isMoving) {
         track.style.transform = 'translateX(0px)';
         requestAnimationFrame(updateRoles);
@@ -178,7 +178,7 @@
       const DOT_BLOCK_SIZE = 3;
 
       function visibleCount() {
-        const w = window.innerWidth;
+        const w = globalThis.innerWidth;
         if (w <= 640) return 1;
         if (w <= 1024) return 2;
         return 3;
@@ -283,8 +283,8 @@
       });
 
       function getClientX(e) {
-        if (e.touches && e.touches[0]) return e.touches[0].clientX;
-        if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].clientX;
+        if (e.touches?.[0]) return e.touches[0].clientX;
+        if (e.changedTouches?.[0]) return e.changedTouches[0].clientX;
         return e.clientX;
       }
 
@@ -305,10 +305,14 @@
         const min = -step() * maxStartIndex();
         const max = 0;
 
-        const softened =
-          raw < min ? min - (min - raw) * 0.25 :
-          raw > max ? max + (raw - max) * 0.25 :
-          raw;
+        let softened;
+        if (raw < min) {
+          softened = min - (min - raw) * 0.25;
+        } else if (raw > max) {
+          softened = max + (raw - max) * 0.25;
+        } else {
+          softened = raw;
+        }
 
         applyTransform(softened, false);
       }
@@ -335,8 +339,8 @@
       }
 
       freeViewport.addEventListener('mousedown', onDown);
-      window.addEventListener('mousemove', onMove);
-      window.addEventListener('mouseup', onUp);
+      globalThis.addEventListener('mousemove', onMove);
+      globalThis.addEventListener('mouseup', onUp);
 
       freeViewport.addEventListener('touchstart', onDown, { passive: true });
       freeViewport.addEventListener('touchmove', onMove, { passive: true });
@@ -372,7 +376,7 @@
       wrap.addEventListener('mouseenter', stopAuto);
       wrap.addEventListener('mouseleave', startAuto);
 
-      window.addEventListener('resize', function () {
+      globalThis.addEventListener('resize', function () {
         buildDots();
         update(false, true);
       });
@@ -406,7 +410,7 @@
 
   document.addEventListener('click', function (event) {
     const nbAnchor = event.target.closest('a');
-    if (nbAnchor && nbAnchor.querySelector('.nb-card')) {
+    if (nbAnchor?.querySelector('.nb-card')) {
       guardDetailLink(nbAnchor, event);
       return;
     }

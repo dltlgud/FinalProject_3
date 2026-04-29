@@ -76,7 +76,7 @@ body.d-flex { min-height: 100vh; }
 .admin-avatar {
     width: 44px; height: 44px;
     border-radius: 50%;
-    background: rgba(255,255,255,.12);
+    background: #353a4e;
     display: flex; align-items: center; justify-content: center;
     color: #eaeaeb; font-size: 1.2rem;
     border: 2px solid rgba(255,255,255,.15);
@@ -148,7 +148,7 @@ body.d-flex { min-height: 100vh; }
     transition: all .18s;
 }
 .sidebar-footer-link:hover {
-    background: rgba(255,255,255,.08);
+    background: #2c3146;
     color: #f2f2f3;
 }
 

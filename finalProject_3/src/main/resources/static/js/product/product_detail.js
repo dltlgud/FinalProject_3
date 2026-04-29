@@ -1,3 +1,77 @@
+function calcTempStyle(temp) {
+    let value = Number.parseFloat(temp);
+    if (Number.isNaN(value)) value = 0;
+    if (value < 0) value = 0;
+    if (value > 100) value = 100;
+    let color;
+    if (value <= 12.5) { color = "#9ca3af"; }
+    else if (value <= 30) { color = "#60a5fa"; }
+    else if (value <= 36.5) { color = "#2563eb"; }
+    else if (value <= 50.5) { color = "#22c55e"; }
+    else if (value <= 65.5) { color = "#eab308"; }
+    else { color = "#ef4444"; }
+    return { percent: value, color: color };
+}
+
+function _setupKakaoMap(container, mapPlaceButtons, pdLocationButtons, locWrap) {
+    let defaultLat = 37.5665;
+    let defaultLng = 126.978;
+    let defaultPlace = "위치 정보 없음";
+    if (mapPlaceButtons.length > 0) {
+        defaultLat = Number.parseFloat(mapPlaceButtons[0].dataset.lat);
+        defaultLng = Number.parseFloat(mapPlaceButtons[0].dataset.lng);
+        defaultPlace = mapPlaceButtons[0].dataset.place || "거래 희망 위치";
+    }
+    if (Number.isNaN(defaultLat) || Number.isNaN(defaultLng)) {
+        defaultLat = 37.5665;
+        defaultLng = 126.978;
+    }
+    const map = new kakao.maps.Map(container, {
+        center: new kakao.maps.LatLng(defaultLat, defaultLng),
+        level: 3
+    });
+    const marker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(defaultLat, defaultLng)
+    });
+    marker.setMap(map);
+    const infoWindow = new kakao.maps.InfoWindow({
+        content: '<div style="padding:6px 10px; font-size:12px;">' + defaultPlace + "</div>"
+    });
+    infoWindow.open(map, marker);
+    function setActiveMapPlaceButton(place) {
+        mapPlaceButtons.forEach(function (btn) {
+            btn.classList.remove("is-active");
+            if ((btn.dataset.place || "") === place) {
+                btn.classList.add("is-active");
+            }
+        });
+    }
+    function moveMapTo(lat, lng, place, shouldScroll) {
+        if (Number.isNaN(lat) || Number.isNaN(lng)) { return; }
+        const position = new kakao.maps.LatLng(lat, lng);
+        map.panTo(position);
+        marker.setPosition(position);
+        infoWindow.close();
+        infoWindow.setContent('<div style="padding:6px 10px; font-size:12px;">' + place + "</div>");
+        infoWindow.open(map, marker);
+        setActiveMapPlaceButton(place);
+        if (shouldScroll && locWrap) {
+            locWrap.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+    mapPlaceButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            moveMapTo(Number.parseFloat(btn.dataset.lat), Number.parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", false);
+        });
+    });
+    pdLocationButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            moveMapTo(Number.parseFloat(btn.dataset.lat), Number.parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", true);
+        });
+    });
+    setActiveMapPlaceButton(defaultPlace);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const bodyData = document.body.dataset || {};
     const ctxPath = (bodyData.ctxPath || "/finalProject_3/").replace(/([^/])$/, "$1/");
@@ -56,35 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return ctxPath + "images/" + value;
     }
 
-    function calcTempStyle(temp) {
-        let value = Number.parseFloat(temp);
-
-        if (Number.isNaN(value)) value = 0;
-        if (value < 0) value = 0;
-        if (value > 100) value = 100;
-
-        let color = "#9ca3af";
-
-        if (value <= 12.5) {
-            color = "#9ca3af";
-        } else if (value <= 30) {
-            color = "#60a5fa";
-        } else if (value <= 36.5) {
-            color = "#2563eb";
-        } else if (value <= 50.5) {
-            color = "#22c55e";
-        } else if (value <= 65.5) {
-            color = "#eab308";
-        } else {
-            color = "#ef4444";
-        }
-
-        return {
-            percent: value,
-            color: color
-        };
-    }
-
     function bindMainImageChange() {
         const mainImg = document.getElementById("pdMainImage");
         const thumbImgs = document.querySelectorAll(".pd-thumb img");
@@ -131,82 +176,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         viewport.addEventListener("scroll", updateBtns);
-        window.addEventListener("resize", updateBtns);
-        window.addEventListener("load", updateBtns);
+        globalThis.addEventListener("resize", updateBtns);
+        globalThis.addEventListener("load", updateBtns);
 
         updateBtns();
     }
-
-    function _setupKakaoMap(container, mapPlaceButtons, pdLocationButtons, locWrap) {
-            let defaultLat = 37.5665;
-            let defaultLng = 126.9780;
-            let defaultPlace = "위치 정보 없음";
-
-            if (mapPlaceButtons.length > 0) {
-                defaultLat = Number.parseFloat(mapPlaceButtons[0].dataset.lat);
-                defaultLng = Number.parseFloat(mapPlaceButtons[0].dataset.lng);
-                defaultPlace = mapPlaceButtons[0].dataset.place || "거래 희망 위치";
-            }
-
-            if (Number.isNaN(defaultLat) || Number.isNaN(defaultLng)) {
-                defaultLat = 37.5665;
-                defaultLng = 126.9780;
-            }
-
-            const map = new kakao.maps.Map(container, {
-                center: new kakao.maps.LatLng(defaultLat, defaultLng),
-                level: 3
-            });
-
-            const marker = new kakao.maps.Marker({
-                position: new kakao.maps.LatLng(defaultLat, defaultLng)
-            });
-            marker.setMap(map);
-
-            const infoWindow = new kakao.maps.InfoWindow({
-                content: '<div style="padding:6px 10px; font-size:12px;">' + defaultPlace + "</div>"
-            });
-            infoWindow.open(map, marker);
-
-            function setActiveMapPlaceButton(place) {
-                mapPlaceButtons.forEach(function (btn) {
-                    btn.classList.remove("is-active");
-                    if ((btn.dataset.place || "") === place) {
-                        btn.classList.add("is-active");
-                    }
-                });
-            }
-
-            function moveMapTo(lat, lng, place, shouldScroll) {
-                if (Number.isNaN(lat) || Number.isNaN(lng)) {
-                    return;
-                }
-                const position = new kakao.maps.LatLng(lat, lng);
-                map.panTo(position);
-                marker.setPosition(position);
-                infoWindow.close();
-                infoWindow.setContent('<div style="padding:6px 10px; font-size:12px;">' + place + "</div>");
-                infoWindow.open(map, marker);
-                setActiveMapPlaceButton(place);
-                if (shouldScroll && locWrap) {
-                    locWrap.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
-            }
-
-            mapPlaceButtons.forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                    moveMapTo(Number.parseFloat(btn.dataset.lat), Number.parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", false);
-                });
-            });
-
-            pdLocationButtons.forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                    moveMapTo(Number.parseFloat(btn.dataset.lat), Number.parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", true);
-                });
-            });
-
-            setActiveMapPlaceButton(defaultPlace);
-        }
 
     function bindKakaoMap() {
         const container = document.getElementById("locMapKakao");
@@ -215,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const locWrap = document.getElementById("locWrap");
         if (!container) { return; }
         try {
-            if (!(window.kakao && kakao.maps && kakao.maps.load)) { return; }
+            if (!globalThis.kakao?.maps?.load) { return; }
             kakao.maps.load(function () {
                 _setupKakaoMap(container, mapPlaceButtons, pdLocationButtons, locWrap);
             });
@@ -225,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function bindWishlist() {
-        if (typeof window.jQuery === "undefined") {
+        if (globalThis.jQuery === undefined) {
             return;
         }
 
@@ -368,8 +342,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        window.addEventListener("load", checkOverflow);
-        window.addEventListener("resize", checkOverflow);
+        globalThis.addEventListener("load", checkOverflow);
+        globalThis.addEventListener("resize", checkOverflow);
 
         checkOverflow();
     }
@@ -425,9 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(function (response) {
                 if (response.status === 401 || response.status === 403) {
                     isChatLoading = false;
-                    if (typeof window.toggleChatPopup === "function") {
-                        window.toggleChatPopup();
-                    }
+                    globalThis.toggleChatPopup?.();
                     return null;
                 }
                 if (!response.ok) {
@@ -443,27 +415,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     const modal = document.getElementById("chatModal");
 
                     if (!modal || modal.style.display === "none" || modal.style.display === "") {
-                        if (typeof window.toggleChatPopup === "function") {
-                            window.toggleChatPopup();
-                        }
+                        globalThis.toggleChatPopup?.();
                     }
 
                     setTimeout(function () {
-                        if (typeof window.openChatRoom === "function") {
-                            window.openChatRoom(
-                                data.roomId,
-                                data.nickname || sellerEmail,
-                                productName,
-                                data.productImgUrl,
-                                data.productPrice,
-                                data.tradeStatus,
-                                sellerEmail,
-                                Number.parseInt(productNo, 10),
-                                data.reservedRoomId,
-                                data.tradeMethod,
-                                data.saleType
-                            );
-                        }
+                        globalThis.openChatRoom?.(
+                            data.roomId,
+                            data.nickname || sellerEmail,
+                            productName,
+                            data.productImgUrl,
+                            data.productPrice,
+                            data.tradeStatus,
+                            sellerEmail,
+                            Number.parseInt(productNo, 10),
+                            data.reservedRoomId,
+                            data.tradeMethod,
+                            data.saleType
+                        );
                     }, 300);
                 } else {
                     alert(data.message || "채팅방 생성에 실패했습니다.");
@@ -506,10 +474,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     seller.sellerProfileImg,
                     ctxPath + "images/default_profile.png"
                 );
-                const mannerTemp = seller.mannerTemp != null ? Number(seller.mannerTemp) : 36.5;
-                const safePayCount = seller.safePayCount != null ? seller.safePayCount : 0;
-                const reviewCount = seller.reviewCount != null ? seller.reviewCount : 0;
-                const tradeCount = seller.tradeCount != null ? seller.tradeCount : 0;
+                const mannerTemp = seller.mannerTemp == null ? 36.5 : Number(seller.mannerTemp);
+                const safePayCount = seller.safePayCount ?? 0;
+                const reviewCount = seller.reviewCount ?? 0;
+                const tradeCount = seller.tradeCount ?? 0;
 
                 const sellerNameEl = document.getElementById("pdinfoSellerName");
                 const sellerImgEl = document.getElementById("pdinfoSellerImg");
@@ -630,7 +598,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function onProductReportFileSelected(input) {
-        if (!input || !input.files || input.files.length === 0) {
+        if (!input?.files?.length) {
             return;
         }
 
@@ -833,14 +801,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    window.openProductReportModal = openProductReportModal;
-    window.closeProductReportModal = closeProductReportModal;
-    window.goProductReportStep2 = goProductReportStep2;
-    window.backToProductReportStep1 = backToProductReportStep1;
-    window.updateProductReportCharCount = updateProductReportCharCount;
-    window.onProductReportFileSelected = onProductReportFileSelected;
-    window.submitProductReport = submitProductReport;
-    window.goToPayment = goToPayment;
+    globalThis.openProductReportModal = openProductReportModal;
+    globalThis.closeProductReportModal = closeProductReportModal;
+    globalThis.goProductReportStep2 = goProductReportStep2;
+    globalThis.backToProductReportStep1 = backToProductReportStep1;
+    globalThis.updateProductReportCharCount = updateProductReportCharCount;
+    globalThis.onProductReportFileSelected = onProductReportFileSelected;
+    globalThis.submitProductReport = submitProductReport;
+    globalThis.goToPayment = goToPayment;
 
     bindMainImageChange();
     bindSimilarProductSlider();

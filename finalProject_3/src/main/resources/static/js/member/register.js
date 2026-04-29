@@ -1,8 +1,5 @@
 $(document).ready(function() {
     
-    let isEmailChecked = false;
-    let isNicknameChecked = false;
-
     // 카카오 우편번호 API 호출
     $("#btnZipcode").click(function() {
         new daum.Postcode({
@@ -17,11 +14,11 @@ $(document).ready(function() {
                 }
 
                 if(data.userSelectedType === 'R'){
-                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                    if(data.bname !== '' && /[동로가]$/g.test(data.bname)){
                         extraAddr += data.bname;
                     }
                     if(data.buildingName !== '' && data.apartment === 'Y'){
-                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        extraAddr += (extraAddr === '' ? data.buildingName : ', ' + data.buildingName);
                     }
                     if(extraAddr !== ''){
                         extraAddr = ' (' + extraAddr + ')';

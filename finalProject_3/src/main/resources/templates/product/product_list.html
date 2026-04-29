@@ -333,10 +333,12 @@
 
 	<script th:inline="javascript">
 /*<![CDATA[*/
+function onThumbImgError() { this.onerror = null; this.src = this.src.replace('/images/thumb_', '/images/'); }
+
 $(function () {
 
 	document.querySelectorAll('.product-thumb-img').forEach(function(img) {
-		img.onerror = function() { this.onerror = null; this.src = this.src.replace('/images/thumb_', '/images/'); };
+		img.onerror = onThumbImgError;
 	});
 
 	const $searchInput = $("#searchWord");
@@ -1336,8 +1338,7 @@ $(function () {
 					});
 					$productGrid.append(html);
 					$productGrid.find('.product-thumb-img').each(function() {
-						var img = this;
-						img.onerror = function() { this.onerror = null; this.src = this.src.replace('/images/thumb_', '/images/'); };
+						this.onerror = onThumbImgError;
 					});
 
 					if (json.length < pageSize) {
