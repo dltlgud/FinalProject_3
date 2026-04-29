@@ -123,7 +123,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #3182f6;
+    background: #1468d0;
     color: #fff;
     font-size: 14px;
     font-weight: 700;
@@ -231,9 +231,9 @@
     border-color: #b0c4f6;
 }
 .pay-method-item.is-active {
-    border-color: #3182f6;
+    border-color: #1468d0;
     background: #f0f6ff;
-    color: #3182f6;
+    color: #1468d0;
     font-weight: 600;
 }
 
@@ -248,7 +248,7 @@
     margin-top: 24px;
     border: none;
     border-radius: 12px;
-    background: #3182f6;
+    background: #1468d0;
     color: #fff;
     font-size: 17px;
     font-weight: 700;
@@ -363,7 +363,7 @@
 }
 .pay-badge-escrow {
     background: #e6fcf5;
-    color: #0ca678;
+    color: #077147;
 }
 
 /* 에스크로 안내 박스 (결과 페이지) */

@@ -518,7 +518,7 @@
     padding: 0 18px;
     border-radius: 14px;
     background: #F4FFEE;
-    color: #4CB050;
+    color: #1e6b23;
     font-size: 14px;
     font-weight: bold;
     text-decoration: none;
@@ -730,10 +730,6 @@
   border-radius:20px;
 }
 
-
-.free-deal-card{
-	position: relative;
-}
 
 .sps-badge {
 	position: absolute;

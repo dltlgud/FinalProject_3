@@ -266,7 +266,7 @@
       border: 1px dashed #dcdcdc;
       border-radius: 12px;
       padding: 16px;
-      color: #777;
+      color: #666;
       font-size: 13px;
       background: #fafafa;
     }
@@ -533,7 +533,7 @@
   border-radius: 12px;
   padding: 12px 14px;
   background: #fff3ea;
-  color: #ff6a00;
+  color: #a84400;
   font-weight: 700;
   cursor: pointer;
   display:flex;

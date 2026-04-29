@@ -110,19 +110,6 @@ body{
  
 }
 
-.btn-category{
-  height:50px;
-  padding:0 22px;
-  border:0;
-  border-radius:10px;
-  background:#222;
-  color:#fff;
-  font-size:16px;
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
-  cursor:pointer;
-}
 .hamburger{
   width:18px;
   display:inline-flex;
@@ -194,7 +181,7 @@ body{
   right: -8px;
   min-width: 18px;
   height: 18px;
-  background: #ff3b30;
+  background: #c0271d;
   color: #fff;
   font-size: 12px;
   border-radius: 50%;
