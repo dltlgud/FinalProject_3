@@ -1,11 +1,37 @@
-if (window.__priceCheckInitialized) {
+function fmtMoney(v) {
+    return Math.round(Number(v || 0)).toLocaleString("ko-KR");
+}
+
+function fmtMMDD(ymd) {
+    if (!ymd || ymd.length < 10) return "";
+    return ymd.substring(5, 7) + "/" + ymd.substring(8, 10);
+}
+
+function getYMax(maxValue) {
+    if (maxValue <= 0) return 10000;
+    let yMax = Math.ceil(maxValue * 1.2 / 1000) * 1000;
+    if (yMax < 10000) yMax = 10000;
+    return yMax;
+}
+
+function buildYTicks(yMin, yMax) {
+    const range = yMax - yMin;
+    const unit = Math.ceil(range / 5 / 1000) * 1000 || 1000;
+    const ticks = [];
+    for (let i = 0; i <= 5; i++) {
+        ticks.push(yMin + (unit * i));
+    }
+    return ticks;
+}
+
+if (globalThis.__priceCheckInitialized) {
     console.log("check.js already initialized");
 } else {
-    window.__priceCheckInitialized = true;
+    globalThis.__priceCheckInitialized = true;
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        const ctxPath = (window.ctxPath || "").replace(/\/$/, "");
+        const ctxPath = (globalThis.ctxPath || "").replace(/\/$/, "");
         const searchBtn = document.getElementById("searchBtn");
         const searchWordInput = document.getElementById("searchWord");
         const displayList = document.getElementById("displayList");
@@ -26,22 +52,22 @@ if (window.__priceCheckInitialized) {
             }
 
             let url = ctxPath + "/product/price_check?searchWord=" + encodeURIComponent(searchWord);
-            url += "&sortType=" + encodeURIComponent(sortType || window.priceSortType || "latest");
-            url += "&priceMode=" + encodeURIComponent(priceMode || window.priceMode || "all");
+            url += "&sortType=" + encodeURIComponent(sortType || globalThis.priceSortType || "latest");
+            url += "&priceMode=" + encodeURIComponent(priceMode || globalThis.priceMode || "all");
 
             location.href = url;
         }
 
         searchBtn?.addEventListener("click", function () {
             hideAutoComplete();
-            goPriceSearch("latest", window.priceMode || "all");
+            goPriceSearch("latest", globalThis.priceMode || "all");
         });
 
         searchWordInput?.addEventListener("keydown", function (e) {
             if (e.key === "Enter") {
                 e.preventDefault();
                 hideAutoComplete();
-                goPriceSearch(window.priceSortType || "latest", window.priceMode || "all");
+                goPriceSearch(globalThis.priceSortType || "latest", globalThis.priceMode || "all");
             }
         });
 
@@ -124,14 +150,14 @@ if (window.__priceCheckInitialized) {
             const word = item.textContent.trim();
             searchWordInput.value = word;
             hideAutoComplete();
-            goPriceSearch(window.priceSortType || "latest", window.priceMode || "all");
+            goPriceSearch(globalThis.priceSortType || "latest", globalThis.priceMode || "all");
         });
 
         document.querySelectorAll(".sps-sortBtn").forEach(function (btn) {
             btn.addEventListener("click", function () {
                 const sortType = btn.dataset.sort || "latest";
                 hideAutoComplete();
-                goPriceSearch(sortType, window.priceMode || "all");
+                goPriceSearch(sortType, globalThis.priceMode || "all");
             });
         });
 
@@ -271,15 +297,11 @@ if (window.__priceCheckInitialized) {
             muted: css.getPropertyValue("--muted").trim() || "#6b7684"
         };
 
-        const serverChartData = Array.isArray(window.priceChartData) ? window.priceChartData : [];
-        const statsData = window.priceStatsData || null;
+        const serverChartData = Array.isArray(globalThis.priceChartData) ? globalThis.priceChartData : [];
+        const statsData = globalThis.priceStatsData || null;
 
-        let mode = window.priceMode || "all";
+        let mode = globalThis.priceMode || "all";
         let hitPoints = [];
-
-        function fmtMoney(v) {
-            return Math.round(Number(v || 0)).toLocaleString("ko-KR");
-        }
 
         function fmtTick(v) {
             const n = Number(v || 0);
@@ -288,11 +310,6 @@ if (window.__priceCheckInitialized) {
             if (n < 10000) return fmtMoney(n) + "원";
             if (n % 10000 === 0) return (n / 10000) + "만원";
             return (n / 10000).toFixed(1) + "만원";
-        }
-
-        function fmtMMDD(ymd) {
-            if (!ymd || ymd.length < 10) return "";
-            return ymd.substring(5, 7) + "/" + ymd.substring(8, 10);
         }
 
         const DATA = serverChartData.map(function (item) {
@@ -328,30 +345,11 @@ if (window.__priceCheckInitialized) {
             });
         }
 
-        function getYMax(maxValue) {
-            if (maxValue <= 0) return 10000;
-
-            let yMax = Math.ceil(maxValue * 1.2 / 1000) * 1000;
-            if (yMax < 10000) yMax = 10000;
-            return yMax;
-        }
-
-        function buildYTicks(yMin, yMax) {
-            const range = yMax - yMin;
-            const unit = Math.ceil(range / 5 / 1000) * 1000 || 1000;
-            const ticks = [];
-
-            for (let i = 0; i <= 5; i++) {
-                ticks.push(yMin + (unit * i));
-            }
-
-            return ticks;
-        }
 
         function resizeCanvas() {
             const wrap = canvas.parentElement;
             const rect = wrap.getBoundingClientRect();
-            const dpr = Math.max(1, window.devicePixelRatio || 1);
+            const dpr = Math.max(1, globalThis.devicePixelRatio || 1);
 
             if (rect.width === 0 || rect.height === 0) return;
 
@@ -440,7 +438,7 @@ if (window.__priceCheckInitialized) {
             for (const p of hitPoints) {
                 const dx = p.x - mx;
                 const dy = p.y - my;
-                const d = Math.sqrt(dx * dx + dy * dy);
+                const d = Math.hypot(dx, dy);
 
                 if (d < bestD) {
                     bestD = d;
@@ -454,7 +452,7 @@ if (window.__priceCheckInitialized) {
         function updatePrice() {
             let v = 0;
 
-            if (statsData && statsData.avgPrice != null) {
+            if (statsData?.avgPrice != null) {
                 v = Number(statsData.avgPrice);
             }
 
@@ -722,13 +720,13 @@ if (window.__priceCheckInitialized) {
             btn.addEventListener("click", function () {
                 const nextMode = btn.dataset.mode || "all";
                 hideAutoComplete();
-                goPriceSearch(window.priceSortType || "latest", nextMode);
+                goPriceSearch(globalThis.priceSortType || "latest", nextMode);
             });
         });
 
         syncTabUI();
         updatePrice();
-        window.addEventListener("resize", resizeCanvas);
+        globalThis.addEventListener("resize", resizeCanvas);
         resizeCanvas();
 
         applyTimeAgo();

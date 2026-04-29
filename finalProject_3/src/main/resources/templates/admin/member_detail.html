@@ -346,7 +346,7 @@
     }
     document.querySelectorAll('td').forEach(td => {
         const text = td.textContent.trim();
-        if (/^0\d{9,10}$/.test(text.replaceAll(/-/g,''))) {
+        if (/^0\d{9,10}$/.test(text.replaceAll('-',''))) {
             td.textContent = formatPhone(text);
         }
     });

@@ -694,7 +694,7 @@
             const area = document.getElementById('review-area-' + transactionId);
             if (!area) return;
             area.innerHTML = `<button class="mp-purchase-btn" style="width:100%; background:#ff6b35; color:#fff; border:none; cursor:pointer;"
-                onclick="openReviewModal(${transactionId},'${targetEmail}','${(productName||'').replace(/'/g,"\\'")}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
+                onclick="openReviewModal(${transactionId},'${targetEmail}','${(productName||'').replaceAll("'","\\'")}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
             const badge = document.getElementById('status-badge-' + transactionId);
             if (badge) { badge.className = 'rp-status-badge rp-status-done'; badge.textContent = '거래완료'; }
             const productBadge = document.getElementById('product-status-' + transactionId);
@@ -917,7 +917,7 @@
                 : `${ctxPath}images/no_image.png`;
             const priceText = _buildPurchasePriceText(p);
             const st = statusMap[p.tradeStatus] || { cls: 'rp-status-pending', label: p.tradeStatus || '-' };
-            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replaceAll(/'/g, "\\'")}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
+            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replaceAll("'", "\\'")}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
             const reviewAreaHtml = _buildPurchaseReviewHtml(p, reviewModalArgs);
             return `
                 <div class="mp-wish-card">
@@ -936,7 +936,7 @@
                     </div>
                     <div style="margin:0 12px 12px; display:flex; gap:6px; flex-wrap:wrap;">
                         ${p.invoiceNo
-                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replaceAll(/'/g, "\\'")}')">배송현황</button>`
+                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replaceAll("'", "\\'")}')">배송현황</button>`
                             : `<button class="mp-purchase-btn" onclick="openNoInvoiceModal()">배송현황</button>`
                         }
                         ${reviewAreaHtml}
@@ -1251,7 +1251,7 @@
                         <div style="font-size:14px;font-weight:bold;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.productName || '-'}</div>
                         <div style="font-size:13px;color:#888;margin-bottom:8px;">${priceText}</div>
                         <button class="mp-purchase-btn" style="background:#ff6b35;color:#fff;border:none;cursor:pointer;"
-                            onclick="openReviewModal(${p.transactionId},'${p.sellerEmail}','${(p.productName||'').replace(/'/g,"\\'")}','${p.imgUrl||''}','${p.amount||p.productPrice||''}','${p.paymentType||''}','${p.saleType||''}')">
+                            onclick="openReviewModal(${p.transactionId},'${p.sellerEmail}','${(p.productName||'').replaceAll("'","\\'")}','${p.imgUrl||''}','${p.amount||p.productPrice||''}','${p.paymentType||''}','${p.saleType||''}')">
                             리뷰 작성하기
                         </button>
                     </div>

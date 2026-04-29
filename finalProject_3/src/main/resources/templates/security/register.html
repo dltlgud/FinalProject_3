@@ -24,8 +24,7 @@
                             <td>
                                 <div style="text-align: left;">
                                     <div class="profile-upload-container" role="button" tabindex="0" onclick="openProfileModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openProfileModal()" style="cursor: pointer;">
-                                        <img id="profilePreview" src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="프로필 사진" class="profile-img" 
-                                             onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/bottts/svg?seed=1';"/>
+                                        <img id="profilePreview" src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="프로필 사진" class="profile-img"/>
                                         <div class="camera-btn"><i class="fas fa-camera"></i></div>
                                     </div>
                                     <div class="address-guide" style="margin-top: 10px;">사진을 클릭하여 프로필을 설정해보세요.</div>
@@ -171,6 +170,11 @@
 	    let b_flag_smsAuth_click = false; 
 	
 	    $(document).ready(function() {
+	        const profilePreview = document.getElementById('profilePreview');
+	        if (profilePreview) {
+	            profilePreview.onerror = function() { this.onerror = null; this.src = 'https://api.dicebear.com/7.x/bottts/svg?seed=1'; };
+	        }
+
 	        // 초기 에러 메시지 모두 숨김
 	        $("span.error").hide();
 	

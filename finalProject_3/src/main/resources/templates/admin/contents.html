@@ -367,7 +367,7 @@
 
     function getBrandColor(str) {
         let hash = 0;
-        for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        for (let i = 0; i < str.length; i++) hash = str.codePointAt(i) + ((hash << 5) - hash);
         const h = Math.abs(hash) % 360;
         return {
             bg:     `hsl(${h},45%,94%)`,
@@ -585,7 +585,7 @@
 
         // 오늘 날짜 셀 하이라이트
         const todayStr = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'})
-            .replace(/\. /g,'-').replace('.','').trim();
+            .replaceAll('. ','-').replace('.','').trim();
         const todayDay = new Date().getDate();
         document.querySelectorAll('.calendar-table td').forEach(td => {
             const dayEl = td.querySelector('.day-num');

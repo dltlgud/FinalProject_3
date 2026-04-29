@@ -12,24 +12,13 @@ main {
 
 /* 2. 로그인 폼 컨테이너 */
 .member-container.container {
-    max-width: 450px !important; 
+    max-width: 450px !important;
     width: 100% !important;
-    margin: 0 auto !important; 
+    margin: 0 auto !important;
     padding: 40px !important;
     background-color: #fff !important;
     border-radius: 15px !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* 2. 로그인 폼을 감싸는 하얀색 카드 컨테이너 */
-.member-container.container {
-    max-width: 450px; 
-    width: 100%;
-    margin: 80 auto;
-    padding: 40px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     box-sizing: border-box;
 }
 
