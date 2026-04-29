@@ -189,7 +189,7 @@
         if (!firstSlide) return 0;
 
         const slideW = firstSlide.getBoundingClientRect().width;
-        const gap = parseFloat(getComputedStyle(freeTrack).gap || '0') || 0;
+        const gap = Number.parseFloat(getComputedStyle(freeTrack).gap || '0') || 0;
         return slideW + gap;
       }
 

@@ -57,9 +57,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function calcTempStyle(temp) {
-        let value = parseFloat(temp);
+        let value = Number.parseFloat(temp);
 
-        if (isNaN(value)) value = 0;
+        if (Number.isNaN(value)) value = 0;
         if (value < 0) value = 0;
         if (value > 100) value = 100;
 
@@ -143,12 +143,12 @@ document.addEventListener("DOMContentLoaded", function () {
             let defaultPlace = "위치 정보 없음";
 
             if (mapPlaceButtons.length > 0) {
-                defaultLat = parseFloat(mapPlaceButtons[0].dataset.lat);
-                defaultLng = parseFloat(mapPlaceButtons[0].dataset.lng);
+                defaultLat = Number.parseFloat(mapPlaceButtons[0].dataset.lat);
+                defaultLng = Number.parseFloat(mapPlaceButtons[0].dataset.lng);
                 defaultPlace = mapPlaceButtons[0].dataset.place || "거래 희망 위치";
             }
 
-            if (isNaN(defaultLat) || isNaN(defaultLng)) {
+            if (Number.isNaN(defaultLat) || Number.isNaN(defaultLng)) {
                 defaultLat = 37.5665;
                 defaultLng = 126.9780;
             }
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             function moveMapTo(lat, lng, place, shouldScroll) {
-                if (isNaN(lat) || isNaN(lng)) {
+                if (Number.isNaN(lat) || Number.isNaN(lng)) {
                     return;
                 }
                 const position = new kakao.maps.LatLng(lat, lng);
@@ -195,13 +195,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             mapPlaceButtons.forEach(function (btn) {
                 btn.addEventListener("click", function () {
-                    moveMapTo(parseFloat(btn.dataset.lat), parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", false);
+                    moveMapTo(Number.parseFloat(btn.dataset.lat), Number.parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", false);
                 });
             });
 
             pdLocationButtons.forEach(function (btn) {
                 btn.addEventListener("click", function () {
-                    moveMapTo(parseFloat(btn.dataset.lat), parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", true);
+                    moveMapTo(Number.parseFloat(btn.dataset.lat), Number.parseFloat(btn.dataset.lng), btn.dataset.place || "거래 희망 위치", true);
                 });
             });
 
@@ -238,8 +238,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const wishCountTargets = document.querySelectorAll(".wish-count-text, #wishCountText");
             let currentCount = 0;
             if (wishCountTargets.length > 0) {
-                const parsed = parseInt(wishCountTargets[0].textContent, 10);
-                currentCount = isNaN(parsed) ? 0 : parsed;
+                const parsed = Number.parseInt(wishCountTargets[0].textContent, 10);
+                currentCount = Number.isNaN(parsed) ? 0 : parsed;
             }
             if (json.wished) {
                 $btn.addClass("is-active");
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const now = new Date();
             const diff = Math.floor((now - regDate) / 1000);
 
-            if (isNaN(diff)) {
+            if (Number.isNaN(diff)) {
                 el.innerText = "";
                 return;
             }
@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                productNo: parseInt(productNo, 10),
+                productNo: Number.parseInt(productNo, 10),
                 sellerEmail: sellerEmail
             })
         })
@@ -458,7 +458,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 data.productPrice,
                                 data.tradeStatus,
                                 sellerEmail,
-                                parseInt(productNo, 10),
+                                Number.parseInt(productNo, 10),
                                 data.reservedRoomId,
                                 data.tradeMethod,
                                 data.saleType
