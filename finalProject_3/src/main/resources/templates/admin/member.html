@@ -421,8 +421,11 @@
                 else {
                     noMsg.style.display='none'; tbl.style.display='';
                     products.forEach(p => {
-                        const sc = p.tradeStatus==='판매중' ? 'bg-success' : p.tradeStatus==='예약중' ? 'bg-warning text-dark' : 'bg-primary';
-                        const price = p.productPrice != null ? Number(p.productPrice).toLocaleString()+'원' : '무료나눔';
+                        let sc;
+                        if (p.tradeStatus === '판매중') { sc = 'bg-success'; }
+                        else if (p.tradeStatus === '예약중') { sc = 'bg-warning text-dark'; }
+                        else { sc = 'bg-primary'; }
+                        const price = p.productPrice == null ? '무료나눔' : Number(p.productPrice).toLocaleString()+'원';
                         const dateStr = p.regDate ? new Date(p.regDate).toLocaleDateString('ko-KR') : '-';
                         tbody.innerHTML += `<tr class="text-center" style="font-size:.82rem;">
                             <td class="text-start">${p.productName||'-'}</td>
@@ -439,7 +442,6 @@
                 document.getElementById('msgResult').style.display = 'none';
 
                 // 탈퇴 회원: 메시지 탭 비활성화
-                const msgTabLink = document.querySelector('.modal-tabs .nav-link:nth-child(1)');
                 const allTabLinks = document.querySelectorAll('.modal-tabs .nav-link');
                 const msgTabNav = allTabLinks[1];
                 const withdrawnNotice = document.getElementById('withdrawnMsgNotice');

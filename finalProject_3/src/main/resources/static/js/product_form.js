@@ -948,7 +948,7 @@
     });
 
     function ensureKakaoServices() {
-      return !!(globalThis.kakao && kakao.maps && kakao.maps.services);
+      return !!(globalThis.kakao?.maps?.services);
     }
 
     function waitForKakaoServices(cb, tries = 50) {
@@ -1189,32 +1189,6 @@
         addLocation(fa, fa, lat, lng);
         closeModal();
       };
-    }
-
-    function _onGeoSuccess(pos) {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      waitForKakaoServices(() => {
-        ensureMap();
-        const latlng = new kakao.maps.LatLng(lat, lng);
-        map.setCenter(latlng);
-        map.setLevel(3);
-        pickMarker.setPosition(latlng);
-        pickMarker.setMap(map);
-        latLngToFullAddress(lat, lng, _makeGeoAddrCb(lat, lng));
-      });
-    }
-
-    function _onGeoError(err) {
-      if (err.code === 1) {
-        alert("위치 권한이 차단되었습니다.\n브라우저 설정에서 위치 권한을 허용하거나 HTTPS 환경에서 접속해주세요.");
-      } else if (err.code === 2) {
-        alert("위치 정보를 가져올 수 없습니다.");
-      } else if (err.code === 3) {
-        alert("위치 조회 시간이 초과되었습니다.");
-      } else {
-        alert("위치 조회 중 오류가 발생했습니다.");
-      }
     }
 
     function _makeAreaSelectCb(sp) {
