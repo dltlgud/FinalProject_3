@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
+<title>상품 수정</title>
 <link rel="stylesheet" th:href="@{/css/product_form.css}">
 <script defer th:src="@{/js/product_form.js}"></script>
 </head>
@@ -267,8 +268,8 @@
 
                         <section class="area-modal" id="areaModal" aria-hidden="true">
                             <div class="area-modal__backdrop" data-area-close="true"></div>
-                            <div class="area-modal__panel" role="dialog" aria-modal="true"
-                                 aria-labelledby="areaModalTitle">
+                            <dialog class="area-modal__panel"
+                                    aria-labelledby="areaModalTitle" open>
                                 <div class="area-modal__header">
                                     <h2 class="area-modal__title" id="areaModalTitle">거래 위치 설정</h2>
                                     <button type="button" class="area-modal__close" aria-label="닫기"
@@ -316,7 +317,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </dialog>
                         </section>
                     </section>
 
@@ -350,7 +351,7 @@ $(document).ready(function() {
 
     // ===== 기존 이미지 삭제 =====
     let deletedNos = [];
-    window.removeExistingImg = function(btn, imgNo) {
+    globalThis.removeExistingImg = function(btn, imgNo) {
         const item = btn.closest('.existing-img-item');
         item.style.opacity = '0.3';
         item.style.pointerEvents = 'none';
@@ -394,16 +395,16 @@ $(document).ready(function() {
         const productName = document.querySelector('[name=productName]').value.trim();
         if (!productName) { alert('상품명을 입력하세요.'); return; }
 
-        if (window.PF && window.PF.Shipping) {
-            const r = window.PF.Shipping.validate();
+        if (globalThis.PF && globalThis.PF.Shipping) {
+            const r = globalThis.PF.Shipping.validate();
             if (!r.ok) { alert(r.msg); return; }
-            window.PF.Shipping.syncShipOptionsJson();
+            globalThis.PF.Shipping.syncShipOptionsJson();
         }
 
         const tradeMethodEl = document.querySelector('[name=tradeMethod]:checked');
         const tradeMethod   = tradeMethodEl ? tradeMethodEl.value : '택배';
-        if (window.PF && window.PF.Meet) {
-            const r = window.PF.Meet.validate(tradeMethod);
+        if (globalThis.PF && globalThis.PF.Meet) {
+            const r = globalThis.PF.Meet.validate(tradeMethod);
             if (!r.ok) { alert(r.msg); return; }
         }
 
@@ -411,8 +412,8 @@ $(document).ready(function() {
         $btn.prop('disabled', true).addClass('is-loading');
 
         const formData = new FormData(document.getElementById('pfEditForm'));
-        if (window.PF && window.PF.Image) {
-            window.PF.Image.appendToFormData(formData);
+        if (globalThis.PF && globalThis.PF.Image) {
+            globalThis.PF.Image.appendToFormData(formData);
         }
 
         $.ajax({

@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="ko">
 <head>
+    <title>결제하기</title>
     <link rel="stylesheet" th:href="@{/css/payment/checkout.css}">
     <style>
         .pay-shipping-options { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
@@ -162,7 +163,7 @@
                 <div class="pay-method-wrap"
                      
                      th:if="${product.productPrice == null or product.productPrice == 0}">
-                    <div style="background:#e6fcf5; border-radius:12px; padding:16px; text-align:center; color:#0ca678; font-weight:600;">
+                    <div style="background:#e6fcf5; border-radius:12px; padding:16px; text-align:center; color:#065f46; font-weight:600;">
                         <i class="fa-solid fa-gift" style="margin-right:6px;"></i> 무료나눔 상품입니다
                     </div>
                 </div>
@@ -353,8 +354,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 orderId: data.orderId,
                 orderName: productName,
                 customerEmail: buyerEmail,
-                successUrl: window.location.origin + contextPath + '/payment/success',
-                failUrl: window.location.origin + contextPath + '/payment/fail'
+                successUrl: globalThis.location.origin + contextPath + '/payment/success',
+                failUrl: globalThis.location.origin + contextPath + '/payment/fail'
             }).catch(function(error) {
                 if (error.code === 'USER_CANCEL') {
                     // 사용자 취소 시 처리 (필요시 추가)

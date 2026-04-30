@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="ko">
 <head>
-
+    <title>상품 상세</title>
     <!-- 상품 상세페이지 전용 CSS -->
     <link rel="stylesheet" th:href="@{/css/product/product_detail.css}">
 
@@ -720,7 +720,7 @@
     </section>
 
     <!-- 상품 신고 오버레이 -->
-    <div id="productReportOverlay" class="product-report-overlay" role="button" tabindex="0" onclick="closeProductReportModal()" onkeydown="if(event.key==='Enter'||event.key===' ')closeProductReportModal()"></div>
+    <button id="productReportOverlay" type="button" class="product-report-overlay" onclick="closeProductReportModal()" style="display:block; width:100%; border:none; padding:0; background:transparent; cursor:pointer;"></button>
 
     <!-- 상품 신고 슬라이드 패널 -->
     <div id="productReportPanel" class="product-report-panel">
@@ -774,10 +774,10 @@
                            style="display:none;"
                            onchange="onProductReportFileSelected(this)">
 
-                    <div class="product-report-photo-btn" role="button" tabindex="0" onclick="document.getElementById('productReportFileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('productReportFileInput').click()">
+                    <button type="button" class="product-report-photo-btn" onclick="document.getElementById('productReportFileInput').click()">
                         <span style="font-size:20px;">📷</span>
                         <span id="productReportPhotoCount">0/1</span>
-                    </div>
+                    </button>
 
                     <div id="productReportPhotoPreview" class="product-report-photo-preview"></div>
                 </div>

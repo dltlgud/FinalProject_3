@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       lang="ko">
 <head>
+    <title>마이페이지</title>
 	<link rel="stylesheet" th:href="@{/css/mypage/mypage.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -700,8 +701,9 @@
             if (!data.success) { alert('구매확정 처리에 실패했습니다.'); return; }
             const area = document.getElementById('review-area-' + transactionId);
             if (!area) return;
+            const escapedConfirmName = (productName || '').replaceAll("'", "\\'");
             area.innerHTML = `<button class="mp-purchase-btn" style="width:100%; background:#ff6b35; color:#fff; border:none; cursor:pointer;"
-                onclick="openReviewModal(${transactionId},'${targetEmail}','${(productName||'').replaceAll("'", String.raw`\'`)}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
+                onclick="openReviewModal(${transactionId},'${targetEmail}','${escapedConfirmName}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
             const badge = document.getElementById('status-badge-' + transactionId);
             if (badge) { badge.className = 'rp-status-badge rp-status-done'; badge.textContent = '거래완료'; }
             const productBadge = document.getElementById('product-status-' + transactionId);
@@ -770,7 +772,6 @@
     // ===== 내 판매상품 =====
     const MY_PROD_PAGE_SIZE = 6;
     let myProductAllData = [];
-    let myProductPage = 1;
     let myProductFilter = '전체';
 
     globalThis.loadMyProducts = function() {
@@ -861,7 +862,6 @@
     // ===== 내 구매상품 =====
     const MY_PURCHASE_PAGE_SIZE = 6;
     let myPurchaseAllData = [];
-    let myPurchasePage = 1;
 
     globalThis.loadMyPurchases = function() {
         fetch(`${ctxPath}mypage/my-purchases`)
@@ -916,24 +916,28 @@
             '환불완료': { cls: 'rp-status-rejected', label: '환불완료' },
         };
 
-        container.innerHTML = `<div class="mp-wish-grid">${pageItems.map(p => {
+        const purchaseCardsHtml = pageItems.map(p => {
             let imgSrc;
-            if (!p.imgUrl) { imgSrc = `${ctxPath}images/no_image.png`; }
+            if (!p.imgUrl) { imgSrc = ctxPath + 'images/no_image.png'; }
             else if (p.imgUrl.startsWith('http')) { imgSrc = p.imgUrl; }
             else { imgSrc = ctxPath.replace(/\/$/, '') + p.imgUrl; }
             const priceText = _buildPurchasePriceText(p);
             const st = statusMap[p.tradeStatus] || { cls: 'rp-status-pending', label: p.tradeStatus || '-' };
-            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replaceAll("'", String.raw`\'`)}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
+            const escapedPurchaseName = p.productName.replaceAll("'", "\\'");
+            const reviewModalArgs = p.transactionId + ",'" + p.sellerEmail + "','" + escapedPurchaseName + "','" + (p.imgUrl || '') + "','" + (p.amount || p.productPrice || '') + "','" + (p.paymentType || '') + "','" + (p.saleType || '') + "'";
             const reviewAreaHtml = _buildPurchaseReviewHtml(p, reviewModalArgs);
             let tradeBg;
             if (p.productTradeStatus === '판매완료') { tradeBg = '#555'; }
             else if (p.productTradeStatus === '예약중') { tradeBg = '#e67e22'; }
             else { tradeBg = '#4CB050'; }
+            const trackBtnHtml = p.invoiceNo
+                ? '<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo(\'' + (p.carrierCode || '') + '\',\'' + p.invoiceNo + '\',\'' + escapedPurchaseName + '\')">배송현황</button>'
+                : '<button class="mp-purchase-btn" onclick="openNoInvoiceModal()">배송현황</button>';
             return `
                 <div class="mp-wish-card">
                     <a href="${ctxPath}product/product_detail/${p.productNo}" class="mp-wish-img-wrap">
                         <img src="${imgSrc}" alt="${p.productName}" onerror="this.src='${ctxPath}images/no_image.png'">
-                        ${p.productTradeStatus ? `<span id="product-status-${p.transactionId}" class="mp-wish-status" style="background:${tradeBg};">${p.productTradeStatus}</span>` : ''}
+                        ${p.productTradeStatus ? '<span id="product-status-' + p.transactionId + '" class="mp-wish-status" style="background:' + tradeBg + ';">' + p.productTradeStatus + '</span>' : ''}
                     </a>
                     <div class="mp-wish-info">
                         <p class="mp-wish-name">${p.productName}</p>
@@ -945,14 +949,12 @@
                         <span style="font-size:11px; color:#aaa;">${p.paymentType || ''}</span>
                     </div>
                     <div style="margin:0 12px 12px; display:flex; gap:6px; flex-wrap:wrap;">
-                        ${p.invoiceNo
-                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replaceAll("'", String.raw`\'`)}')">배송현황</button>`
-                            : `<button class="mp-purchase-btn" onclick="openNoInvoiceModal()">배송현황</button>`
-                        }
+                        ${trackBtnHtml}
                         ${reviewAreaHtml}
                     </div>
                 </div>`;
-        }).join('')}</div>`;
+        }).join('');
+        container.innerHTML = '<div class="mp-wish-grid">' + purchaseCardsHtml + '</div>';
 
         renderPaging('myPurchasePaging', total, page, MY_PURCHASE_PAGE_SIZE, renderMyPurchasesPage);
     }
@@ -1032,7 +1034,6 @@
     // ===== 찜 목록 =====
     const WISH_PAGE_SIZE = 6;
     let wishAllData = [];
-    let wishPage = 1;
     let wishSort = 'latest';
     let wishFilter = '전체';
 
@@ -1332,9 +1333,10 @@
         const type = isSent ? 'sent' : 'received';
 
         const cardsHtml = pageItems.map(r => {
-            const imgSrc = r.imgUrl
-                ? (r.imgUrl.startsWith('http') ? r.imgUrl : ctxPath.replace(/\/$/, '') + r.imgUrl)
-                : null;
+            let imgSrc;
+            if (!r.imgUrl) { imgSrc = null; }
+            else if (r.imgUrl.startsWith('http')) { imgSrc = r.imgUrl; }
+            else { imgSrc = ctxPath.replace(/\/$/, '') + r.imgUrl; }
             const productLink = r.productNo
                 ? `<a href="${ctxPath}product/product_detail/${r.productNo}" class="rp-product-name">${r.productName || '상품 정보 없음'}</a>`
                 : `<span class="rp-product-name" style="color:#999;">-</span>`;
@@ -1453,7 +1455,7 @@
                     </div>
                 </div>
                 <div class="mp-mgmt-item-actions">
-                    ${acc.isPrimary !== 'Y' ? `<button class="mp-action-btn mp-action-primary" onclick="setPrimaryAccount(${acc.accountId})">대표 설정</button>` : ''}
+                    ${acc.isPrimary === 'Y' ? '' : `<button class="mp-action-btn mp-action-primary" onclick="setPrimaryAccount(${acc.accountId})">대표 설정</button>`}
                     <button class="mp-action-btn" onclick="openAccountModal(${acc.accountId})">수정</button>
                     <button class="mp-action-btn mp-action-delete" onclick="deleteAccount(${acc.accountId})">삭제</button>
                 </div>
@@ -1550,7 +1552,7 @@
                     </div>
                 </div>
                 <div class="mp-mgmt-item-actions">
-                    ${d.isPrimary !== 'Y' ? `<button class="mp-action-btn mp-action-primary" onclick="setPrimaryDelivery(${d.deliveryNo})">대표 설정</button>` : ''}
+                    ${d.isPrimary === 'Y' ? '' : `<button class="mp-action-btn mp-action-primary" onclick="setPrimaryDelivery(${d.deliveryNo})">대표 설정</button>`}
                     <button class="mp-action-btn" onclick="openDeliveryModal(${d.deliveryNo})">수정</button>
                     <button class="mp-action-btn mp-action-delete" onclick="deleteDelivery(${d.deliveryNo})">삭제</button>
                 </div>
@@ -1687,11 +1689,10 @@
         const stepsHtml = [1,2,3,4,5].map(i => {
             const isActive = i === level;
             const isDone = i < level;
-            const dot = isActive
-                ? 'background:#4CB050; width:14px; height:14px; border-radius:50%; display:inline-block; margin-right:8px;'
-                : isDone
-                    ? 'background:#ccc; width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px;'
-                    : 'background:#eee; width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px;';
+            let dot;
+            if (isActive) { dot = 'background:#4CB050; width:14px; height:14px; border-radius:50%; display:inline-block; margin-right:8px;'; }
+            else if (isDone) { dot = 'background:#ccc; width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px;'; }
+            else { dot = 'background:#eee; width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:8px;'; }
             const fontWeight = isActive ? 'bold' : 'normal';
             const color = isActive ? '#222' : '#999';
             return `<div style="display:flex; align-items:center; margin-bottom:6px; font-size:13px; color:${color}; font-weight:${fontWeight};">

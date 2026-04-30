@@ -4,6 +4,7 @@
     xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
+    <title>시세조회</title>
     <link rel="stylesheet" th:href="@{/css/price_check.css}">
     <link rel="stylesheet" th:href="@{/css/check.css}">
     <script defer th:src="@{/js/check.js}"></script>
@@ -94,7 +95,7 @@
                     </div>
 
                     <div th:if="${priceStats != null and priceStats.sampleCount > 0 and priceStats.sampleCount < 3}"
-                         style="margin-top:8px; padding:10px 12px; border-radius:10px; background:#fff8e8; color:#9a6b00; font-size:14px;">
+                         style="margin-top:8px; padding:10px 12px; border-radius:10px; background:#fff8e8; color:#92400e; font-size:14px;">
                         최근 30일 기준
                         <strong th:text="${priceStats.sampleCount}">0</strong>건으로 참고용 시세입니다.
                     </div>
@@ -235,13 +236,13 @@
 
     <script th:inline="javascript">
     /*<![CDATA[*/
-    window.ctxPath = /*[[@{/}]]*/ "";
-    window.priceChartData = /*[[${priceChartData}]]*/ [];
-    window.priceSearchWord = /*[[${searchWord}]]*/ "";
-    window.priceSortType = /*[[${sortType}]]*/ "latest";
-    window.priceStatsData = /*[[${priceStats}]]*/ null;
-    window.priceMode = /*[[${priceMode}]]*/ "list";
-    window.hasResult = /*[[${hasResult}]]*/ false;
+    globalThis.ctxPath = /*[[@{/}]]*/ "";
+    globalThis.priceChartData = /*[[${priceChartData}]]*/ [];
+    globalThis.priceSearchWord = /*[[${searchWord}]]*/ "";
+    globalThis.priceSortType = /*[[${sortType}]]*/ "latest";
+    globalThis.priceStatsData = /*[[${priceStats}]]*/ null;
+    globalThis.priceMode = /*[[${priceMode}]]*/ "list";
+    globalThis.hasResult = /*[[${hasResult}]]*/ false;
     /*]]>*/
 </script>
 </main>

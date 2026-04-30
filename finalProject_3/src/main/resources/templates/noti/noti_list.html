@@ -38,9 +38,9 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.1rem; flex-shrink: 0;
         }
-        .noti-icon.admin { background: #e8f5e9; color: #16a34a; }
-        .noti-icon.trade { background: #e8fff5; color: #1cc88a; }
-        .noti-icon.other { background: #fff3e0; color: #f6c23e; }
+        .noti-icon.admin { background: #e8f5e9; color: #065f46; }
+        .noti-icon.trade { background: #e8fff5; color: #065f46; }
+        .noti-icon.other { background: #fff3e0; color: #92400e; }
         .noti-title { font-weight: 700; font-size: .95rem; color: #1a1a1a; margin-bottom: 4px; }
         .noti-msg   { font-size: .85rem; color: #555; line-height: 1.5; }
         .noti-date  { font-size: .75rem; color: #aaa; margin-top: 6px; }
@@ -55,10 +55,10 @@
         }
         .noti-read-all-btn {
             padding: 7px 16px;
-            border: 1px solid #16a34a;
+            border: 1px solid #065f46;
             border-radius: 6px;
             background: #fff;
-            color: #16a34a;
+            color: #065f46;
             font-size: 13px;
             font-weight: bold;
             cursor: pointer;
@@ -66,6 +66,7 @@
         }
         .noti-read-all-btn:hover { background: #f0fdf4; }
         .noti-read-all-btn:disabled { border-color: #ddd; color: #bbb; cursor: not-allowed; }
+        button.noti-card { width: 100%; text-align: left; font: inherit; }
         .noti-count-text { font-size: 13px; color: #999; margin-bottom: 16px; }
     </style>
 </head>
@@ -111,12 +112,10 @@
 
             <!-- 알림 목록 -->
             <div th:each="noti : ${notiList}">
-                <div class="noti-card"
+                <button type="button" class="noti-card"
                      th:classappend="${noti.readStatus == 0} ? 'unread' : 'read'"
                      th:attr="data-no=${noti.notiNo}"
-                     role="button" tabindex="0"
-                     onclick="markRead(this)"
-                     onkeydown="if(event.key==='Enter'||event.key===' ')markRead(this)">
+                     onclick="markRead(this)">
                     <div class="noti-icon"
                          th:classappend="${noti.notiType == 'ADMIN'} ? 'admin' : (${noti.notiType == 'TRADE'} ? 'trade' : 'other')">
                         <i class="bi"
@@ -128,7 +127,7 @@
                         <div class="noti-date"  th:text="${noti.regDate}"></div>
                     </div>
                     <div class="unread-dot" th:if="${noti.readStatus == 0}"></div>
-                </div>
+                </button>
             </div>
         </section>
     </div>
