@@ -36,7 +36,7 @@
     .agreement-check { margin-top: 8px; display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
     #period-summary { margin-top: 14px; padding: 14px 16px; background-color: #f8f9fb; border-radius: 10px; border: 1px solid #e1e3ec; }
     .submit-wrap { margin-top: 24px; text-align: center; }
-    button[type="submit"] { width: 100%; max-width: 260px; height: 46px; border-radius: 999px; border: none; background-color: #e0e0e5; color: #999; font-size: 15px; font-weight: 600; cursor: not-allowed; transition: all 0.15s ease; }
+    button[type="submit"] { width: 100%; max-width: 260px; height: 46px; border-radius: 999px; border: none; background-color: #e0e0e5; color: #595959; font-size: 15px; font-weight: 600; cursor: not-allowed; transition: all 0.15s ease; }
     button[type="submit"].active { background-color: #444cf7; color: #fff; cursor: pointer; box-shadow: 0 12px 22px rgba(68, 76, 247, 0.25); }
     button[type="submit"].active:hover { background-color: #373fe0; transform: translateY(-1px); }
   
@@ -172,7 +172,8 @@
     const getNextMonday = (date) => {
       const res = new Date(date);
       const day = res.getDay();
-      const diff = (day === 1) ? 0 : (day === 0 ? 1 : 8 - day);
+      const nonMondayDiff = day === 0 ? 1 : 8 - day;
+      const diff = day === 1 ? 0 : nonMondayDiff;
       res.setDate(res.getDate() + diff);
       return res;
     };

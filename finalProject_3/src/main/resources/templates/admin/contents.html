@@ -41,7 +41,7 @@
     .calendar-table th {
         text-align:center; padding:10px 4px; font-size:11px;
         font-weight:700; background:linear-gradient(135deg,#f8f9fc,#eef0f8);
-        color:#6c757d; border-bottom:2px solid #e3e6f0; letter-spacing:.04em;
+        color:#495057; border-bottom:2px solid #e3e6f0; letter-spacing:.04em;
     }
     .calendar-table td {
         border:1px solid #eef0f6; vertical-align:top;
@@ -57,7 +57,7 @@
     .calendar-table td:nth-child(7) .day-num { color:#e74a3b; }
     .calendar-table td.today-cell { background:#f0f4ff !important; }
     .calendar-table td.today-cell .day-num {
-        background:#4e73df; color:#fff; border-radius:50%;
+        background:#1d4ed8; color:#fff; border-radius:50%;
         width:22px; height:22px; display:flex; align-items:center;
         justify-content:center; font-size:11px; margin:4px 0 2px 4px; padding:0;
     }
@@ -80,10 +80,10 @@
     .badge-wait    { background:#fef3c7; color:#92400e; padding:3px 10px; border-radius:20px; font-weight:700; font-size:.75rem; }
     .badge-reject  { background:#fee2e2; color:#991b1b; padding:3px 10px; border-radius:20px; font-weight:700; font-size:.75rem; }
     .badge-cancel  { background:#ffedd5; color:#c2410c; padding:3px 10px; border-radius:20px; font-size:.75rem; font-weight:700; }
-    .badge-expired { background:#f3f4f6; color:#6b7280; padding:3px 10px; border-radius:20px; font-weight:700; font-size:.75rem; }
+    .badge-expired { background:#f3f4f6; color:#374151; padding:3px 10px; border-radius:20px; font-weight:700; font-size:.75rem; }
 
     /* 테이블 */
-    .ad-table th  { font-size:11px; text-transform:uppercase; color:#858796; letter-spacing:.05em; font-weight:700; position:sticky; top:0; background:#f8f9fc; z-index:1; border-bottom:2px solid #e3e6f0 !important; }
+    .ad-table th  { font-size:11px; text-transform:uppercase; color:#374151; letter-spacing:.05em; font-weight:700; position:sticky; top:0; background:#f8f9fc; z-index:1; border-bottom:2px solid #e3e6f0 !important; }
     .ad-table td  { vertical-align:middle; font-size:.875rem; }
     .ad-table tbody tr { border-bottom:1px solid #f1f3f9; transition:background .12s; }
     .ad-table tbody tr:hover { background:#f8f9ff; }
@@ -451,10 +451,10 @@
         if (ad.status === 'CONFIRM') {
             _applyConfirmStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox);
         } else if (ad.status === 'CANCEL') {
-            _applyCancelOrRejectStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox,
+            _applyCancelOrRejectStatus(ad, { actionArea, withdrawArea, statusCompleted, rejectReasonBox },
                 '🚫', '조기 철회됨', '#fff8e1', '#f6c23e');
         } else if (ad.status === 'REJECT') {
-            _applyCancelOrRejectStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox,
+            _applyCancelOrRejectStatus(ad, { actionArea, withdrawArea, statusCompleted, rejectReasonBox },
                 '❌', '반려됨', '#fff2f1', '#e74a3b');
         } else {
             actionArea.classList.remove('d-none');
@@ -493,8 +493,8 @@
         }
     }
 
-    function _applyCancelOrRejectStatus(ad, actionArea, withdrawArea, statusCompleted, rejectReasonBox,
-                                         icon, text, bgColor, textColor) {
+    function _applyCancelOrRejectStatus(ad, els, icon, text, bgColor, textColor) {
+        const { actionArea, withdrawArea, statusCompleted, rejectReasonBox } = els;
         const statusIcon      = document.getElementById('statusIcon');
         const statusText      = document.getElementById('statusText');
         const processedAtText = document.getElementById('processedAtText');
@@ -584,8 +584,6 @@
         });
 
         // 오늘 날짜 셀 하이라이트
-        const todayStr = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit'})
-            .replaceAll('. ','-').replace('.','').trim();
         const todayDay = new Date().getDate();
         document.querySelectorAll('.calendar-table td').forEach(td => {
             const dayEl = td.querySelector('.day-num');

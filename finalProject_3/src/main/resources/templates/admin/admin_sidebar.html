@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head></head>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head><title>관리자</title></head>
 <body>
 
     <aside th:fragment="adminSidebar" class="admin-sidebar flex-shrink-0">
@@ -59,11 +59,11 @@
 
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var path = window.location.pathname;
+            var path = globalThis.location.pathname;
             var links = document.querySelectorAll('.nav-menu-item');
             links.forEach(function(link) {
                 var key = link.dataset.key;
-                if (key && path.indexOf('/admin/' + key) !== -1) {
+                if (key && path.includes('/admin/' + key)) {
                     link.classList.add('active');
                 }
             });

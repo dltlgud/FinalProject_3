@@ -72,15 +72,15 @@
             display:flex; align-items:center; justify-content:center;
             font-size:.78rem; font-weight:800;
         }
-        .rank-1 { background:linear-gradient(135deg,#f6d365,#fda085); color:#fff; }
-        .rank-2 { background:linear-gradient(135deg,#c9d6df,#a8b8c8); color:#fff; }
-        .rank-3 { background:linear-gradient(135deg,#f093fb,#f5576c); color:#fff; }
-        .rank-n { background:#e9ecef; color:#6c757d; }
+        .rank-1 { background:linear-gradient(135deg,#f6d365,#fda085); color:#1a0e00; }
+        .rank-2 { background:linear-gradient(135deg,#c9d6df,#a8b8c8); color:#0a1929; }
+        .rank-3 { background:linear-gradient(135deg,#f093fb,#f5576c); color:#1a0018; }
+        .rank-n { background:#e9ecef; color:#495057; }
         .keyword-text { font-size:.88rem; font-weight:600; color:#2e3750; flex:1; }
         .keyword-bar-wrap { width:80px; }
         .keyword-bar { height:6px; border-radius:3px; background:#e9ecef; overflow:hidden; }
         .keyword-bar-inner { height:100%; border-radius:3px; background:linear-gradient(90deg,#4e73df,#667eea); }
-        .keyword-count { font-size:.8rem; font-weight:700; color:#4e73df; min-width:28px; text-align:right; }
+        .keyword-count { font-size:.8rem; font-weight:700; color:#1d4ed8; min-width:28px; text-align:right; }
 
         .chart-container { position:relative; height:240px; width:100%; }
         .chart-sm { position:relative; height:180px; width:100%; }
@@ -104,25 +104,25 @@
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-3">
             <div class="sys-card">
-                <div class="icon-wrap" style="background:#e8f4ff;color:#3498db;"><i class="bi bi-lightning-charge-fill"></i></div>
+                <div class="icon-wrap" style="background:#e8f4ff;color:#0369a1;"><i class="bi bi-lightning-charge-fill"></i></div>
                 <div><div class="val" id="apiRequests">-</div><div class="lbl">API 요청 수</div></div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="sys-card">
-                <div class="icon-wrap" style="background:#fff0e8;color:#e67e22;"><i class="bi bi-cpu-fill"></i></div>
+                <div class="icon-wrap" style="background:#fff0e8;color:#92400e;"><i class="bi bi-cpu-fill"></i></div>
                 <div><div class="val" id="cpuUsage">-</div><div class="lbl">CPU 사용률</div></div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="sys-card">
-                <div class="icon-wrap" style="background:#edfff4;color:#27ae60;"><i class="bi bi-memory"></i></div>
+                <div class="icon-wrap" style="background:#edfff4;color:#065f46;"><i class="bi bi-memory"></i></div>
                 <div><div class="val" id="memoryUsage">-</div><div class="lbl">메모리 사용</div></div>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="sys-card">
-                <div class="icon-wrap" style="background:#f5eeff;color:#9b59b6;"><i class="bi bi-database-fill"></i></div>
+                <div class="icon-wrap" style="background:#f5eeff;color:#6b21a8;"><i class="bi bi-database-fill"></i></div>
                 <div><div class="val" id="dbConnections">-</div><div class="lbl">DB 커넥션</div></div>
             </div>
         </div>
@@ -133,7 +133,7 @@
         <div class="col-6 col-md-3">
             <div class="kpi-card">
                 <div class="accent-bar" style="background:#e74c3c;"></div>
-                <div class="kpi-icon" style="background:#fdecea;color:#e74c3c;"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                <div class="kpi-icon" style="background:#fdecea;color:#b91c1c;"><i class="bi bi-exclamation-triangle-fill"></i></div>
                 <div class="kpi-val text-danger" th:text="${reportsAndInquiries != null ? reportsAndInquiries : 0}">0</div>
                 <div class="kpi-lbl">미처리 신고 및 문의</div>
                 <a th:href="@{/admin/complaint}" class="kpi-link">바로가기 →</a>
@@ -142,7 +142,7 @@
         <div class="col-6 col-md-3">
             <div class="kpi-card">
                 <div class="accent-bar" style="background:#3498db;"></div>
-                <div class="kpi-icon" style="background:#e8f4ff;color:#3498db;"><i class="bi bi-megaphone-fill"></i></div>
+                <div class="kpi-icon" style="background:#e8f4ff;color:#0369a1;"><i class="bi bi-megaphone-fill"></i></div>
                 <div class="kpi-val text-primary" th:text="${adInquiries != null ? adInquiries : 0}">0</div>
                 <div class="kpi-lbl">광고 승인 대기</div>
                 <a th:href="@{/admin/contents}" class="kpi-link">바로가기 →</a>
@@ -151,7 +151,7 @@
         <div class="col-6 col-md-3">
             <div class="kpi-card">
                 <div class="accent-bar" style="background:#27ae60;"></div>
-                <div class="kpi-icon" style="background:#edfff4;color:#27ae60;"><i class="bi bi-box-seam-fill"></i></div>
+                <div class="kpi-icon" style="background:#edfff4;color:#065f46;"><i class="bi bi-box-seam-fill"></i></div>
                 <div class="kpi-val text-success" th:text="${todayProducts != null ? todayProducts : 0}">0</div>
                 <div class="kpi-lbl">오늘 등록 상품</div>
                 <a th:href="@{/admin/product}" class="kpi-link">바로가기 →</a>
@@ -160,7 +160,7 @@
         <div class="col-6 col-md-3">
             <div class="kpi-card">
                 <div class="accent-bar" style="background:#f39c12;"></div>
-                <div class="kpi-icon" style="background:#fff8e1;color:#f39c12;"><i class="bi bi-currency-exchange"></i></div>
+                <div class="kpi-icon" style="background:#fff8e1;color:#92400e;"><i class="bi bi-currency-exchange"></i></div>
                 <div class="kpi-val"
                      th:text="${dailyTradeAmount != null ? #numbers.formatInteger(dailyTradeAmount, 0, 'COMMA') + '원' : '0원'}">0원</div>
                 <div class="kpi-lbl">일간 거래액 (추정)</div>
@@ -340,7 +340,7 @@
         document.getElementById('exitNoData').style.display='block';
     }
 
-    // ── Todo (localStorage 자동저장) ──────────────────────────────
+    // ── 할 일 목록 (localStorage 자동저장) ──────────────────────────
     const TODO_KEY = 'admin_todo_list';
     let todoCount = 200;
 
