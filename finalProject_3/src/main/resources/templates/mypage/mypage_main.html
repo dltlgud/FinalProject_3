@@ -701,7 +701,7 @@
             if (!data.success) { alert('구매확정 처리에 실패했습니다.'); return; }
             const area = document.getElementById('review-area-' + transactionId);
             if (!area) return;
-            const escapedConfirmName = (productName || '').replaceAll("'", "\\'");
+            const escapedConfirmName = (productName || '').replaceAll("'", String.raw`\'`);
             area.innerHTML = `<button class="mp-purchase-btn" style="width:100%; background:#ff6b35; color:#fff; border:none; cursor:pointer;"
                 onclick="openReviewModal(${transactionId},'${targetEmail}','${escapedConfirmName}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
             const badge = document.getElementById('status-badge-' + transactionId);
@@ -923,7 +923,7 @@
             else { imgSrc = ctxPath.replace(/\/$/, '') + p.imgUrl; }
             const priceText = _buildPurchasePriceText(p);
             const st = statusMap[p.tradeStatus] || { cls: 'rp-status-pending', label: p.tradeStatus || '-' };
-            const escapedPurchaseName = p.productName.replaceAll("'", "\\'");
+            const escapedPurchaseName = p.productName.replaceAll("'", String.raw`\'`);
             const reviewModalArgs = p.transactionId + ",'" + p.sellerEmail + "','" + escapedPurchaseName + "','" + (p.imgUrl || '') + "','" + (p.amount || p.productPrice || '') + "','" + (p.paymentType || '') + "','" + (p.saleType || '') + "'";
             const reviewAreaHtml = _buildPurchaseReviewHtml(p, reviewModalArgs);
             let tradeBg;

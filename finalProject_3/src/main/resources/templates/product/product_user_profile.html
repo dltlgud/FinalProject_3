@@ -3,6 +3,7 @@
 	th:replace="~{layout/layout_main :: layout(~{::head}, ~{::main}, ~{::script})}"
 	xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
+<title>판매자 프로필</title>
 <link rel="stylesheet" th:href="@{/css/product/product_user_profile.css}">
 </head>
 
@@ -32,7 +33,7 @@
 						<div class="spx-tempNote">최근 3개월 기준 · 변경은 거래후기 반영</div>
 					</div>
 
-					<div class="spx-stats" role="group" aria-label="거래 지표">
+					<section class="spx-stats" aria-label="거래 지표">
 						<div class="spx-statsRow">
 							<div class="spx-stat">
 								<div class="k">안심결제</div>
@@ -49,7 +50,7 @@
 								<div class="v">0</div>
 							</div>
 						</div>
-					</div>
+					</section>
 				</div>
 
 				<!-- RIGHT -->
@@ -172,6 +173,50 @@
 	<script th:src="@{/js/product/product_user_profile.js}"></script>
 
 	<script th:inline="javascript">
+function calcTempStyle(temp) {
+    let value = Number.parseFloat(temp);
+    if (Number.isNaN(value)) value = 0;
+    if (value < 0) value = 0;
+    if (value > 100) value = 100;
+    let color;
+    if (value <= 12.5) { color = "#9ca3af"; }
+    else if (value <= 30) { color = "#60a5fa"; }
+    else if (value <= 36.5) { color = "#2563eb"; }
+    else if (value <= 50.5) { color = "#22c55e"; }
+    else if (value <= 65.5) { color = "#eab308"; }
+    else { color = "#ef4444"; }
+    return { percent: value, color: color };
+}
+
+function formatProductPrice(saleType, price) {
+    const num = Number(price || 0);
+    if (saleType === "나눔" || num === 0) { return "무료나눔"; }
+    if (price == null || price === "") { return "가격없음"; }
+    return num.toLocaleString("ko-KR") + "원";
+}
+
+function getTradeStatusClass(tradeStatus) {
+    if (tradeStatus === "판매중") return "chip-sale-ing";
+    if (tradeStatus === "예약중") return "chip-sale-reserved";
+    if (tradeStatus === "판매완료") return "chip-sale-done";
+    return "";
+}
+
+function makeStarIcons(score) {
+    let html = "";
+    for (let i = 1; i <= 5; i++) {
+        html += i <= score ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
+    }
+    return html;
+}
+
+function updateWishButton(button, wished) {
+    const icon = button.querySelector("i");
+    button.classList.toggle("is-active", wished);
+    button.setAttribute("aria-pressed", wished ? "true" : "false");
+    if (icon) { icon.className = wished ? "fa-solid fa-heart" : "fa-regular fa-heart"; }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     const ctxPath = /*[[@{/}]]*/ "";
@@ -255,10 +300,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 seller.sellerProfileImg,
                 ctxBase + "/images/default_profile.png"
             );
-            const mannerTemp = seller.mannerTemp != null ? seller.mannerTemp : 36.5;
-            const safePayCount = seller.safePayCount != null ? seller.safePayCount : 0;
-            const reviewCount = seller.reviewCount != null ? seller.reviewCount : 0;
-            const tradeCount = seller.tradeCount != null ? seller.tradeCount : 0;
+            const mannerTemp = seller.mannerTemp == null ? 36.5 : seller.mannerTemp;
+            const safePayCount = seller.safePayCount == null ? 0 : seller.safePayCount;
+            const reviewCount = seller.reviewCount == null ? 0 : seller.reviewCount;
+            const tradeCount = seller.tradeCount == null ? 0 : seller.tradeCount;
 
             sellerNameEl.textContent = sellerName;
             avatarEl.src = sellerProfileImg;
@@ -281,34 +326,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function calcTempStyle(temp) {
-        let value = Number.parseFloat(temp);
-
-        if (Number.isNaN(value)) value = 0;
-        if (value < 0) value = 0;
-        if (value > 100) value = 100;
-
-        let color = "#9ca3af";
-
-        if (value <= 12.5) {
-            color = "#9ca3af";
-        } else if (value <= 30) {
-            color = "#60a5fa";
-        } else if (value <= 36.5) {
-            color = "#2563eb";
-        } else if (value <= 50.5) {
-            color = "#22c55e";
-        } else if (value <= 65.5) {
-            color = "#eab308";
-        } else {
-            color = "#ef4444";
-        }
-
-        return {
-            percent: value,
-            color: color
-        };
-    }
 
     function loadSellerProducts(reset) {
         if (isLoading) return;
@@ -381,7 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ctxBase + "/images/no_image.png"
         );
         const timeAgo = formatTimeAgo(product.regDate);
-        const viewCount = product.viewCount != null ? product.viewCount : 0;
+        const viewCount = product.viewCount == null ? 0 : product.viewCount;
         const wished = Number(product.wished) === 1;
 
         return `
@@ -411,26 +428,6 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
-    function formatProductPrice(saleType, price) {
-        const num = Number(price || 0);
-
-        if (saleType === "나눔" || num === 0) {
-            return "무료나눔";
-        }
-
-        if (price == null || price === "") {
-            return "가격없음";
-        }
-
-        return num.toLocaleString("ko-KR") + "원";
-    }
-
-    function getTradeStatusClass(tradeStatus) {
-        if (tradeStatus === "판매중") return "chip-sale-ing";
-        if (tradeStatus === "예약중") return "chip-sale-reserved";
-        if (tradeStatus === "판매완료") return "chip-sale-done";
-        return "";
-    }
 
     function buildImageUrl(path, defaultUrl) {
         if (!path || String(path).trim() === "") {
@@ -461,9 +458,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function initSortButtons() {
         sortBtns.forEach(btn => {
             btn.addEventListener("click", function () {
-                for (let i = 0; i < sortBtns.length; i++) {
-                    sortBtns[i].classList.remove("is-active");
-                    sortBtns[i].setAttribute("aria-selected", "false");
+                for (const b of sortBtns) {
+                    b.classList.remove("is-active");
+                    b.setAttribute("aria-selected", "false");
                 }
                 this.classList.add("is-active");
                 this.setAttribute("aria-selected", "true");
@@ -489,9 +486,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function initTabs() {
         tabs.forEach(tab => {
             tab.addEventListener("click", function () {
-                for (let i = 0; i < tabs.length; i++) {
-                    tabs[i].classList.remove("is-active");
-                    tabs[i].setAttribute("aria-selected", "false");
+                for (const t of tabs) {
+                    t.classList.remove("is-active");
+                    t.setAttribute("aria-selected", "false");
                 }
                 this.classList.add("is-active");
                 this.setAttribute("aria-selected", "true");
@@ -737,19 +734,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let productImgHtml = "";
         const rawImgUrls = String(review.productImgUrls || "").trim();
 
-        if (rawImgUrls !== "") {
-            const imgList = rawImgUrls.split("||");
-
-            imgList.forEach(function(imgPath, idx) {
-                const safeImgUrl = buildImageUrl(imgPath, ctxBase + "/images/no_image.png");
-                productImgHtml += `
-                    <img src="${safeImgUrl}"
-                         alt="${productName} 이미지 ${idx + 1}"
-                         class="sps-rvProductImg">
-                `;
-            });
-        }
-        else {
+        if (rawImgUrls === "") {
             const fallbackImgUrl = buildImageUrl(
                 review.productImgUrl,
                 ctxBase + "/images/no_image.png"
@@ -760,6 +745,17 @@ document.addEventListener("DOMContentLoaded", function () {
                      alt="${productName}"
                      class="sps-rvProductImg">
             `;
+        } else {
+            const imgList = rawImgUrls.split("||");
+
+            imgList.forEach(function(imgPath, idx) {
+                const safeImgUrl = buildImageUrl(imgPath, ctxBase + "/images/no_image.png");
+                productImgHtml += `
+                    <img src="${safeImgUrl}"
+                         alt="${productName} 이미지 ${idx + 1}"
+                         class="sps-rvProductImg">
+                `;
+            });
         }
 
         return `
@@ -801,9 +797,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function initReviewSortButtons() {
         reviewSortBtns.forEach(btn => {
             btn.addEventListener("click", function () {
-                for (let i = 0; i < reviewSortBtns.length; i++) {
-                    reviewSortBtns[i].classList.remove("is-active");
-                    reviewSortBtns[i].setAttribute("aria-selected", "false");
+                for (const b of reviewSortBtns) {
+                    b.classList.remove("is-active");
+                    b.setAttribute("aria-selected", "false");
                 }
                 this.classList.add("is-active");
                 this.setAttribute("aria-selected", "true");
@@ -855,19 +851,6 @@ document.addEventListener("DOMContentLoaded", function () {
         reviewLoadMoreBtn.style.display = reviewHasMore ? "inline-flex" : "none";
     }
 
-    function makeStarIcons(score) {
-        let html = "";
-
-        for (let i = 1; i <= 5; i++) {
-            if (i <= score) {
-                html += `<i class="fa-solid fa-star"></i>`;
-            } else {
-                html += `<i class="fa-regular fa-star"></i>`;
-            }
-        }
-
-        return html;
-    }
 
     function formatDate(value) {
         if (!value) return "";
@@ -976,16 +959,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function updateWishButton(button, wished) {
-        const icon = button.querySelector("i");
-
-        button.classList.toggle("is-active", wished);
-        button.setAttribute("aria-pressed", wished ? "true" : "false");
-
-        if (icon) {
-            icon.className = wished ? "fa-solid fa-heart" : "fa-regular fa-heart";
-        }
-    }
 });
 </script>
 </body>

@@ -3,6 +3,7 @@
 	th:replace="~{layout/layout_main :: layout(~{::head}, ~{::main}, ~{::script})}"
 	xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
+<title>장터</title>
 <link rel="stylesheet" th:href="@{/css/product/product_list.css}">
 </head>
 <body>
@@ -57,8 +58,8 @@
 		<section class="area-modal" id="areaModal" aria-hidden="true">
 			<div class="area-modal__backdrop" data-area-close="true"></div>
 
-			<div class="area-modal__panel" role="dialog" aria-modal="true"
-				aria-labelledby="areaModalTitle">
+			<dialog class="area-modal__panel"
+				aria-labelledby="areaModalTitle" open>
 				<div class="area-modal__header">
 					<h2 class="area-modal__title" id="areaModalTitle">지역 변경</h2>
 					<button type="button" class="area-modal__close" aria-label="닫기"
@@ -118,7 +119,7 @@
 					</div>
 				</div>
 
-			</div>
+			</dialog>
 		</section>
 
 		<section class="market-page">
@@ -335,6 +336,43 @@
 /*<![CDATA[*/
 function onThumbImgError() { this.onerror = null; this.src = this.src.replace('/images/thumb_', '/images/'); }
 
+function formatTimeAgo(dateString) {
+	if (!dateString) return "";
+	const now = new Date();
+	const past = new Date(dateString);
+	const diff = Math.floor((now - past) / 1000);
+	if (diff < 60) return diff + "초 전";
+	const minutes = Math.floor(diff / 60);
+	if (minutes < 60) return minutes + "분 전";
+	const hours = Math.floor(minutes / 60);
+	if (hours < 24) return hours + "시간 전";
+	const days = Math.floor(hours / 24);
+	return days + "일 전";
+}
+
+function escapeHtml(str) {
+	return String(str || "")
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#39;");
+}
+
+function formatPrice(saleType, productPrice) {
+	if (saleType === "나눔") { return "무료나눔"; }
+	if (productPrice == null || productPrice === "") { return "가격없음"; }
+	return Number(productPrice).toLocaleString("ko-KR") + "원";
+}
+
+function makeTradeStatusBadge(tradeStatus) {
+	const status = String(tradeStatus || "").trim();
+	if (status === "판매중") { return '<span class="thumb-badge chip-sale-ing">판매중</span>'; }
+	if (status === "예약중") { return '<span class="thumb-badge chip-sale-reserved">예약중</span>'; }
+	if (status === "판매완료") { return '<span class="thumb-badge chip-sale-done">판매완료</span>'; }
+	return "";
+}
+
 $(function () {
 
 	document.querySelectorAll('.product-thumb-img').forEach(function(img) {
@@ -345,7 +383,7 @@ $(function () {
 	const $searchBtn = $("#searchBtn");
 	const $displayList = $("#displayList");
 
-	window.searchBtnClick = function () {
+	globalThis.searchBtnClick = function () {
 		const searchWord = $("#searchWord").val().trim();
 		const areaDong = $("#areaDong").val().trim();
 		const tradeAvailable = $("#tradeAvailable").is(":checked");
@@ -389,7 +427,7 @@ $(function () {
 	};
 
 	$("#applyFilterBtn").on("click", function () {
-		window.searchBtnClick();
+		globalThis.searchBtnClick();
 	});
 
 	$("#resetFilterBtn").on("click", function () {
@@ -423,7 +461,7 @@ $(function () {
 	$searchBtn.on("click", function (e) {
 		e.preventDefault();
 		e.stopPropagation();
-		window.searchBtnClick();
+		globalThis.searchBtnClick();
 	});
 
 	function fetchAutoComplete(searchWord) {
@@ -479,7 +517,7 @@ $(function () {
 	$(document).on("keydown", "#searchWord", function (e) {
 		if (e.key === "Enter") {
 			e.preventDefault();
-			window.searchBtnClick();
+			globalThis.searchBtnClick();
 		}
 	});
 
@@ -493,14 +531,14 @@ $(function () {
 		const word = $(this).text().trim();
 		$searchInput.val(word);
 		$displayList.hide().empty();
-		window.searchBtnClick();
+		globalThis.searchBtnClick();
 	});
 
 	$(document).on("click", ".popular-item", function () {
 		const word = $(this).text().trim();
 		$searchInput.val(word);
 		$displayList.hide().empty();
-		window.searchBtnClick();
+		globalThis.searchBtnClick();
 	});
 
 	$(document).on("click", function (e) {
@@ -815,14 +853,14 @@ $(function () {
 			}
 		});
 
-		window.addEventListener("keydown", (e) => {
+		globalThis.addEventListener("keydown", (e) => {
 			if (e.key === "Escape" && modal.classList.contains("is-open")) {
 				closeModal();
 			}
 		});
 
 		function ensureKakaoServices() {
-			return !!(window.kakao && kakao.maps && kakao.maps.services);
+			return !!(globalThis.kakao && kakao.maps && kakao.maps.services);
 		}
 
 		function waitForKakaoServices(cb, tries = 60) {
@@ -868,7 +906,7 @@ $(function () {
 			if (map || !mapEl) return;
 
 			map = new kakao.maps.Map(mapEl, {
-				center: new kakao.maps.LatLng(37.5665, 126.9780),
+				center: new kakao.maps.LatLng(37.5665, 126.978),
 				level: 4
 			});
 
@@ -1103,25 +1141,6 @@ $(function () {
 		useGeoBtn?.addEventListener("click", setMyLocation);
 	}
 
-	function formatTimeAgo(dateString) {
-		if (!dateString) return "";
-
-		const now = new Date();
-		const past = new Date(dateString);
-		const diff = Math.floor((now - past) / 1000);
-
-		if (diff < 60) return diff + "초 전";
-
-		const minutes = Math.floor(diff / 60);
-		if (minutes < 60) return minutes + "분 전";
-
-		const hours = Math.floor(minutes / 60);
-		if (hours < 24) return hours + "시간 전";
-
-		const days = Math.floor(hours / 24);
-		return days + "일 전";
-	}
-
 	const times = document.querySelectorAll(".time-ago");
 	times.forEach((el) => {
 		const dateString = el.dataset.time;
@@ -1209,40 +1228,6 @@ $(function () {
 	const pageSize = 12;
 	let isLoadingMore = false;
 
-	function escapeHtml(str) {
-		return String(str || "")
-			.replaceAll("&", "&amp;")
-			.replaceAll("<", "&lt;")
-			.replaceAll(">", "&gt;")
-			.replaceAll('"', "&quot;")
-			.replaceAll("'", "&#39;");
-	}
-
-	function formatPrice(saleType, productPrice) {
-		if (saleType === "나눔") {
-			return "무료나눔";
-		}
-		if (productPrice == null || productPrice === "") {
-			return "가격없음";
-		}
-		return Number(productPrice).toLocaleString("ko-KR") + "원";
-	}
-
-	function makeTradeStatusBadge(tradeStatus) {
-		const status = String(tradeStatus || "").trim();
-
-		if (status === "판매중") {
-			return `<span class="thumb-badge chip-sale-ing">판매중</span>`;
-		}
-		if (status === "예약중") {
-			return `<span class="thumb-badge chip-sale-reserved">예약중</span>`;
-		}
-		if (status === "판매완료") {
-			return `<span class="thumb-badge chip-sale-done">판매완료</span>`;
-		}
-		return "";
-	}
-
 	function makeProductCard(p) {
 		const placeName = (p.placeName && String(p.placeName).trim() !== "") ? p.placeName : "택배거래";
 		const imgUrl = p.imgUrl ? p.imgUrl : "";
@@ -1251,9 +1236,10 @@ $(function () {
 		const wished = Number(p.wished || 0) === 1;
 		const canAccessDetail = Number(p.canAccessDetail || 0);
 
-		const finalImgUrl = imgUrl
-			? (imgUrl.startsWith("http://") || imgUrl.startsWith("https://") ? imgUrl : ctxPath + imgUrl)
-			: ctxPath + "/images/no-image.png";
+		let finalImgUrl;
+		if (!imgUrl) { finalImgUrl = ctxPath + "/images/no-image.png"; }
+		else if (imgUrl.startsWith("http://") || imgUrl.startsWith("https://")) { finalImgUrl = imgUrl; }
+		else { finalImgUrl = ctxPath + imgUrl; }
 
 		const thumbImgUrl = finalImgUrl.replace('/images/', '/images/thumb_');
 
@@ -1287,7 +1273,7 @@ $(function () {
 						</span>
 						<span>
 							<i class="fa-solid fa-eye"></i>
-							<span>${p.viewCount != null ? p.viewCount : 0}</span>
+							<span>${p.viewCount == null ? 0 : p.viewCount}</span>
 						</span>
 					</div>
 				</div>
@@ -1370,9 +1356,9 @@ $(function () {
 	}
 });
 
-window.addEventListener("pageshow", function (event) {
+globalThis.addEventListener("pageshow", function (event) {
 	if (event.persisted) {
-		window.location.reload();
+		globalThis.location.reload();
 	}
 });
 /*]]>*/
