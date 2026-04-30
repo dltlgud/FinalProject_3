@@ -38,21 +38,21 @@
         /* status badges */
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .onsale   { background: #d1fae5; color: #065f46; }
-        .reserve  { background: #fff4e6; color: #f76707; }
-        .soldout  { background: #f3f4f6; color: #6b7280; }
+        .reserve  { background: #fff4e6; color: #9a3412; }
+        .soldout  { background: #f3f4f6; color: #374151; }
         .status-hidden  { background: #fef3c7; color: #92400e; }
         .status-deleted { background: #fee2e2; color: #991b1b; }
 
         /* table */
         .table { background: white; border-radius: 10px; }
-        .table thead th { background: #f8f9fc; color: #858796; font-size: .8rem; text-transform: uppercase; border-bottom: 1px solid #e3e6f0; }
+        .table thead th { background: #f8f9fc; color: #374151; font-size: .8rem; text-transform: uppercase; border-bottom: 1px solid #e3e6f0; }
         .bg-light-warning { background: #fffcf0 !important; }
         .bg-light-danger  { background: #fff5f5 !important; }
         .table-warning-subtle { background: #fff9db !important; }
 
         /* filter banner */
         .filter-active-bar {
-            background: linear-gradient(90deg, #4e73df, #36b9cc);
+            background: linear-gradient(90deg, #1d4ed8, #0369a1);
             color: #fff; border-radius: 10px;
             padding: 9px 16px; font-size: .875rem;
             display: flex; align-items: center; justify-content: space-between;
@@ -61,7 +61,7 @@
 
         /* pagination */
         .page-link { border-radius: 6px !important; margin: 0 2px; }
-        .page-item.active .page-link { background: #4e73df; border-color: #4e73df; }
+        .page-item.active .page-link { background: #1d4ed8; border-color: #1d4ed8; }
     </style>
 </head>
 <body class="d-flex">
@@ -256,7 +256,7 @@
     const dailyLabels = /*[[${dailyLabels}]]*/ [];
     const dailyData   = /*[[${dailyData}]]*/ [];
 
-    new Chart(document.getElementById('productChart').getContext('2d'), {
+    const _productChart = new Chart(document.getElementById('productChart').getContext('2d'), {
         type: 'line',
         data: {
             labels: dailyLabels,
@@ -281,7 +281,7 @@
     const categoryLabels = /*[[${categoryLabels}]]*/ [];
     const categoryData   = /*[[${categoryData}]]*/ [];
 
-    new Chart(document.getElementById('categoryChart').getContext('2d'), {
+    const _categoryChart = new Chart(document.getElementById('categoryChart').getContext('2d'), {
         type: 'doughnut',
         data: {
             labels: categoryLabels,

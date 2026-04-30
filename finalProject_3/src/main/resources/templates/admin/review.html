@@ -39,14 +39,14 @@
 
         /* table */
         .table { background: white; border-radius: 10px; }
-        .table thead th { background: #f8f9fc; color: #858796; font-size: .8rem; text-transform: uppercase; border-bottom: 1px solid #e3e6f0; }
+        .table thead th { background: #f8f9fc; color: #374151; font-size: .8rem; text-transform: uppercase; border-bottom: 1px solid #e3e6f0; }
         .bg-light-warning { background: #fffcf0 !important; }
         .bg-light-danger  { background: #fff5f5 !important; }
         .table-warning-subtle { background: #fff9db !important; }
 
         /* filter banner */
         .filter-active-bar {
-            background: linear-gradient(90deg, #f6c23e, #e74a3b);
+            background: linear-gradient(90deg, #92400e, #b91c1c);
             color: #fff; border-radius: 10px;
             padding: 9px 16px; font-size: .875rem;
             display: flex; align-items: center; justify-content: space-between;
@@ -55,7 +55,7 @@
 
         /* pagination */
         .page-link { border-radius: 6px !important; margin: 0 2px; }
-        .page-item.active .page-link { background: #4e73df; border-color: #4e73df; }
+        .page-item.active .page-link { background: #1d4ed8; border-color: #1d4ed8; }
     </style>
 </head>
 <body class="d-flex">
@@ -237,7 +237,7 @@
     const reviewDailyLabels = /*[[${dailyLabels}]]*/ [];
     const reviewDailyData   = /*[[${dailyData}]]*/ [];
 
-    new Chart(document.getElementById('reviewChart').getContext('2d'), {
+    const _reviewChart = new Chart(document.getElementById('reviewChart').getContext('2d'), {
         type: 'line',
         data: {
             labels: reviewDailyLabels,
@@ -263,7 +263,7 @@
     const ratingLabels = /*[[${ratingLabels}]]*/ ['5점','4점','3점','2점','1점'];
     const ratingData   = /*[[${ratingData}]]*/ [0,0,0,0,0];
 
-    new Chart(document.getElementById('ratingChart').getContext('2d'), {
+    const _ratingChart = new Chart(document.getElementById('ratingChart').getContext('2d'), {
         type: 'doughnut',
         data: {
             labels: ratingLabels,

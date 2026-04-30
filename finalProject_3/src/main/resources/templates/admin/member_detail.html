@@ -27,7 +27,7 @@
             border: 3px solid #e8eaed;
         }
         .manner-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4338ca 0%, #5b21b6 100%);
             color: #fff;
             font-size: 0.8rem;
             padding: 4px 10px;
@@ -43,7 +43,7 @@
             font-weight: 600;
         }
         .status-active    { background: #d1fae5; color: #065f46; }
-        .status-withdrawn { background: #f3f4f6; color: #6b7280; }
+        .status-withdrawn { background: #f3f4f6; color: #374151; }
         .status-suspended { background: #fef3c7; color: #92400e; }
         .status-banned    { background: #fee2e2; color: #991b1b; }
         .status-idle      { background: #e0e7ff; color: #3730a3; }
@@ -130,7 +130,7 @@
             font-size: 0.875rem;
             padding: 9px;
         }
-        .btn-suspend-outline:hover { background: #fffbeb; color: #d97706; }
+        .btn-suspend-outline:hover { background: #fffbeb; color: #92400e; }
         .btn-ban {
             background: #dc2626;
             border: none;
@@ -236,32 +236,32 @@
                     <div class="table-responsive">
                         <table class="table mb-0">
                             <tr>
-                                <td class="info-label text-center">이메일 (ID)</td>
+                                <th scope="row" class="info-label text-center">이메일 (ID)</th>
                                 <td th:text="${member.email}"></td>
-                                <td class="info-label text-center">회원번호</td>
+                                <th scope="row" class="info-label text-center">회원번호</th>
                                 <td th:text="${member.userNo}"></td>
                             </tr>
                             <tr>
-                                <td class="info-label text-center">이름</td>
+                                <th scope="row" class="info-label text-center">이름</th>
                                 <td th:text="${member.userName}"></td>
-                                <td class="info-label text-center">연락처</td>
+                                <th scope="row" class="info-label text-center">연락처</th>
                                 <td th:text="${member.phone}"></td>
                             </tr>
                             <tr>
-                                <td class="info-label text-center">생년월일</td>
+                                <th scope="row" class="info-label text-center">생년월일</th>
                                 <td th:text="${member.birthDate}"></td>
-                                <td class="info-label text-center">성별</td>
+                                <th scope="row" class="info-label text-center">성별</th>
                                 <td th:text="${member.gender == 'M' ? '남성' : '여성'}"></td>
                             </tr>
                             <tr>
-                                <td class="info-label text-center">주소</td>
+                                <th scope="row" class="info-label text-center">주소</th>
                                 <td colspan="3"
                                     th:text="${member.address != null}
                                         ? ('[' + ${member.postcode} + '] ' + ${member.address} + ' ' + ${member.detailaddress} + ' ' + (${member.extraaddress != null ? member.extraaddress : ''}))
                                         : '정보 없음'"></td>
                             </tr>
                             <tr>
-                                <td class="info-label text-center">보유 권한</td>
+                                <th scope="row" class="info-label text-center">보유 권한</th>
                                 <td colspan="3">
                                     <span th:each="auth : ${member.authorities}"
                                           th:text="${auth}" class="auth-badge me-1"></span>

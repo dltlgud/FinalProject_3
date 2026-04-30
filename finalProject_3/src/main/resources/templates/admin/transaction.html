@@ -32,20 +32,20 @@
             border:1.5px solid #dee2e6; background:#fff; color:#666; cursor:pointer;
             text-decoration:none; transition:all .15s;
         }
-        .status-tab:hover { border-color:#4e73df; color:#4e73df; }
-        .status-tab.active-all    { background:#4e73df; color:#fff; border-color:#4e73df; }
-        .status-tab.active-trade  { background:#1cc88a; color:#fff; border-color:#1cc88a; }
-        .status-tab.active-done   { background:#858796; color:#fff; border-color:#858796; }
+        .status-tab:hover { border-color:#1d4ed8; color:#1d4ed8; }
+        .status-tab.active-all    { background:#1d4ed8; color:#fff; border-color:#1d4ed8; }
+        .status-tab.active-trade  { background:#065f46; color:#fff; border-color:#065f46; }
+        .status-tab.active-done   { background:#374151; color:#fff; border-color:#374151; }
 
         /* 테이블 */
-        .trade-table th { font-size:11px; text-transform:uppercase; color:#858796; letter-spacing:.05em; font-weight:700; padding:12px 16px; }
+        .trade-table th { font-size:11px; text-transform:uppercase; color:#374151; letter-spacing:.05em; font-weight:700; padding:12px 16px; }
         .trade-table td { padding:14px 16px; vertical-align:middle; font-size:.88rem; }
         .product-name { font-weight:700; color:#2e3750; max-width:200px; }
         .amount-cell  { font-weight:700; color:var(--primary); }
 
-        .badge-trading { background:#fff9e6; color:#d4a200; padding:4px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
-        .badge-done    { background:#f1f3f5; color:#868e96; padding:4px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
-        .badge-cancel  { background:#fff2f1; color:#e74a3b; padding:4px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
+        .badge-trading { background:#fff9e6; color:#92400e; padding:4px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
+        .badge-done    { background:#f1f3f5; color:#374151; padding:4px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
+        .badge-cancel  { background:#fff2f1; color:#b91c1c; padding:4px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
 
         .detail-btn {
             font-size:.78rem; padding:5px 14px; border-radius:20px;
@@ -295,7 +295,10 @@
         if (d.status === '거래중') {
             const hoursLeft = Number.parseInt(d.hoursLeft, 10) || 0;
             const pct = Math.min(100, (hoursLeft / 72) * 100);
-            const color = hoursLeft < 12 ? '#e74a3b' : hoursLeft < 24 ? '#f6c23e' : '#1cc88a';
+            let color;
+            if (hoursLeft < 12) { color = '#e74a3b'; }
+            else if (hoursLeft < 24) { color = '#f6c23e'; }
+            else { color = '#1cc88a'; }
             document.getElementById('mHoursLeft').textContent = hoursLeft + '시간 남음';
             document.getElementById('mHoursLeft').style.color = color;
             const bar = document.getElementById('mTimeBar');

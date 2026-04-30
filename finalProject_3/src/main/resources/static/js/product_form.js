@@ -1182,15 +1182,6 @@
       });
     }
 
-    function _makeGeoAddrCb(lat, lng) {
-      return function (fullAddr) {
-        const fa = (fullAddr || "현재 위치").trim();
-        pushRecentArea(fa);
-        addLocation(fa, fa, lat, lng);
-        closeModal();
-      };
-    }
-
     function _makeAreaSelectCb(sp) {
       return function (lat, lng) {
         addLocation(sp.placeName, sp.fullAddress, lat, lng);
