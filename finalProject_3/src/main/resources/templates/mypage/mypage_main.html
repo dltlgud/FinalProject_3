@@ -68,10 +68,10 @@
                     <button class="tab-btn" onclick="switchInfoTab(this, 'purchase')">내 구매상품</button>
                 </div>
                 <div class="mp-tab-sub-header" id="myProductFilterHeader">
-                    <span class="active" role="button" tabindex="0" onclick="switchMyProductFilter(this, '전체')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'전체')">전체</span>
-                    <span role="button" tabindex="0" onclick="switchMyProductFilter(this, '판매중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'판매중')">판매중</span>
-                    <span role="button" tabindex="0" onclick="switchMyProductFilter(this, '예약중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'예약중')">예약중</span>
-                    <span role="button" tabindex="0" onclick="switchMyProductFilter(this, '판매완료')" onkeydown="if(event.key==='Enter'||event.key===' ')switchMyProductFilter(this,'판매완료')">판매완료</span>
+                    <button class="active" type="button" onclick="switchMyProductFilter(this, '전체')">전체</button>
+                    <button type="button" onclick="switchMyProductFilter(this, '판매중')">판매중</button>
+                    <button type="button" onclick="switchMyProductFilter(this, '예약중')">예약중</button>
+                    <button type="button" onclick="switchMyProductFilter(this, '판매완료')">판매완료</button>
                 </div>
                 <div id="myProductContent" class="mp-tab-content">
                     <div class="mp-empty"><p>선택된 조건에 해당하는 상품이 없습니다.</p></div>
@@ -131,10 +131,10 @@
                 <div class="mp-section-title">찜내역 <span id="wishCountBadge" style="font-size:15px; color:#999; font-weight:normal;"></span></div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                     <div class="mp-tab-sub-header" id="wishFilterHeader" style="padding:0; margin:0;">
-                        <span class="active" role="button" tabindex="0" onclick="switchWishFilter(this, '전체')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'전체')">전체</span>
-                        <span role="button" tabindex="0" onclick="switchWishFilter(this, '판매중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'판매중')">판매중</span>
-                        <span role="button" tabindex="0" onclick="switchWishFilter(this, '예약중')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'예약중')">예약중</span>
-                        <span role="button" tabindex="0" onclick="switchWishFilter(this, '판매완료')" onkeydown="if(event.key==='Enter'||event.key===' ')switchWishFilter(this,'판매완료')">판매완료</span>
+                        <button class="active" type="button" onclick="switchWishFilter(this, '전체')">전체</button>
+                        <button type="button" onclick="switchWishFilter(this, '판매중')">판매중</button>
+                        <button type="button" onclick="switchWishFilter(this, '예약중')">예약중</button>
+                        <button type="button" onclick="switchWishFilter(this, '판매완료')">판매완료</button>
                     </div>
                     <select id="wishSortSelect" onchange="onWishSortChange()" style="padding:8px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; cursor:pointer; outline:none;">
                         <option value="latest">최신순</option>
@@ -237,7 +237,7 @@
                     취소
                 </button>
                 <button onclick="doWithdraw()"
-                        style="flex:1; padding:13px; border:none; border-radius:8px; background:#e33; color:#fff; font-size:14px; cursor:pointer; font-weight:bold;">
+                        style="flex:1; padding:13px; border:none; border-radius:8px; background:#b91c1c; color:#fff; font-size:14px; cursor:pointer; font-weight:bold;">
                     탈퇴하기
                 </button>
             </div>
@@ -278,7 +278,7 @@
                        style="width:100%; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
-            <button onclick="saveAccount()" style="width:100%; padding:14px; background:#16a34a; color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">
+            <button onclick="saveAccount()" style="width:100%; padding:14px; background:#065f46; color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">
                 저장하기
             </button>
         </div>
@@ -317,7 +317,7 @@
                     <input type="text" id="deliveryPostcode" placeholder="우편번호" readonly
                            style="flex:1; padding:11px 14px; border:1px solid #ddd; border-radius:6px; font-size:14px; background:#f9f9f9; outline:none;">
                     <button type="button" onclick="searchDeliveryAddress()"
-                            style="padding:11px 14px; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; white-space:nowrap;">
+                            style="padding:11px 14px; background:#065f46; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; white-space:nowrap;">
                         주소 검색
                     </button>
                 </div>
@@ -328,7 +328,7 @@
                 <input type="hidden" id="deliveryExtraAddress" value="">
             </div>
 
-            <button onclick="saveDelivery()" style="width:100%; padding:14px; background:#16a34a; color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">
+            <button onclick="saveDelivery()" style="width:100%; padding:14px; background:#065f46; color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">
                 저장하기
             </button>
         </div>
@@ -375,12 +375,12 @@
 
             <!-- 프로필 이미지 -->
             <div style="text-align:center; margin-bottom:20px;">
-                <div role="button" tabindex="0" onclick="toggleEditAvatarPicker()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleEditAvatarPicker()" style="cursor:pointer; display:inline-block; position:relative;">
+                <button type="button" onclick="toggleEditAvatarPicker()" style="cursor:pointer; display:inline-block; position:relative; background:none; border:none; padding:0;">
                     <img id="editProfilePreview" src="" alt="프로필 미리보기" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #eee;">
                     <div style="position:absolute; bottom:0; right:0; background:#222; color:#fff; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-size:12px;">
                         <i class="fas fa-camera"></i>
                     </div>
-                </div>
+                </button>
                 <p style="font-size:12px; color:#999; margin-top:8px;">클릭하여 프로필 사진 변경</p>
             </div>
             <input type="file" id="editAttach" accept="image/*" style="display:none;" onchange="previewEditProfileImage(this)"/>
@@ -472,7 +472,7 @@
         let value = Number.parseFloat(temp);
         if (Number.isNaN(value) || value < 0) value = 0;
         if (value > 100) value = 100;
-        let color = '#9ca3af';
+        let color;
         if (value >= 65.5) {
             color = '#ef4444';
         } else if (value >= 50.5) {
@@ -499,7 +499,7 @@
     let editOriginalNickname = '';
     let editNicknameChecked = false;
 
-    window.openProfileEditModal = function() {
+    globalThis.openProfileEditModal = function() {
         editOriginalNickname = document.getElementById('mypageNickname').innerText.trim();
         editNicknameChecked = true; // 현재 닉네임은 유효
 
@@ -516,24 +516,24 @@
                 const img = document.createElement('img');
                 img.src = `https://api.dicebear.com/7.x/bottts/svg?seed=${i}`;
                 img.style.cssText = 'width:100%; aspect-ratio:1; border-radius:6px; cursor:pointer; border:2px solid transparent; object-fit:cover;';
-                img.onclick = function() { window.selectEditAvatar(this); };
+                img.onclick = function() { globalThis.selectEditAvatar(this); };
                 grid.appendChild(img);
             }
         }
         document.getElementById('profileEditOverlay').style.display = 'block';
     }
 
-    window.closeProfileEditModal = function() {
+    globalThis.closeProfileEditModal = function() {
         document.getElementById('profileEditOverlay').style.display = 'none';
         document.getElementById('editAttach').value = '';
     }
 
-    window.toggleEditAvatarPicker = function() {
+    globalThis.toggleEditAvatarPicker = function() {
         const picker = document.getElementById('editAvatarPicker');
         picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
     }
 
-    window.selectEditAvatar = function(imgEl) {
+    globalThis.selectEditAvatar = function(imgEl) {
         const url = imgEl.src;
         document.getElementById('editProfilePreview').src = url;
         document.getElementById('editDefaultProfile').value = url;
@@ -543,7 +543,7 @@
         imgEl.style.borderColor = '#222';
     }
 
-    window.previewEditProfileImage = function(input) {
+    globalThis.previewEditProfileImage = function(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -555,7 +555,7 @@
         }
     }
 
-    window.onEditNicknameChange = function() {
+    globalThis.onEditNicknameChange = function() {
         const val = document.getElementById('editNickname').value;
         if (val === editOriginalNickname) {
             editNicknameChecked = true;
@@ -566,7 +566,7 @@
         }
     }
 
-    window.checkEditNickname = function() {
+    globalThis.checkEditNickname = function() {
         const nickname = document.getElementById('editNickname').value.trim();
         if (!nickname) { alert('닉네임을 입력하세요.'); return; }
 
@@ -604,7 +604,7 @@
         });
     }
 
-    window.saveProfile = function() {
+    globalThis.saveProfile = function() {
         const nickname = document.getElementById('editNickname').value.trim();
         if (!nickname) { alert('닉네임을 입력하세요.'); return; }
         if (!editNicknameChecked) { alert('닉네임 중복확인을 완료해주세요.'); return; }
@@ -649,7 +649,7 @@
     }
 
     // ===== 배송현황 모달 =====
-    window.openDeliveryStatusModal = function(tradeStatus, paymentType, tradeDate, productName) {
+    globalThis.openDeliveryStatusModal = function(tradeStatus, paymentType, tradeDate, productName) {
         document.getElementById('dsProductName').textContent = productName;
         document.getElementById('dsTradeDate').textContent = tradeDate ? '거래일: ' + tradeDate : '';
         document.getElementById('dsPaymentType').textContent = paymentType ? '결제수단: ' + paymentType : '';
@@ -673,7 +673,11 @@
             steps[0].classList.add('ds-step-done');
             const cancelEl = document.getElementById('dsCancelInfo');
             cancelEl.style.display = 'block';
-            cancelEl.textContent = tradeStatus === '취소' ? '거래가 취소되었습니다.' : (tradeStatus === '환불완료' ? '환불이 완료되었습니다.' : '환불 처리 중입니다.');
+            let cancelText;
+            if (tradeStatus === '취소') { cancelText = '거래가 취소되었습니다.'; }
+            else if (tradeStatus === '환불완료') { cancelText = '환불이 완료되었습니다.'; }
+            else { cancelText = '환불 처리 중입니다.'; }
+            cancelEl.textContent = cancelText;
         } else {
             steps[0].classList.add('ds-step-active');
         }
@@ -681,7 +685,10 @@
     }
 
     // ===== 구매확정 버튼 (택배 구매확정 후 리뷰작성 버튼으로 전환) =====
-    window.confirmPayment = function(productNo, transactionId, targetEmail, productName, imgUrl, amount, paymentType, saleType) {
+    globalThis.confirmPayment = function(productNo, transactionId, targetEmail, productName, imgUrl, amount, payInfo) {
+        const sepIdx = (payInfo || '').indexOf('|');
+        const paymentType = sepIdx >= 0 ? payInfo.slice(0, sepIdx) : (payInfo || '');
+        const saleType = sepIdx >= 0 ? payInfo.slice(sepIdx + 1) : '';
         if (!confirm('구매를 확정하시겠습니까?')) return;
         fetch(`${ctxPath}mypage/confirm-purchase`, {
             method: 'POST',
@@ -694,7 +701,7 @@
             const area = document.getElementById('review-area-' + transactionId);
             if (!area) return;
             area.innerHTML = `<button class="mp-purchase-btn" style="width:100%; background:#ff6b35; color:#fff; border:none; cursor:pointer;"
-                onclick="openReviewModal(${transactionId},'${targetEmail}','${(productName||'').replaceAll("'","\\'")}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
+                onclick="openReviewModal(${transactionId},'${targetEmail}','${(productName||'').replaceAll("'", String.raw`\'`)}','${imgUrl}','${amount}','${paymentType}','${saleType}')">리뷰작성</button>`;
             const badge = document.getElementById('status-badge-' + transactionId);
             if (badge) { badge.className = 'rp-status-badge rp-status-done'; badge.textContent = '거래완료'; }
             const productBadge = document.getElementById('product-status-' + transactionId);
@@ -703,7 +710,7 @@
     }
 
     // ===== 리뷰 작성 팝업 =====
-    window.openReviewModal = function(transactionId, targetEmail, productName, imgUrl, amount, paymentType, saleType) {
+    globalThis.openReviewModal = function(transactionId, targetEmail, productName, imgUrl, amount, paymentType, saleType) {
         const params = new URLSearchParams({
             transactionId, targetEmail, productName,
             imgUrl: imgUrl || '',
@@ -712,17 +719,17 @@
             saleType: saleType || ''
         });
         const url = ctxPath + 'mypage/review/write?' + params.toString();
-        window.open(url, 'reviewPopup', 'width=720,height=750,scrollbars=yes,resizable=yes');
+        globalThis.open(url, 'reviewPopup', 'width=720,height=750,scrollbars=yes,resizable=yes');
     }
 
     // ===== 탈퇴 =====
-    window.openWithdrawModal = function() {
+    globalThis.openWithdrawModal = function() {
         document.getElementById('withdrawModal').style.display = 'block';
     }
-    window.closeWithdrawModal = function() {
+    globalThis.closeWithdrawModal = function() {
         document.getElementById('withdrawModal').style.display = 'none';
     }
-    window.doWithdraw = function() {
+    globalThis.doWithdraw = function() {
         fetch(`${ctxPath}security/withdraw`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
@@ -742,7 +749,7 @@
     // ===== 섹션 전환 =====
     const sectionIds = ['info', 'account', 'review', 'wish', 'report', 'noti'];
 
-    window.switchSection = function(section) {
+    globalThis.switchSection = function(section) {
         sectionIds.forEach(id => {
             const el = document.getElementById('mp-' + id + '-section');
             if (el) el.style.display = id === section ? '' : 'none';
@@ -766,23 +773,22 @@
     let myProductPage = 1;
     let myProductFilter = '전체';
 
-    window.loadMyProducts = function() {
+    globalThis.loadMyProducts = function() {
         fetch(`${ctxPath}mypage/my-products`)
         .then(r => r.json())
         .then(data => {
             myProductAllData = data;
-            myProductPage = 1;
             renderMyProductsPage(1);
         });
     }
 
     // ===== 내 판매상품 수정/삭제 =====
 
-    window.goProductEdit = function(productNo) {
+    globalThis.goProductEdit = function(productNo) {
         location.href = ctxPath + 'mypage/product/edit/' + productNo;
     }
 
-    window.openProductEditModal = function(productNo) {
+    globalThis.openProductEditModal = function(productNo) {
         const p = myProductAllData.find(function(item) { return item.productNo === productNo; });
         if (!p) return;
 
@@ -799,11 +805,11 @@
         document.getElementById('productEditModal').style.display = 'block';
     }
 
-    window.closeProductEditModal = function() {
+    globalThis.closeProductEditModal = function() {
         document.getElementById('productEditModal').style.display = 'none';
     }
 
-    window.saveProductEdit = function() {
+    globalThis.saveProductEdit = function() {
         const productNo = Number.parseInt(document.getElementById('editProductNo').value, 10);
         const saleType = document.getElementById('editProductSaleType').value;
         const productName = document.getElementById('editProductName').value.trim();
@@ -833,7 +839,7 @@
         .catch(() => alert('서버 오류가 발생했습니다.'));
     }
 
-    window.deleteMyProduct = function(productNo) {
+    globalThis.deleteMyProduct = function(productNo) {
         if (!confirm('정말 이 상품을 삭제하시겠습니까?\n삭제 후 복구할 수 없습니다.')) return;
 
         fetch(`${ctxPath}mypage/product/delete`, {
@@ -857,12 +863,11 @@
     let myPurchaseAllData = [];
     let myPurchasePage = 1;
 
-    window.loadMyPurchases = function() {
+    globalThis.loadMyPurchases = function() {
         fetch(`${ctxPath}mypage/my-purchases`)
         .then(r => r.json())
         .then(data => {
             myPurchaseAllData = data;
-            myPurchasePage = 1;
             renderMyPurchasesPage(1);
         });
     }
@@ -876,9 +881,10 @@
                     onclick="openReviewModal(${reviewModalArgs})">리뷰작성</button>`;
         }
         if (p.tradeMethod === '택배') {
+            const escapedName = (p.productName || '').replaceAll("'", String.raw`\'`);
             return `<div id="review-area-${p.transactionId}" style="flex:1;">
                     <button class="mp-purchase-btn" style="width:100%; background:#1976d2; color:#fff; border:none; cursor:pointer;"
-                        onclick="confirmPayment(${p.productNo}, ${reviewModalArgs})">구매확정</button>
+                        onclick="confirmPayment(${p.productNo}, ${p.transactionId},'${p.sellerEmail}','${escapedName}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${(p.paymentType||'')}|${(p.saleType||'')}')">구매확정</button>
                 </div>`;
         }
         return `<button class="mp-purchase-btn" style="background:#eee; color:#aaa; border:none; cursor:default;" disabled>리뷰작성</button>`;
@@ -891,7 +897,6 @@
     }
 
     function renderMyPurchasesPage(page) {
-        myPurchasePage = page;
         const total = myPurchaseAllData.length;
         const start = (page - 1) * MY_PURCHASE_PAGE_SIZE;
         const pageItems = myPurchaseAllData.slice(start, start + MY_PURCHASE_PAGE_SIZE);
@@ -912,18 +917,23 @@
         };
 
         container.innerHTML = `<div class="mp-wish-grid">${pageItems.map(p => {
-            const imgSrc = p.imgUrl
-                ? (p.imgUrl.startsWith('http') ? p.imgUrl : ctxPath.replace(/\/$/, '') + p.imgUrl)
-                : `${ctxPath}images/no_image.png`;
+            let imgSrc;
+            if (!p.imgUrl) { imgSrc = `${ctxPath}images/no_image.png`; }
+            else if (p.imgUrl.startsWith('http')) { imgSrc = p.imgUrl; }
+            else { imgSrc = ctxPath.replace(/\/$/, '') + p.imgUrl; }
             const priceText = _buildPurchasePriceText(p);
             const st = statusMap[p.tradeStatus] || { cls: 'rp-status-pending', label: p.tradeStatus || '-' };
-            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replaceAll("'", "\\'")}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
+            const reviewModalArgs = `${p.transactionId},'${p.sellerEmail}','${p.productName.replaceAll("'", String.raw`\'`)}','${p.imgUrl || ''}','${p.amount || p.productPrice || ''}','${p.paymentType || ''}','${p.saleType || ''}'`;
             const reviewAreaHtml = _buildPurchaseReviewHtml(p, reviewModalArgs);
+            let tradeBg;
+            if (p.productTradeStatus === '판매완료') { tradeBg = '#555'; }
+            else if (p.productTradeStatus === '예약중') { tradeBg = '#e67e22'; }
+            else { tradeBg = '#4CB050'; }
             return `
                 <div class="mp-wish-card">
                     <a href="${ctxPath}product/product_detail/${p.productNo}" class="mp-wish-img-wrap">
                         <img src="${imgSrc}" alt="${p.productName}" onerror="this.src='${ctxPath}images/no_image.png'">
-                        ${p.productTradeStatus ? `<span id="product-status-${p.transactionId}" class="mp-wish-status" style="background:${p.productTradeStatus === '판매완료' ? '#555' : p.productTradeStatus === '예약중' ? '#e67e22' : '#4CB050'};">${p.productTradeStatus}</span>` : ''}
+                        ${p.productTradeStatus ? `<span id="product-status-${p.transactionId}" class="mp-wish-status" style="background:${tradeBg};">${p.productTradeStatus}</span>` : ''}
                     </a>
                     <div class="mp-wish-info">
                         <p class="mp-wish-name">${p.productName}</p>
@@ -936,7 +946,7 @@
                     </div>
                     <div style="margin:0 12px 12px; display:flex; gap:6px; flex-wrap:wrap;">
                         ${p.invoiceNo
-                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replaceAll("'", "\\'")}')">배송현황</button>`
+                            ? `<button class="mp-purchase-btn" style="background:#4CB050; color:#fff; border:none; cursor:pointer;" onclick="trackDeliveryByInfo('${p.carrierCode || ''}','${p.invoiceNo}','${p.productName.replaceAll("'", String.raw`\'`)}')">배송현황</button>`
                             : `<button class="mp-purchase-btn" onclick="openNoInvoiceModal()">배송현황</button>`
                         }
                         ${reviewAreaHtml}
@@ -947,11 +957,10 @@
         renderPaging('myPurchasePaging', total, page, MY_PURCHASE_PAGE_SIZE, renderMyPurchasesPage);
     }
 
-    window.switchMyProductFilter = function(el, filter) {
-        document.querySelectorAll('#myProductFilterHeader span').forEach(s => s.classList.remove('active'));
+    globalThis.switchMyProductFilter = function(el, filter) {
+        document.querySelectorAll('#myProductFilterHeader button').forEach(s => s.classList.remove('active'));
         el.classList.add('active');
         myProductFilter = filter;
-        myProductPage = 1;
         renderMyProductsPage(1);
     }
 
@@ -968,7 +977,6 @@
     }
 
     function renderMyProductsPage(page) {
-        myProductPage = page;
         const filtered = myProductFilter === '전체'
             ? myProductAllData
             : myProductAllData.filter(p => p.tradeStatus === myProductFilter);
@@ -985,13 +993,20 @@
         }
 
         container.innerHTML = `<div class="mp-wish-grid">${pageItems.map(p => {
-            const imgSrc = p.imgUrl
-                ? (p.imgUrl.startsWith('http') ? p.imgUrl : ctxPath.replace(/\/$/, '') + p.imgUrl)
-                : `${ctxPath}images/no_image.png`;
+            let imgSrc;
+            if (!p.imgUrl) { imgSrc = `${ctxPath}images/no_image.png`; }
+            else if (p.imgUrl.startsWith('http')) { imgSrc = p.imgUrl; }
+            else { imgSrc = ctxPath.replace(/\/$/, '') + p.imgUrl; }
             const priceText = _buildProductPriceText(p);
             const statusClass = _buildProductStatusClass(p.tradeStatus);
             const showInvoice = p.tradeStatus === '예약중' || p.tradeStatus === '판매완료';
             const hasInvoice = p.invoiceNo && p.invoiceNo.length > 0;
+            let invoiceHtml = '';
+            if (showInvoice) {
+                const invoiceLabel = hasInvoice ? '송장수정' : '송장입력';
+                const trackBtn = hasInvoice ? `<button class="mp-product-edit-btn" style="width:100%; font-size:12px; padding:6px 0; margin-top:4px; background:#4CB050; color:#fff; border:none;" onclick="trackDelivery(${p.transactionId})">배송조회</button>` : '';
+                invoiceHtml = `<div style="margin:0 12px 6px;"><button class="mp-product-edit-btn" style="width:100%; font-size:12px; padding:6px 0;" onclick="openInvoiceModal(${p.transactionId}, '${p.carrierCode || ''}', '${p.invoiceNo || ''}')">${invoiceLabel}</button>${trackBtn}</div>`;
+            }
             return `
                 <div class="mp-wish-card">
                     <a href="${ctxPath}product/product_detail/${p.productNo}" class="mp-wish-img-wrap">
@@ -1002,17 +1017,9 @@
                         <p class="mp-wish-name">${p.productName}</p>
                         <p class="mp-wish-price">${priceText}</p>
                     </div>
-                    ${showInvoice ? `
-                    <div style="margin:0 12px 6px;">
-                        <button class="mp-product-edit-btn" style="width:100%; font-size:12px; padding:6px 0;"
-                            onclick="openInvoiceModal(${p.transactionId}, '${p.carrierCode || ''}', '${p.invoiceNo || ''}')">
-                            ${hasInvoice ? '송장수정' : '송장입력'}
-                        </button>
-                        ${hasInvoice ? `<button class="mp-product-edit-btn" style="width:100%; font-size:12px; padding:6px 0; margin-top:4px; background:#4CB050; color:#fff; border:none;"
-                            onclick="trackDelivery(${p.transactionId})">배송조회</button>` : ''}
-                    </div>` : ''}
+                    ${invoiceHtml}
                     <div class="mp-product-actions">
-                        ${p.tradeStatus !== '판매완료' ? `<button class="mp-product-edit-btn" onclick="goProductEdit(${p.productNo})">수정</button>` : ''}
+                        ${p.tradeStatus === '판매완료' ? '' : `<button class="mp-product-edit-btn" onclick="goProductEdit(${p.productNo})">수정</button>`}
                         <button class="mp-product-delete-btn"
                             ${p.tradeStatus === '예약중' ? 'disabled title="예약중인 상품은 삭제할 수 없습니다."' : `onclick="deleteMyProduct(${p.productNo})"`}>삭제</button>
                     </div>
@@ -1029,27 +1036,24 @@
     let wishSort = 'latest';
     let wishFilter = '전체';
 
-    window.loadWishlist = function() {
+    globalThis.loadWishlist = function() {
         fetch(`${ctxPath}mypage/wishlist`)
         .then(r => r.json())
         .then(data => {
             wishAllData = data;
-            wishPage = 1;
             renderWishlistPage(1);
         });
     }
 
-    window.switchWishFilter = function(el, filter) {
-        document.querySelectorAll('#wishFilterHeader span').forEach(s => s.classList.remove('active'));
+    globalThis.switchWishFilter = function(el, filter) {
+        document.querySelectorAll('#wishFilterHeader button').forEach(s => s.classList.remove('active'));
         el.classList.add('active');
         wishFilter = filter;
-        wishPage = 1;
         renderWishlistPage(1);
     }
 
-    window.onWishSortChange = function() {
+    globalThis.onWishSortChange = function() {
         wishSort = document.getElementById('wishSortSelect').value;
-        wishPage = 1;
         renderWishlistPage(1);
     }
 
@@ -1067,7 +1071,6 @@
     }
 
     function renderWishlistPage(page) {
-        wishPage = page;
         const sorted = getSortedWishlist();
         const total = sorted.length;
         const start = (page - 1) * WISH_PAGE_SIZE;
@@ -1083,15 +1086,19 @@
         }
 
         container.innerHTML = pageItems.map(p => {
-            const imgSrc = p.imgUrl
-                ? (p.imgUrl.startsWith('http') ? p.imgUrl : ctxPath.replace(/\/$/, '') + p.imgUrl)
-                : `${ctxPath}images/no_image.png`;
-            const priceText = p.saleType === '나눔' ? '나눔'
-                : p.saleType === '경매' ? '경매'
-                : (p.productPrice ? p.productPrice.toLocaleString() + '원' : '가격 미정');
-            const statusClass = p.tradeStatus === '판매중' ? 'wish-status-sale'
-                : p.tradeStatus === '예약중' ? 'wish-status-reserve'
-                : 'wish-status-done';
+            let imgSrc;
+            if (!p.imgUrl) { imgSrc = `${ctxPath}images/no_image.png`; }
+            else if (p.imgUrl.startsWith('http')) { imgSrc = p.imgUrl; }
+            else { imgSrc = ctxPath.replace(/\/$/, '') + p.imgUrl; }
+            let priceText;
+            if (p.saleType === '나눔') { priceText = '나눔'; }
+            else if (p.saleType === '경매') { priceText = '경매'; }
+            else if (p.productPrice) { priceText = p.productPrice.toLocaleString() + '원'; }
+            else { priceText = '가격 미정'; }
+            let statusClass;
+            if (p.tradeStatus === '판매중') { statusClass = 'wish-status-sale'; }
+            else if (p.tradeStatus === '예약중') { statusClass = 'wish-status-reserve'; }
+            else { statusClass = 'wish-status-done'; }
             return `
                 <div class="mp-wish-card">
                     <div class="mp-wish-img-wrap">
@@ -1113,7 +1120,7 @@
         renderPaging('wishPaging', total, page, WISH_PAGE_SIZE, renderWishlistPage);
     }
 
-    window.cancelWish = function(productNo, btn) {
+    globalThis.cancelWish = function(productNo, btn) {
         btn.disabled = true;
         fetch(`${ctxPath}product/wishlist/toggle`, {
             method: 'POST',
@@ -1152,7 +1159,7 @@
         if (groupEnd < totalPages) container.appendChild(makeBtn('다음', groupEnd + 1));
     }
 
-    window.switchInfoTab = function(btn, tab) {
+    globalThis.switchInfoTab = function(btn, tab) {
         btn.closest('.mp-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const isSell = tab === 'sell';
@@ -1164,13 +1171,13 @@
         if (!isSell) loadMyPurchases();
     }
 
-    window.switchReviewTab = function(btn, tab) {
+    globalThis.switchReviewTab = function(btn, tab) {
         btn.closest('.mp-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         loadReviews(tab);
     }
 
-    window.loadReviews = function(tab) {
+    globalThis.loadReviews = function(tab) {
         const container = document.getElementById('reviewContent');
         container.innerHTML = '<div class="mp-empty"><p>불러오는 중...</p></div>';
 
@@ -1201,12 +1208,14 @@
         const html = '<div class="mp-card-list">' + data.map(r => {
             const stars = '★'.repeat(Math.round(r.rating || 0)) + '☆'.repeat(5 - Math.round(r.rating || 0));
             const date = r.createdAt ? new Date(r.createdAt).toLocaleDateString('ko-KR') : '';
-            const imgSrc = r.productImgUrl
-                ? (r.productImgUrl.startsWith('http') ? r.productImgUrl : ctxPath.replace(/\/$/, '') + r.productImgUrl)
-                : ctxPath.replace(/\/$/, '') + '/images/no_image.png';
-            const profileSrc = r.writerProfileImg
-                ? (r.writerProfileImg.startsWith('http') ? r.writerProfileImg : ctxPath.replace(/\/$/, '') + '/resources/profile_images/' + r.writerProfileImg)
-                : 'https://api.dicebear.com/7.x/bottts/svg?seed=user';
+            let imgSrc;
+            if (!r.productImgUrl) { imgSrc = ctxPath.replace(/\/$/, '') + '/images/no_image.png'; }
+            else if (r.productImgUrl.startsWith('http')) { imgSrc = r.productImgUrl; }
+            else { imgSrc = ctxPath.replace(/\/$/, '') + r.productImgUrl; }
+            let profileSrc;
+            if (!r.writerProfileImg) { profileSrc = 'https://api.dicebear.com/7.x/bottts/svg?seed=user'; }
+            else if (r.writerProfileImg.startsWith('http')) { profileSrc = r.writerProfileImg; }
+            else { profileSrc = ctxPath.replace(/\/$/, '') + '/resources/profile_images/' + r.writerProfileImg; }
             const partnerLabel = type === 'received' ? '구매자' : '판매자';
             const partnerName = r.writerName || (type === 'received' ? r.writerEmail : r.targetEmail) || '-';
             return `
@@ -1238,10 +1247,13 @@
             return;
         }
         const html = '<div class="mp-card-list">' + data.map(p => {
-            const imgSrc = p.imgUrl
-                ? (p.imgUrl.startsWith('http') ? p.imgUrl : ctxPath.replace(/\/$/, '') + p.imgUrl)
-                : ctxPath.replace(/\/$/, '') + '/images/no_image.png';
-            const priceText = p.amount != null ? p.amount.toLocaleString() + '원' : (p.productPrice ? p.productPrice.toLocaleString() + '원' : '');
+            let imgSrc;
+            if (!p.imgUrl) { imgSrc = ctxPath.replace(/\/$/, '') + '/images/no_image.png'; }
+            else if (p.imgUrl.startsWith('http')) { imgSrc = p.imgUrl; }
+            else { imgSrc = ctxPath.replace(/\/$/, '') + p.imgUrl; }
+            let priceText;
+            if (p.amount == null) { priceText = p.productPrice ? p.productPrice.toLocaleString() + '원' : ''; }
+            else { priceText = p.amount.toLocaleString() + '원'; }
             return `
             <div class="mp-wish-card" style="margin-bottom:12px;">
                 <div style="display:flex;gap:12px;padding:14px 16px;align-items:center;">
@@ -1251,7 +1263,7 @@
                         <div style="font-size:14px;font-weight:bold;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.productName || '-'}</div>
                         <div style="font-size:13px;color:#888;margin-bottom:8px;">${priceText}</div>
                         <button class="mp-purchase-btn" style="background:#ff6b35;color:#fff;border:none;cursor:pointer;"
-                            onclick="openReviewModal(${p.transactionId},'${p.sellerEmail}','${(p.productName||'').replaceAll("'","\\'")}','${p.imgUrl||''}','${p.amount||p.productPrice||''}','${p.paymentType||''}','${p.saleType||''}')">
+                            onclick="openReviewModal(${p.transactionId},'${p.sellerEmail}','${(p.productName||'').replaceAll("'", String.raw`\'`)}','${p.imgUrl||''}','${p.amount||p.productPrice||''}','${p.paymentType||''}','${p.saleType||''}')">
                             리뷰 작성하기
                         </button>
                     </div>
@@ -1261,7 +1273,7 @@
         container.innerHTML = html;
     }
 
-    window.switchReportTab = function(btn, tab) {
+    globalThis.switchReportTab = function(btn, tab) {
         btn.closest('.mp-tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById('reportSentContent').style.display = tab === 'sent' ? '' : 'none';
@@ -1277,7 +1289,7 @@
     let receivedPage = 1;
     const REPORT_PAGE_SIZE = 3;
 
-    window.changeReportPage = function(type, page) {
+    globalThis.changeReportPage = function(type, page) {
         if (type === 'sent') {
             const totalPages = Math.ceil(allReportsSent.length / REPORT_PAGE_SIZE);
             if (page < 1 || page > totalPages) return;
@@ -1390,7 +1402,7 @@
         container.innerHTML = cardsHtml + pagingHtml;
     }
 
-    window.loadMyReportsSent = function() {
+    globalThis.loadMyReportsSent = function() {
         sentPage = 1;
         fetch(`${ctxPath}mypage/reports/sent`)
         .then(r => r.json())
@@ -1400,7 +1412,7 @@
         });
     }
 
-    window.loadMyReportsReceived = function() {
+    globalThis.loadMyReportsReceived = function() {
         receivedPage = 1;
         fetch(`${ctxPath}mypage/reports/received`)
         .then(r => r.json())
@@ -1413,7 +1425,7 @@
     // ===== 계좌 관리 =====
     let accountList = [];
 
-    window.loadAccounts = function() {
+    globalThis.loadAccounts = function() {
         fetch(`${ctxPath}mypage/accounts`)
         .then(r => r.json())
         .then(data => { accountList = data; renderAccountList(data); });
@@ -1449,7 +1461,7 @@
         `).join('');
     }
 
-    window.openAccountModal = function(accountId) {
+    globalThis.openAccountModal = function(accountId) {
         document.getElementById('accountModalTitle').textContent = accountId ? '계좌 수정' : '계좌 추가';
         document.getElementById('accountIdInput').value = accountId || '';
         if (accountId) {
@@ -1467,11 +1479,11 @@
         document.getElementById('accountModal').style.display = 'block';
     }
 
-    window.closeAccountModal = function() {
+    globalThis.closeAccountModal = function() {
         document.getElementById('accountModal').style.display = 'none';
     }
 
-    window.saveAccount = function() {
+    globalThis.saveAccount = function() {
         const accountId = document.getElementById('accountIdInput').value;
         const bankName = document.getElementById('bankNameInput').value;
         const accountNum = document.getElementById('accountNumInput').value.trim();
@@ -1494,14 +1506,14 @@
         .catch(() => alert('서버 오류가 발생했습니다.'));
     }
 
-    window.deleteAccount = function(accountId) {
+    globalThis.deleteAccount = function(accountId) {
         if (!confirm('이 계좌를 삭제하시겠습니까?')) return;
         fetch(`${ctxPath}mypage/account/delete?accountId=${accountId}`, { method: 'POST' })
         .then(r => r.json())
         .then(data => { if (data.success) loadAccounts(); else alert(data.message || '삭제에 실패했습니다.'); });
     }
 
-    window.setPrimaryAccount = function(accountId) {
+    globalThis.setPrimaryAccount = function(accountId) {
         fetch(`${ctxPath}mypage/account/setPrimary?accountId=${accountId}`, { method: 'POST' })
         .then(r => r.json())
         .then(data => { if (data.success) loadAccounts(); else alert(data.message || '오류가 발생했습니다.'); });
@@ -1510,7 +1522,7 @@
     // ===== 배송지 관리 =====
     let deliveryList = [];
 
-    window.loadDeliveries = function() {
+    globalThis.loadDeliveries = function() {
         fetch(`${ctxPath}mypage/deliveries`)
         .then(r => r.json())
         .then(data => { deliveryList = data; renderDeliveryList(data); });
@@ -1546,7 +1558,7 @@
         `).join('');
     }
 
-    window.openDeliveryModal = function(deliveryNo) {
+    globalThis.openDeliveryModal = function(deliveryNo) {
         document.getElementById('deliveryModalTitle').textContent = deliveryNo ? '배송지 수정' : '배송지 추가';
         document.getElementById('deliveryNoInput').value = deliveryNo || '';
         if (deliveryNo) {
@@ -1570,11 +1582,11 @@
         document.getElementById('deliveryModal').style.display = 'block';
     }
 
-    window.closeDeliveryModal = function() {
+    globalThis.closeDeliveryModal = function() {
         document.getElementById('deliveryModal').style.display = 'none';
     }
 
-    window.searchDeliveryAddress = function() {
+    globalThis.searchDeliveryAddress = function() {
         new daum.Postcode({
             oncomplete: function(data) {
                 document.getElementById('deliveryPostcode').value = data.zonecode;
@@ -1586,7 +1598,7 @@
         }).open();
     }
 
-    window.saveDelivery = function() {
+    globalThis.saveDelivery = function() {
         const deliveryNo = document.getElementById('deliveryNoInput').value;
         const label = document.getElementById('deliveryLabelInput').value.trim();
         const receiverName = document.getElementById('receiverNameInput').value.trim();
@@ -1615,32 +1627,32 @@
         .catch(() => alert('서버 오류가 발생했습니다.'));
     }
 
-    window.deleteDelivery = function(deliveryNo) {
+    globalThis.deleteDelivery = function(deliveryNo) {
         if (!confirm('이 배송지를 삭제하시겠습니까?')) return;
         fetch(`${ctxPath}mypage/delivery/delete?deliveryNo=${deliveryNo}`, { method: 'POST' })
         .then(r => r.json())
         .then(data => { if (data.success) loadDeliveries(); else alert(data.message || '삭제에 실패했습니다.'); });
     }
 
-    window.setPrimaryDelivery = function(deliveryNo) {
+    globalThis.setPrimaryDelivery = function(deliveryNo) {
         fetch(`${ctxPath}mypage/delivery/setPrimary?deliveryNo=${deliveryNo}`, { method: 'POST' })
         .then(r => r.json())
         .then(data => { if (data.success) loadDeliveries(); else alert(data.message || '오류가 발생했습니다.'); });
     }
 
     // ===== 송장번호 / 배송조회 =====
-    window.openInvoiceModal = function(transactionId, carrierCode, invoiceNo) {
+    globalThis.openInvoiceModal = function(transactionId, carrierCode, invoiceNo) {
         document.getElementById('invoiceProductNo').value = transactionId;
         document.getElementById('invoiceCarrierCode').value = carrierCode || '';
         document.getElementById('invoiceNo').value = invoiceNo || '';
         document.getElementById('invoiceModal').style.display = 'block';
     }
 
-    window.closeInvoiceModal = function() {
+    globalThis.closeInvoiceModal = function() {
         document.getElementById('invoiceModal').style.display = 'none';
     }
 
-    window.saveInvoice = function() {
+    globalThis.saveInvoice = function() {
         const transactionId = Number.parseInt(document.getElementById('invoiceProductNo').value, 10);
         const carrierCode = document.getElementById('invoiceCarrierCode').value;
         const invoiceNo = document.getElementById('invoiceNo').value.trim();
@@ -1703,7 +1715,7 @@
             <div>${detailsHtml}</div>`;
     }
 
-    window.trackDelivery = function(transactionId) {
+    globalThis.trackDelivery = function(transactionId) {
         const content = document.getElementById('trackingContent');
         content.innerHTML = '<p style="text-align:center; color:#999;">조회 중...</p>';
         document.getElementById('trackingModal').style.display = 'block';
@@ -1719,19 +1731,19 @@
         .catch(() => { content.innerHTML = '<p style="text-align:center; color:#e33;">서버 오류가 발생했습니다.</p>'; });
     }
 
-    window.closeTrackingModal = function() {
+    globalThis.closeTrackingModal = function() {
         document.getElementById('trackingModal').style.display = 'none';
     }
 
     // 송장번호 미입력 안내
-    window.openNoInvoiceModal = function() {
+    globalThis.openNoInvoiceModal = function() {
         const content = document.getElementById('trackingContent');
         content.innerHTML = '<p style="text-align:center; padding:40px 0; color:#888; font-size:15px;">판매자가 아직 송장번호를 입력하지 않았습니다.<br>잠시 후 다시 확인해주세요.</p>';
         document.getElementById('trackingModal').style.display = 'block';
     }
 
     // 구매자용 - carrierCode/invoiceNo 직접 전달
-    window.trackDeliveryByInfo = function(carrierCode, invoiceNo, productName) {
+    globalThis.trackDeliveryByInfo = function(carrierCode, invoiceNo, productName) {
         const content = document.getElementById('trackingContent');
         content.innerHTML = '<p style="text-align:center; color:#999;">조회 중...</p>';
         document.getElementById('trackingModal').style.display = 'block';
@@ -1755,7 +1767,7 @@
         loadMyProducts();
     });
 
-    window.loadNotiPreview = function() {
+    globalThis.loadNotiPreview = function() {
         const base = ctxPath.replace(/\/$/, '');
         fetch(base + '/noti/count').then(r => r.json()).then(data => {
             const el = document.getElementById('notiUnreadCount');

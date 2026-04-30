@@ -5,13 +5,13 @@
   <!-- header.html -->
   <header class="site-header">
     <!-- 상단 프로모 배너 -->
-    <div class="promo-banner" role="banner">
+    <header class="promo-banner">
       <div class="promo-inner">
         <p class="promo-text" th:text="${promoBanner}">
           카페 1900만 고객이 판매하는 하루 10만개의 상품을 편리하게 검색해보세요
         </p>
       </div>
-    </div>
+    </header>
 
     <!-- 메인 헤더 -->
     <div class="header-main">
@@ -114,8 +114,8 @@
                 document.getElementById('toastMsg').textContent   = m||'';
                 const el = document.getElementById('notiToast');
                 el.style.display='block';
-                clearTimeout(window._tt);
-                window._tt = setTimeout(()=>el.style.display='none', 4000);
+                clearTimeout(globalThis._tt);
+                globalThis._tt = setTimeout(()=>el.style.display='none', 4000);
               }
             })();
             </script>
