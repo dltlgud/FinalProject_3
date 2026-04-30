@@ -28,9 +28,8 @@ img {
 .spx-sellerTop {
 	display: flex;
 	gap: 18px;
-	align-items: flex-start;
+	align-items: center;
 	margin-bottom: 16px;
-	align-items: center;     /* 세로 가운데 */
 }
 
 
@@ -437,7 +436,6 @@ img {
 }
 
 .sps-title {
-	display: block;
 	font-size: 14px;
 	font-weight: bold;
 	letter-spacing: -0.1px;

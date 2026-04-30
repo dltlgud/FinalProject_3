@@ -12,8 +12,8 @@
 ========================================================= */
 
 (() => {
-  if (window.__PF_FORM_BOUND__ === true) return;
-  window.__PF_FORM_BOUND__ = true;
+  if (globalThis.__PF_FORM_BOUND__ === true) return;
+  globalThis.__PF_FORM_BOUND__ = true;
 
   const $ = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
@@ -21,7 +21,7 @@
   const wrap = $(".pf-wrap");
   if (!wrap) return;
 
-  window.PF = window.PF || {};
+  globalThis.PF = globalThis.PF || {};
 
   function parseNumber(raw) {
     const n = String(raw ?? "").replaceAll(/[^\d]/g, "");
@@ -45,7 +45,7 @@
     const raw =
       document.documentElement.dataset.contextPath ||
       document.body.dataset.contextPath ||
-      window.ctxPath ||
+      globalThis.ctxPath ||
       "";
     return String(raw).replace(/\/$/, "");
   }
@@ -217,11 +217,11 @@
       if (!content.contains(e.target)) closeModal();
     });
 
-    window.addEventListener("keydown", (e) => {
+    globalThis.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
     });
 
-    window.PF.RestrictionModal = { open: openModal, close: closeModal };
+    globalThis.PF.RestrictionModal = { open: openModal, close: closeModal };
   })();
 
   // =========================================================
@@ -245,7 +245,7 @@
     }
 
     setActiveTab();
-    window.addEventListener("resize", setActiveTab);
+    globalThis.addEventListener("resize", setActiveTab);
   })();
 
   // =========================================================
@@ -325,7 +325,7 @@
       previewWrap.innerHTML = "";
       previewWrap.classList.toggle("is-on", selectedFiles.length > 0);
       mainHidden.value = String(mainIndex);
-      selectedFiles.forEach(renderPreviewItem);
+      selectedFiles.forEach((file, idx) => renderPreviewItem(file, idx));
     }
 
     fileInput.addEventListener("change", (e) => {
@@ -362,7 +362,7 @@
     };
   })();
 
-  window.PF.Image = ImageModule;
+  globalThis.PF.Image = ImageModule;
 
   // =========================================================
   // textarea 글자수
@@ -410,7 +410,7 @@
         return [];
       }
 
-      if (feeIncluded && feeIncluded.checked) {
+      if (feeIncluded?.checked) {
         const payload = [{ parcelType: "무료배송", shippingFee: 0 }];
         shipOptionsHidden.value = JSON.stringify(payload);
         return payload;
@@ -438,7 +438,7 @@
         feeDetail.setAttribute("aria-hidden", (isShip && isSeparate) ? "false" : "true");
       }
 
-      if (feeIncluded && feeIncluded.checked) {
+      if (feeIncluded?.checked) {
         optChecks.forEach(chk => chk.checked = false);
         feeInputs.forEach(inp => { inp.value = ""; inp.disabled = true; });
       }
@@ -457,13 +457,13 @@
       if (locBtn) locBtn.style.display = isMeet ? "" : "none";
       if (chips) chips.style.display = isMeet ? "" : "none";
 
-      if (!isShip) {
+      if (isShip) {
+        setFeeDetailUI();
+      } else {
         shipOptionsHidden.value = "[]";
         if (feeDetail) feeDetail.classList.remove("is-open");
         feeInputs.forEach(inp => { inp.value = ""; inp.disabled = true; });
         optChecks.forEach(chk => chk.checked = false);
-      } else {
-        setFeeDetailUI();
       }
     }
 
@@ -528,7 +528,7 @@
       syncShipOptionsJson,
       validate() {
         if (!shipToggle.checked) return { ok: true };
-        if (feeIncluded && feeIncluded.checked) return { ok: true };
+        if (feeIncluded?.checked) return { ok: true };
 
         const opts = syncShipOptionsJson();
         if (opts.length === 0) return { ok: false, msg: "배송비 별도를 선택했다면 배송 옵션을 1개 이상 선택해 주세요." };
@@ -553,7 +553,7 @@
     };
   })();
 
-  window.PF.Shipping = ShippingModule;
+  globalThis.PF.Shipping = ShippingModule;
 
   // =========================================================
   // 판매가격 숫자만 입력 + 검증
@@ -606,7 +606,7 @@
     };
   })();
 
-  window.PF.Price = PriceModule;
+  globalThis.PF.Price = PriceModule;
 
   // =========================================================
   // AI 판매글 작성
@@ -704,9 +704,9 @@
           alertAndFocus("판매가격을 먼저 입력해 주세요.", priceEl);
           return false;
         }
-        const priceV = window.PF.Price?.validate?.();
-        if (priceV && priceV.ok === false) {
-          alertAndFocus(priceV.msg, window.PF.Price?.el);
+        const priceV = globalThis.PF.Price?.validate?.();
+        if (priceV?.ok === false) {
+          alertAndFocus(priceV.msg, globalThis.PF.Price?.el);
           return false;
         }
       }
@@ -786,7 +786,7 @@
     };
   })();
 
-  window.PF.AiSell = AiSellModule;
+  globalThis.PF.AiSell = AiSellModule;
 
   // =========================================================
   // 직거래 위치 1~3 -> meetLocationsJson
@@ -870,7 +870,7 @@
     function renderChips() {
       const arr = load();
       chipsWrap.innerHTML = "";
-      arr.forEach(renderChipItem);
+      arr.forEach((loc, idx) => renderChipItem(loc, idx));
     }
 
     function updateAddButtonState() {
@@ -941,14 +941,14 @@
       }
     });
 
-    window.addEventListener("keydown", (e) => {
+    globalThis.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && modal.classList.contains("is-open")) {
         closeModal();
       }
     });
 
     function ensureKakaoServices() {
-      return !!(window.kakao && kakao.maps && kakao.maps.services);
+      return !!(globalThis.kakao && kakao.maps && kakao.maps.services);
     }
 
     function waitForKakaoServices(cb, tries = 50) {
@@ -1069,7 +1069,7 @@
       if (map || !mapEl) return;
 
       map = new kakao.maps.Map(mapEl, {
-        center: new kakao.maps.LatLng(37.5665, 126.9780),
+        center: new kakao.maps.LatLng(37.5665, 126.978),
         level: 4
       });
 
@@ -1217,18 +1217,6 @@
       }
     }
 
-    function setMyLocation() {
-      if (!navigator.geolocation) {
-        alert("이 브라우저는 위치 기능을 지원하지 않습니다.");
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        _onGeoSuccess,
-        _onGeoError,
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
-    }
-
     function _makeAreaSelectCb(sp) {
       return function (lat, lng) {
         addLocation(sp.placeName, sp.fullAddress, lat, lng);
@@ -1281,7 +1269,7 @@
       }
     };
   })();
-  window.PF.Meet = MeetLocationModule;
+  globalThis.PF.Meet = MeetLocationModule;
 
   // =========================================================
   // 폼 submit 시 유효성 검사
