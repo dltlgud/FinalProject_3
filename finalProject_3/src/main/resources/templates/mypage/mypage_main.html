@@ -757,7 +757,7 @@
             if (el) el.style.display = id === section ? '' : 'none';
         });
 
-        document.querySelectorAll('.mp-nav a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('.mp-nav a, .mp-nav button').forEach(el => el.classList.remove('active'));
         const navEl = document.getElementById('nav-' + section);
         if (navEl) navEl.classList.add('active');
 
