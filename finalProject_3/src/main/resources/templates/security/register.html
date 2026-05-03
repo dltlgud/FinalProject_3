@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html th:replace="~{layout/layout_main :: layout(~{::head}, ~{::main}, ~{::script})}"
       xmlns:th="http://www.thymeleaf.org"
       lang="ko">
@@ -23,10 +23,10 @@
                             <th>프로필 사진</th>
                             <td>
                                 <div style="text-align: left;">
-                                    <div class="profile-upload-container" role="button" tabindex="0" onclick="openProfileModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openProfileModal()" style="cursor: pointer;">
+                                    <button type="button" class="profile-upload-container" onclick="openProfileModal()" style="cursor: pointer; background: none; border: none; padding: 0; display: block;">
                                         <img id="profilePreview" src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="프로필 사진" class="profile-img"/>
                                         <div class="camera-btn"><i class="fas fa-camera"></i></div>
-                                    </div>
+                                    </button>
                                     <div class="address-guide" style="margin-top: 10px;">사진을 클릭하여 프로필을 설정해보세요.</div>
                                 </div>
                                 <input type="file" name="attach" id="attach" accept="image/*" class="file-input-hidden" onchange="previewProfileImage(this)"/>
@@ -189,10 +189,10 @@
 	
 	        // 비밀번호 확인 실시간 검사
 	        $("#pwdcheck").blur(function() {
-	            if($("#password").val() !== $(this).val()) {
-	                $(this).closest('td').find(".error").text("비밀번호가 일치하지 않습니다.").show();
-	            } else {
+	            if($("#password").val() === $(this).val()) {
 	                $(this).closest('td').find(".error").hide();
+	            } else {
+	                $(this).closest('td').find(".error").text("비밀번호가 일치하지 않습니다.").show();
 	            }
 	        });
 	
@@ -225,12 +225,12 @@
 
 	                    if (data.userSelectedType === 'R') {
 	                        // 법정동명이 있을 경우 추가
-	                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+	                        if (data.bname !== '' && /[동로가]$/g.test(data.bname)) {
 	                            extraAddr += data.bname;
 	                        }
 	                        // 건물명이 있고, 아파트일 경우 추가
 	                        if (data.buildingName !== '' && data.apartment === 'Y') {
-	                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+	                            extraAddr += (extraAddr === '' ? data.buildingName : ', ' + data.buildingName);
 	                        }
 	                        // 표시할 참고항목이 있으면 괄호()로 감싼다
 	                        if (extraAddr !== '') {
@@ -277,7 +277,7 @@
 	        if(email === "") { alert("이메일을 입력하세요."); return; }
 	
 	        // [정규식 추가] 이메일 유효성 검사
-	        const regExpEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+	        const regExpEmail = /^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-_.]?[0-9a-z])*\.[a-z]{2,3}$/i;
 	        if(!regExpEmail.test(email)) {
 	            alert("올바른 이메일 형식이 아닙니다.");
 	            $("#email").focus();
@@ -372,7 +372,7 @@
 	        const phone = $("#phone").val().trim();
 	        if(phone === "") { alert("휴대폰 번호를 입력해주세요."); return; }
 
-	        const regExpPhone = /^[0-9]{11}$/;
+	        const regExpPhone = /^\d{11}$/;
 	        if(!regExpPhone.test(phone)) {
 	            alert("휴대폰 번호는 11자리 숫자만 입력해주세요. (- 제외)");
 	            $("#phone").focus();
@@ -457,7 +457,7 @@
 	
 	        // [정규식 추가] 2. 전체 입력값 정규식 최종 체크
 	        const email = $("#email").val().trim();
-	        const regExpEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+	        const regExpEmail = /^[0-9a-z]([-_.]?[0-9a-z])*@[0-9a-z]([-_.]?[0-9a-z])*\.[a-z]{2,3}$/i;
 	        if(!regExpEmail.test(email)) {
 	            alert("올바른 이메일 형식이 아닙니다.");
 	            $("#email").focus();
@@ -490,7 +490,7 @@
 	        }
 	
 	        const phone = $("#phone").val().trim();
-	        const regExpPhone = /^[0-9]{11}$/;
+	        const regExpPhone = /^\d{11}$/;
 	        if(!regExpPhone.test(phone)) {
 	            alert("휴대폰 번호는 11자리 숫자만 입력해주세요. (- 제외)");
 	            $("#phone").focus();

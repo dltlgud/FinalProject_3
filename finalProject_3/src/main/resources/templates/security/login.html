@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html th:replace="~{layout/layout_main :: layout(~{::head}, ~{::main}, ~{::script})}"
       xmlns:th="http://www.thymeleaf.org"
       lang="ko">
@@ -77,7 +77,7 @@
             <!-- 소셜 로그인 -->
             <div style="margin: 20px 0; text-align: center; position: relative;">
                 <hr style="border: none; border-top: 1px solid #e0e0e0;">
-                <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fff; padding: 0 12px; color: #999; font-size: 13px;">또는</span>
+                <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fff; padding: 0 12px; color: #666; font-size: 13px;">또는</span>
             </div>
             <a th:href="@{/oauth2/authorization/kakao}"
                style="display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -86,7 +86,9 @@
                       text-decoration: none; border: none; cursor: pointer;
                       transition: background 0.2s;"
                onmouseover="this.style.background='#f0d900'"
-               onmouseout="this.style.background='#FEE500'">
+               onmouseout="this.style.background='#FEE500'"
+               onfocus="this.style.background='#f0d900'"
+               onblur="this.style.background='#FEE500'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#3C1E1E">
                     <path d="M12 3C6.48 3 2 6.69 2 11.25c0 2.88 1.74 5.41 4.36 6.93-.19.7-.68 2.54-.78 2.94-.12.5.18.49.38.36.16-.11 2.52-1.71 3.54-2.4.81.12 1.64.18 2.5.18 5.52 0 10-3.69 10-8.25S17.52 3 12 3z"/>
                 </svg>
@@ -99,7 +101,9 @@
                       text-decoration: none; border: 1px solid #ddd; cursor: pointer;
                       transition: background 0.2s;"
                onmouseover="this.style.background='#f5f5f5'"
-               onmouseout="this.style.background='#fff'">
+               onmouseout="this.style.background='#fff'"
+               onfocus="this.style.background='#f5f5f5'"
+               onblur="this.style.background='#fff'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                     <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -111,11 +115,13 @@
             <a th:href="@{/oauth2/authorization/naver}"
                style="display: flex; align-items: center; justify-content: center; gap: 10px;
                       width: 100%; padding: 13px 0; border-radius: 4px;
-                      background: #03C75A; color: #fff; font-size: 15px; font-weight: bold;
+                      background: #006a30; color: #fff; font-size: 15px; font-weight: bold;
                       text-decoration: none; border: none; cursor: pointer;
                       transition: background 0.2s;"
-               onmouseover="this.style.background='#02b350'"
-               onmouseout="this.style.background='#03C75A'">
+               onmouseover="this.style.background='#005526'"
+               onmouseout="this.style.background='#006a30'"
+               onfocus="this.style.background='#005526'"
+               onblur="this.style.background='#006a30'">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13.56 12.27L10.3 7.5H7.5v9h2.94v-4.77l3.32 4.77H16.5V7.5h-2.94v4.77z"/>
                 </svg>
@@ -156,8 +162,8 @@
                 </div>
                 
                 <div class="tab-menu">
-                    <div id="tabEmail" class="tab-item tab-active" role="button" tabindex="0" onclick="switchTab('email')" onkeydown="if(event.key==='Enter'||event.key===' ')switchTab('email')">이메일 찾기</div>
-                    <div id="tabPwd" class="tab-item tab-inactive" role="button" tabindex="0" onclick="switchTab('pwd')" onkeydown="if(event.key==='Enter'||event.key===' ')switchTab('pwd')">비밀번호 찾기</div>
+                    <button type="button" id="tabEmail" class="tab-item tab-active" onclick="switchTab('email')">이메일 찾기</button>
+                    <button type="button" id="tabPwd" class="tab-item tab-inactive" onclick="switchTab('pwd')">비밀번호 찾기</button>
                 </div>
 
                 <div id="findEmailArea">
@@ -203,9 +209,9 @@
 
         // idle=true 파라미터가 있으면 휴면해제 모달 자동 오픈
         (function() {
-            const urlParams = new URLSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(globalThis.location.search);
             if (urlParams.get('idle') === 'true') {
-                window.addEventListener('load', function() {
+                globalThis.addEventListener('load', function() {
                     $("#idleModal").fadeIn(200);
                 });
             }
@@ -229,7 +235,7 @@
 
         function sendIdleSms() {
             const phone = $("#idlePhone").val().trim();
-            const regExpPhone = /^[0-9]{11}$/;
+            const regExpPhone = /^\d{11}$/;
             if (!regExpPhone.test(phone)) {
                 alert("휴대폰 번호는 11자리 숫자만 입력해주세요.");
                 $("#idlePhone").focus();
@@ -357,7 +363,7 @@
 	        const phoneInputId = type === 'email' ? "#findPhone1" : "#findPhone2";
 	        const phone = $(phoneInputId).val().trim();
 	        
-	        const regExpPhone = /^[0-9]{11}$/;
+	        const regExpPhone = /^\d{11}$/;
 	        if(!regExpPhone.test(phone)) {
 	            alert("휴대폰 번호는 11자리 숫자만 입력해주세요.");
 	            $(phoneInputId).focus();
@@ -376,8 +382,11 @@
 	                    currentFindPhone = phone;
 	                    $(phoneInputId).attr("readonly", true).css("background", "#f5f5f5");
 	                    
-	                    if(type === 'email') $("#authAreaEmail").css("display", "flex");
-	                    else $("#authAreaPwd").css("display", "flex");
+	                    if(type === 'email') {
+	                        $("#authAreaEmail").css("display", "flex");
+	                    } else {
+	                        $("#authAreaPwd").css("display", "flex");
+	                    }
 
                         // 타이머 작동 시작
                         startTimer(type);

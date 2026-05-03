@@ -1,10 +1,11 @@
-
+﻿
 <!DOCTYPE html>
 <html
 	th:replace="~{layout/layout_main :: layout(~{::head}, ~{::main}, ~{::script})}"
 	xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
+<title>나눔하기</title>
 <link rel="stylesheet" th:href="@{/css/product_form.css}">
 <script defer th:src="@{/js/product_form.js}"></script>
 
@@ -28,12 +29,12 @@
 											const $btn = $("#pfSubmitBtn");
 
 											// ===== 1) 검증 =====
-											if (!window.PF || !window.PF.Image) {
+											if (!globalThis.PF || !globalThis.PF.Image) {
 												alert("이미지 모듈 초기화 실패(외부 JS 로드/요소 id 확인)");
 												return;
 											}
 
-											const imgR = window.PF.Image
+											const imgR = globalThis.PF.Image
 													.validate();
 											if (!imgR.ok) {
 												alert(imgR.msg);
@@ -45,31 +46,31 @@
 													":checked") ? "직거래" : "택배";
 
 											if (tradeMethod === "택배"
-													&& window.PF.Shipping) {
-												const r = window.PF.Shipping
+													&& globalThis.PF.Shipping) {
+												const r = globalThis.PF.Shipping
 														.validate();
 												if (!r.ok) {
 													alert(r.msg);
 													return;
 												}
-												window.PF.Shipping
+												globalThis.PF.Shipping
 														.syncShipOptionsJson();
 											}
 
-											if (window.PF.Shipping) {
-												const r = window.PF.Shipping
+											if (globalThis.PF.Shipping) {
+												const r = globalThis.PF.Shipping
 														.validate();
 												if (!r.ok) {
 													alert(r.msg);
 													return;
 												}
 												// ✅ hidden(name=shippingOptionsJson) 채워주기
-												window.PF.Shipping
+												globalThis.PF.Shipping
 														.syncShipOptionsJson();
 											}
 
-											if (window.PF.Meet) {
-												const r = window.PF.Meet
+											if (globalThis.PF.Meet) {
+												const r = globalThis.PF.Meet
 														.validate(tradeMethod);
 												if (!r.ok) {
 													alert(r.msg);
@@ -82,7 +83,7 @@
 											const formData = new FormData(form);
 
 											// ✅ product_form.js가 selectedFiles 기준으로 fd.delete("images") 후 다시 append 함
-											window.PF.Image
+											globalThis.PF.Image
 													.appendToFormData(formData);
 
 											// ===== 3) AJAX =====
@@ -109,9 +110,14 @@
 																	&& json.success) {
 																alert("등록 완료");
 
-																const redirectUrl = json.redirectUrl ? json.redirectUrl
-																		: (json.productNo ? ("/product/detail/" + json.productNo)
-																				: null);
+																let redirectUrl;
+																if (json.redirectUrl) {
+																	redirectUrl = json.redirectUrl;
+																} else if (json.productNo) {
+																	redirectUrl = "/product/detail/" + json.productNo;
+																} else {
+																	redirectUrl = null;
+																}
 
 																if (redirectUrl)
 																	location.href = ctxPath
@@ -129,10 +135,14 @@
 														error : function(jqXHR,
 																textStatus,
 																errorThrown) {
-															const msg = (jqXHR.responseJSON && jqXHR.responseJSON.message) ? jqXHR.responseJSON.message
-																	: (jqXHR.responseText ? jqXHR.responseText
-																			: ("요청 실패("
-																					+ jqXHR.status + ")"));
+															let msg;
+															if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+																msg = jqXHR.responseJSON.message;
+															} else if (jqXHR.responseText) {
+																msg = jqXHR.responseText;
+															} else {
+																msg = "요청 실패(" + jqXHR.status + ")";
+															}
 
 															alert("등록 실패: "
 																	+ msg);
@@ -407,7 +417,7 @@
 						<section class="area-modal" id="areaModal" aria-hidden="true">
 							<div class="area-modal__backdrop" data-area-close="true"></div>
 
-							<div class="area-modal__panel" role="dialog" aria-modal="true"
+							<dialog class="area-modal__panel" open
 								aria-labelledby="areaModalTitle">
 								<div class="area-modal__header">
 									<h2 class="area-modal__title" id="areaModalTitle">거래 위치 설정</h2>
@@ -470,7 +480,7 @@
 
 									</div>
 								</div>
-							</div>
+							</dialog>
 						</section>
 					</section>
 
