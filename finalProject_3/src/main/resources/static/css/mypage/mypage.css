@@ -15,8 +15,10 @@
 .mp-nav li { margin-bottom: 15px; }
 .mp-nav a { text-decoration: none; color: #666; font-size: 16px; transition: 0.2s; }
 .mp-nav a.active, .mp-nav a:hover { color: #16a34a; font-weight: bold; }
+.mp-nav button { background: none; border: none; padding: 0; cursor: pointer; color: #666; font-size: 16px; transition: 0.2s; }
+.mp-nav button.active, .mp-nav button:hover { color: #16a34a; font-weight: bold; }
 .mp-exit-wrap { margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
-.mp-exit-btn { font-size: 14px; color: #999; text-decoration: none; }
+.mp-exit-btn { font-size: 14px; color: #999; text-decoration: none; background: none; border: none; padding: 0; cursor: pointer; }
 
 /* 우측 컨텐츠 */
 .mp-content { flex: 1; }
