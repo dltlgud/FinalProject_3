@@ -1,46 +1,45 @@
-select * from MEMBER
-/* =========================================================
-   회원 (MEMBER)
+﻿/* =========================================================
+   ȸ�� (MEMBER)
    - PK: EMAIL
    - USER_NO: UNIQUE
-   - 주소: POSTCODE / ADDRESS / DETAILADDRESS / EXTRAADDRESS
-   - 탈퇴사유: STATUS = 0 일 때 사용
-   - SUSPENDED: 1이면 관리자에 의해 일시정지된 계정
+   - �ּ�: POSTCODE / ADDRESS / DETAILADDRESS / EXTRAADDRESS
+   - Ż�����?: STATUS = 0 �� �� ���?
+   - SUSPENDED: 1�̸� �����ڿ� ���� �Ͻ������� ����
    ========================================================= */
 CREATE TABLE MEMBER (
-    EMAIL              VARCHAR2(100) NOT NULL,                -- 회원이메일(PK)
-    USER_NO            NUMBER        NOT NULL,                -- 회원번호(UNIQUE)
-    PASSWORD           VARCHAR2(255) NOT NULL,                -- 비밀번호(해시)
+    EMAIL              VARCHAR2(100) NOT NULL,                -- ȸ���̸���(PK)
+    USER_NO            NUMBER        NOT NULL,                -- ȸ����ȣ(UNIQUE)
+    PASSWORD           VARCHAR2(255) NOT NULL,                -- ��й��?(�ؽ�)
 
-    USER_NAME          VARCHAR2(50)  NOT NULL,                -- 회원명
-    NICKNAME           VARCHAR2(50)  NOT NULL,                -- 닉네임(UNIQUE)
-    PHONE              VARCHAR2(20),                           -- 휴대폰번호
-    GENDER             CHAR(1),                                -- 성별('M','F')
-    BIRTH_DATE         VARCHAR2(8),                            -- 생년월일('YYYYMMDD')
+    USER_NAME          VARCHAR2(50)  NOT NULL,                -- ȸ����
+    NICKNAME           VARCHAR2(50)  NOT NULL,                -- �г���(UNIQUE)
+    PHONE              VARCHAR2(20),                           -- �޴�����ȣ
+    GENDER             VARCHAR2(1),                                -- ����('M','F')
+    BIRTH_DATE         VARCHAR2(8),                            -- �������?('YYYYMMDD')
 
-    POSTCODE           VARCHAR2(5)   NOT NULL,                -- 우편번호(5자리)
-    ADDRESS            VARCHAR2(200) NOT NULL,                -- 주소(기본주소)
-    DETAILADDRESS      VARCHAR2(200) NOT NULL,                -- 상세주소
-    EXTRAADDRESS       VARCHAR2(200),                          -- 참고항목(동/건물명 등)
+    POSTCODE           VARCHAR2(5)   NOT NULL,                -- ������ȣ(5�ڸ�)
+    ADDRESS            VARCHAR2(200) NOT NULL,                -- �ּ�(�⺻�ּ�)
+    DETAILADDRESS      VARCHAR2(200) NOT NULL,                -- ���ּ�
+    EXTRAADDRESS       VARCHAR2(200),                          -- �����׸�(��/�ǹ��� ��)
 
-    REG_DATE           DATE DEFAULT SYSDATE NOT NULL,         -- 가입일자
-    LAST_PW_DATE       DATE,                                  -- 마지막암호변경일시
-    LAST_LOGIN_DATE    DATE,                                  -- 마지막로그인일자
+    REG_DATE           DATE DEFAULT SYSDATE NOT NULL,         -- ��������
+    LAST_PW_DATE       DATE,                                  -- ��������ȣ�����Ͻ�
+    LAST_LOGIN_DATE    DATE,                                  -- �������α�������
 
-    STATUS             NUMBER(1) DEFAULT 1 NOT NULL,          -- 1:사용가능 / 0:탈퇴
-    IDLE               NUMBER(1) DEFAULT 0 NOT NULL,          -- 0:활동중 / 1:휴면중
-    SUSPENDED          NUMBER(1) DEFAULT 0 NOT NULL,          -- 0:정상 / 1:일시정지
-    WITHDRAW_REASON    VARCHAR2(500),                         -- 탈퇴사유(STATUS=0일 때 기록)
+    STATUS             NUMBER(1) DEFAULT 1 NOT NULL,          -- 1:��밡��? / 0:Ż��
+    IDLE               NUMBER(1) DEFAULT 0 NOT NULL,          -- 0:Ȱ���� / 1:�޸���
+    SUSPENDED          NUMBER(1) DEFAULT 0 NOT NULL,          -- 0:���� / 1:�Ͻ�����
+    WITHDRAW_REASON    VARCHAR2(500),                         -- Ż�����?(STATUS=0�� �� ���?)
 
-    CASH_BALANCE       NUMBER DEFAULT 0 NOT NULL,             -- 보유캐시
-    MANNER_TEMP        NUMBER DEFAULT 50 NOT NULL,            -- 매너온도(기본 36.5)
+    CASH_BALANCE       NUMBER DEFAULT 0 NOT NULL,             -- ����ĳ��
+    MANNER_TEMP        NUMBER DEFAULT 50 NOT NULL,            -- �ųʿµ�(�⺻ 50)
 
-    PROFILE_IMG        VARCHAR2(500),                         -- 프로필이미지
-    RECENT_CATEGORY    VARCHAR2(50),                          -- 최근거래 카테고리
-    ROOM_ID            VARCHAR2(100),                         -- 채팅방키(NoSQL용)
+    PROFILE_IMG        VARCHAR2(500),                         -- �������̹���
+    RECENT_CATEGORY    VARCHAR2(50),                          -- �ֱٰŷ� ī�װ���
+    ROOM_ID            VARCHAR2(100),                         -- ä�ù�Ű(NoSQL��)
 
-    TOSS_CUSTOMER_KEY  VARCHAR2(200),                         -- 토스 고객 키
-    TOSS_BILLING_KEY   VARCHAR2(200),                         -- 토스 빌링 키
+    TOSS_CUSTOMER_KEY  VARCHAR2(200),                         -- �佺 ���� Ű
+    TOSS_BILLING_KEY   VARCHAR2(200),                         -- �佺 ���� Ű
 
     CONSTRAINT PK_MEMBER PRIMARY KEY (EMAIL),
     CONSTRAINT UQ_MEMBER_USER_NO UNIQUE (USER_NO),
@@ -60,11 +59,36 @@ NOCYCLE
 NOCACHE;
 
 /* =========================================================
-    카테고리 (CATEGORY)
+ ����(����) ���̺� 
+   ========================================================= */
+CREATE TABLE AUTHORITIES (
+    AUTH_NO     NUMBER NOT NULL,               -- PK
+    EMAIL       VARCHAR2(100) NOT NULL,         -- MEMBER.EMAIL FK
+    AUTHORITY   VARCHAR2(50) NOT NULL,          -- ��: ROLE_USER, ROLE_ADMIN
+
+    CONSTRAINT PK_AUTHORITIES PRIMARY KEY (AUTH_NO),
+    CONSTRAINT UQ_AUTHORITIES UNIQUE (EMAIL, AUTHORITY),
+
+    CONSTRAINT FK_AUTHORITIES_MEMBER FOREIGN KEY (EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT CK_AUTHORITIES_ROLE CHECK (SUBSTR(AUTHORITY, 1, 5) = 'ROLE_')
+);
+
+CREATE SEQUENCE SEQ_AUTHORITIES_NO
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+/* =========================================================
+    ī�װ��� (CATEGORY)
    ========================================================= */
 CREATE TABLE CATEGORY (
-  CATEGORY_NO   NUMBER         NOT NULL,     -- 카테고리번호(PK)
-  CATEGORY_NAME VARCHAR2(100)  NOT NULL,     -- 카테고리명
+  CATEGORY_NO   NUMBER         NOT NULL,     -- ī�װ�����ȣ(PK)
+  CATEGORY_NAME VARCHAR2(100)  NOT NULL,     -- ī�װ�����
 
   CONSTRAINT PK_CATEGORY PRIMARY KEY (CATEGORY_NO)
 );
@@ -77,28 +101,18 @@ NOMINVALUE
 NOCYCLE
 NOCACHE;
 
-/* =========================================================
-   CATEGORY 기본 데이터 입력
-   ========================================================= */
-
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (1, '패션');
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (2, '육아');
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (3, '가전');
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (4, '홈·인테리어');
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (5, '취미');
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (6, '여행');
-INSERT INTO CATEGORY (CATEGORY_NO, CATEGORY_NAME) VALUES (7, '공구/산업용품');
-
+select *
+from REGION;
 
 /* =========================================================
-   지역 (REGION)
+   ���� (REGION)
    ========================================================= */
 CREATE TABLE REGION (
-  REGION_NO          NUMBER         NOT NULL,          -- 지역번호(PK)
-  REGION_NAME        VARCHAR2(100)  NOT NULL,          -- 지역명
-  PARENT_REGION_NO   NUMBER         NULL,              -- 상위지역번호(FK, 자기참조)
-  LATITUDE           NUMBER(10,7)   NULL,              -- 위도
-  LONGITUDE          NUMBER(10,7)   NULL,              -- 경도
+  REGION_NO          NUMBER         NOT NULL,          -- ������ȣ(PK)
+  REGION_NAME        VARCHAR2(100)  NOT NULL,          -- ������
+  PARENT_REGION_NO   NUMBER         NULL,              -- ����������ȣ(FK, �ڱ�����)
+  LATITUDE           NUMBER(10,7)   NULL,              -- ����
+  LONGITUDE          NUMBER(10,7)   NULL,              -- �浵
 
   CONSTRAINT PK_REGION PRIMARY KEY (REGION_NO),
   CONSTRAINT FK_REGION_PARENT FOREIGN KEY (PARENT_REGION_NO)
@@ -115,21 +129,21 @@ NOCACHE;
 
 
 /* =========================================================
-   회원지역 (MEMBER_REGION)
-   - 정책: 회원당 지역 최소 1개 ~ 최대 3개
+   ȸ������ (MEMBER_REGION)
+   - ��å: ȸ���� ���� �ּ� 1�� ~ �ִ� 3��
    ========================================================= */
 
 CREATE TABLE MEMBER_REGION (
-  MEMBER_REGION_NO   NUMBER          NOT NULL,         -- 회원지역번호(PK)
-  MEMBER_EMAIL       VARCHAR2(100)   NOT NULL,         -- 회원이메일(FK)
-  REGION_NO          NUMBER          NOT NULL,         -- 지역번호(FK)
+  MEMBER_REGION_NO   NUMBER          NOT NULL,         -- ȸ��������ȣ(PK)
+  MEMBER_EMAIL       VARCHAR2(100)   NOT NULL,         -- ȸ���̸���(FK)
+  REGION_NO          NUMBER          NOT NULL,         -- ������ȣ(FK)
 
-  IS_ACTIVE          CHAR(1) DEFAULT 'Y' NOT NULL,     -- 현재활성지역여부(Y/N)
-  IS_VERIFIED        CHAR(1) DEFAULT 'N' NOT NULL,     -- 동네인증여부(Y/N)
+  IS_ACTIVE          VARCHAR2(1) DEFAULT 'Y' NOT NULL,     -- ����Ȱ����������(Y/N)
+  IS_VERIFIED        VARCHAR2(1) DEFAULT 'N' NOT NULL,     -- ������������(Y/N)
 
   CONSTRAINT PK_MEMBER_REGION PRIMARY KEY (MEMBER_REGION_NO),
 
-  -- ✅ 같은 지역 중복 등록 방지
+  -- ? ���� ���� �ߺ� ���? ����
   CONSTRAINT UQ_MEMBER_REGION_MEMBER_REGION UNIQUE (MEMBER_EMAIL, REGION_NO),
 
   CONSTRAINT FK_MEMBER_REGION_MEMBER FOREIGN KEY (MEMBER_EMAIL)
@@ -152,52 +166,74 @@ NOCACHE;
 
 
 /* =========================================================
-    비회원 위치 (GUEST_REGION)
+   �����? (DELIVERY_ADDRESS)
+   - ��å: �⺻(��ǥ) �������? MEMBER �����ּ�
+   - DELIVERY_ADDRESS�� �߰��������? ���� (��ǥ�����? �÷� ����)
    ========================================================= */
-CREATE TABLE GUEST_REGION (
-  GUEST_REGION_NO   NUMBER          NOT NULL,        -- PK
-  GUEST_KEY         VARCHAR2(100)   NOT NULL,        -- 세션/디바이스/쿠키키
-  REGION_NO         NUMBER          NOT NULL,        -- 지역번호(FK)
+CREATE TABLE DELIVERY_ADDRESS (
+  DELIVERY_NO        NUMBER         NOT NULL,                 -- ��������?(PK)
+  MEMBER_EMAIL       VARCHAR2(100)  NOT NULL,                 -- ȸ���̸���(FK)
 
-  LATITUDE          NUMBER(10,7)    NULL,            -- 위도
-  LONGITUDE         NUMBER(10,7)    NULL,            -- 경도
-  UPDATED_AT        TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- 갱신시각
+  LABEL              VARCHAR2(30)   DEFAULT '�߰������?' NOT NULL, -- �������?(��/ȸ�� ��)
+  RECEIVER_NAME      VARCHAR2(50)   NOT NULL,                 -- ������
+  RECEIVER_PHONE     VARCHAR2(20)   NOT NULL,                 -- ������ ��ȭ��ȣ
 
-  CONSTRAINT PK_GUEST_REGION PRIMARY KEY (GUEST_REGION_NO),
-  CONSTRAINT UQ_GUEST_REGION_KEY UNIQUE (GUEST_KEY),
-  CONSTRAINT FK_GUEST_REGION_REGION FOREIGN KEY (REGION_NO)
-    REFERENCES REGION(REGION_NO)
+  POSTCODE           VARCHAR2(5)    NOT NULL,                 -- ������ȣ(5�ڸ�)
+  ADDRESS            VARCHAR2(200)  NOT NULL,                 -- �ּ�(�⺻�ּ�)
+  DETAILADDRESS      VARCHAR2(200)  NOT NULL,                 -- ���ּ�
+  EXTRAADDRESS       VARCHAR2(200),                            -- �����׸�(��/�ǹ��� ��)
+
+  IS_PRIMARY         VARCHAR2(1) DEFAULT 'N' NOT NULL
+                     CHECK (IS_PRIMARY IN ('Y','N')),
+
+  CONSTRAINT PK_DELIVERY_ADDRESS PRIMARY KEY (DELIVERY_NO),
+
+  CONSTRAINT FK_DELIVERY_MEMBER FOREIGN KEY (MEMBER_EMAIL)
+    REFERENCES MEMBER(EMAIL) ON DELETE CASCADE
 );
 
-CREATE SEQUENCE SEQ_GUEST_REGION_NO
-START WITH 1 INCREMENT BY 1
-NOMAXVALUE NOMINVALUE
-NOCYCLE NOCACHE;
+-- [기존 DB ?��?�� ?��] ALTER TABLE DELIVERY_ADDRESS ADD IS_PRIMARY VARCHAR2(1) DEFAULT 'N' NOT NULL CHECK (IS_PRIMARY IN ('Y','N'));
 
-select * from PRODUCTS
+CREATE SEQUENCE SEQ_DELIVERY_NO
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
 
 /* =========================================================
-   상품 (PRODUCTS) - 수정본
-   - 이미지: PRODUCT_IMAGE에서 관리 (IS_MAIN='Y' 대표)
-   - 택배옵션(복수): PRODUCT_SHIPPING_OPTION에서 관리
-   - 직거래 위치(1~3개): PRODUCT_MEET_LOCATION에서 관리
+    ��ǰ (PRODUCTS)
+   - �̹��� �÷� ����: ��ǥ�̹����� PRODUCT_IMAGE���� ����
+   - �Ǹ�/����/���? ��ǰ ���?
+   - �����? PRODUCT_PRICE = ���۰�
+   - ���ŷ��� �ּ� + ��ǥ(��/�浵) �ʼ�
    ========================================================= */
 CREATE TABLE PRODUCTS (
-  PRODUCT_NO        NUMBER            NOT NULL,        -- 상품번호(PK)
-  SELLER_EMAIL      VARCHAR2(100)     NOT NULL,        -- 판매자 이메일(FK)
-  CATEGORY_NO       NUMBER            NOT NULL,        -- 카테고리번호(FK)
+  PRODUCT_NO        NUMBER           NOT NULL,         -- ��ǰ��ȣ(PK)
+  SELLER_EMAIL      VARCHAR2(100)    NOT NULL,         -- �Ǹ��� �̸���(FK)
+  CATEGORY_NO       NUMBER           NOT NULL,         -- ī�װ�����ȣ(FK)
 
-  SALE_TYPE         VARCHAR2(20)      NOT NULL,        -- 판매유형(판매/나눔/경매)
-  PRODUCT_NAME      VARCHAR2(200)     NOT NULL,        -- 상품명
-  PRODUCT_PRICE     NUMBER            NULL,            -- 판매(>0) / 나눔(0 or NULL) / 경매(시작가 >0)
-  PRODUCT_DESC      CLOB              NULL,            -- 설명
+  SALE_TYPE         VARCHAR2(20)     NOT NULL,         -- �Ǹ�����(�Ǹ�/����/���?)
+  PRODUCT_NAME      VARCHAR2(200)    NOT NULL,         -- ��ǰ��
+  PRODUCT_PRICE     NUMBER           NULL,             -- ����(�Ǹ�) / 0 or NULL(����) / ���۰�(���?)
+  PRODUCT_DESC      CLOB             NULL,             -- ����
 
-  PRODUCT_CONDITION VARCHAR2(10)      NOT NULL,        -- 상태(상/중/하)
-  TRADE_STATUS      VARCHAR2(20)      NOT NULL,        -- 거래상태(판매중/예약중/판매완료)
-  TRADE_METHOD      VARCHAR2(20)      NOT NULL,        -- 거래방법(택배/직거래)
+  PRODUCT_CONDITION VARCHAR2(10)     NOT NULL,         -- ����(��/��/��)
+  TRADE_STATUS      VARCHAR2(20)     NOT NULL,         -- �ŷ�����(�Ǹ���/������/�ǸſϷ�)
+  TRADE_METHOD      VARCHAR2(20)     NOT NULL,         -- �ŷ����?(�ù�/���ŷ�)
 
-  VIEW_COUNT        NUMBER DEFAULT 0  NOT NULL,        -- 조회수
-  REG_DATE          DATE DEFAULT SYSDATE NOT NULL,     -- 등록일
+  PARCEL_TYPE       VARCHAR2(20)     NULL,             -- �ù�����(�ù��� ����)
+  SHIPPING_FEE      NUMBER           NULL,             -- ��ۺ�?(�ù��� ����)
+
+  MEET_PLACE_NAME   VARCHAR2(200)    NULL,             -- ���ŷ� ��Ҹ�?(���ŷ��� ����)
+  MEET_ADDRESS      VARCHAR2(300)    NULL,             -- ���ŷ� �ּ�(���ŷ��� ����)
+  MEET_LATITUDE     NUMBER(10,7)     NULL,             -- ����(���ŷ��� ����)
+  MEET_LONGITUDE    NUMBER(10,7)     NULL,             -- �浵(���ŷ��� ����)
+
+  VIEW_COUNT        NUMBER DEFAULT 0 NOT NULL,         -- ��ȸ��
+  REG_DATE          DATE DEFAULT SYSDATE NOT NULL,     -- �����?
 
   CONSTRAINT PK_PRODUCTS PRIMARY KEY (PRODUCT_NO),
 
@@ -207,23 +243,44 @@ CREATE TABLE PRODUCTS (
   CONSTRAINT FK_PRODUCTS_CATEGORY FOREIGN KEY (CATEGORY_NO)
     REFERENCES CATEGORY(CATEGORY_NO),
 
-  CONSTRAINT CK_PRODUCTS_SALE_TYPE CHECK (SALE_TYPE IN ('판매','나눔','경매')),
-  CONSTRAINT CK_PRODUCTS_CONDITION CHECK (PRODUCT_CONDITION IN ('상','중','하')),
-  CONSTRAINT CK_PRODUCTS_TRADE_STATUS CHECK (TRADE_STATUS IN ('판매중','예약중','판매완료')),
-  CONSTRAINT CK_PRODUCTS_TRADE_METHOD CHECK (TRADE_METHOD IN ('택배','직거래')),
+  CONSTRAINT CK_PRODUCTS_SALE_TYPE CHECK (SALE_TYPE IN ('�Ǹ�','����','���?')),
+  CONSTRAINT CK_PRODUCTS_CONDITION CHECK (PRODUCT_CONDITION IN ('��','��','��')),
+  CONSTRAINT CK_PRODUCTS_TRADE_STATUS CHECK (TRADE_STATUS IN ('�Ǹ���','������','�ǸſϷ�')),
+  CONSTRAINT CK_PRODUCTS_TRADE_METHOD CHECK (TRADE_METHOD IN ('�ù�','���ŷ�')),
 
-  -- SALE_TYPE별 가격 규칙: 판매(>0), 나눔(0 또는 NULL), 경매(시작가 >0)
+  -- SALE_TYPE�� ���� ��Ģ: �Ǹ�(>0), ����(0 �Ǵ� NULL), ���?(���۰� >0)
   CONSTRAINT CK_PRODUCTS_PRICE_BY_SALETYPE CHECK (
-    (SALE_TYPE = '판매' AND PRODUCT_PRICE IS NOT NULL AND PRODUCT_PRICE > 0)
+    (SALE_TYPE = '�Ǹ�' AND PRODUCT_PRICE IS NOT NULL AND PRODUCT_PRICE > 0)
     OR
-    (SALE_TYPE = '나눔' AND (PRODUCT_PRICE IS NULL OR PRODUCT_PRICE = 0))
+    (SALE_TYPE = '����' AND (PRODUCT_PRICE IS NULL OR PRODUCT_PRICE = 0))
     OR
-    (SALE_TYPE = '경매' AND PRODUCT_PRICE IS NOT NULL AND PRODUCT_PRICE > 0)
+    (SALE_TYPE = '���?' AND PRODUCT_PRICE IS NOT NULL AND PRODUCT_PRICE > 0)
   ),
 
-  CONSTRAINT CK_PRODUCTS_VIEW_COUNT CHECK (VIEW_COUNT >= 0)
-);
+  CONSTRAINT CK_PRODUCTS_SHIPPING_FEE CHECK (SHIPPING_FEE IS NULL OR SHIPPING_FEE >= 0),
+  CONSTRAINT CK_PRODUCTS_VIEW_COUNT CHECK (VIEW_COUNT >= 0),
 
+  -- �ù��? �ù�����/��ۺ�? �ʼ�, ���ŷ��� �ù����? NULL
+  CONSTRAINT CK_PRODUCTS_PARCEL_BY_METHOD CHECK (
+    (TRADE_METHOD = '�ù�' AND PARCEL_TYPE IN ('�Ϲ��ù�','CU�ݰ�','GS�ݰ�') AND SHIPPING_FEE IS NOT NULL)
+    OR
+    (TRADE_METHOD = '���ŷ�' AND PARCEL_TYPE IS NULL AND SHIPPING_FEE IS NULL)
+  ),
+
+  -- ���ŷ��� �ּ�+��ǥ �ʼ�, �ù��? ���ŷ� ���� ���� NULL
+  CONSTRAINT CK_PRODUCTS_MEET_BY_METHOD CHECK (
+    (TRADE_METHOD = '���ŷ�'
+      AND MEET_ADDRESS IS NOT NULL
+      AND MEET_LATITUDE IS NOT NULL
+      AND MEET_LONGITUDE IS NOT NULL)
+    OR
+    (TRADE_METHOD = '�ù�'
+      AND MEET_PLACE_NAME IS NULL
+      AND MEET_ADDRESS IS NULL
+      AND MEET_LATITUDE IS NULL
+      AND MEET_LONGITUDE IS NULL)
+  )
+);
 
 CREATE SEQUENCE SEQ_PRODUCT_NO
 START WITH 1
@@ -233,25 +290,120 @@ NOMINVALUE
 NOCYCLE
 NOCACHE;
 
-select * from PRODUCT_IMAGE
+
+
 
 /* =========================================================
-   상품이미지 (PRODUCT_IMAGE) - 수정본
-   - 상품당 1~3장 (수량 제한은 서비스/트리거로)
-   - 대표이미지 IS_MAIN='Y' 는 상품당 1개만 허용(함수기반 유니크 인덱스)
-   - IMG_URL 또는 FILENAME 중 하나는 반드시 존재
-   - 상품당 SORT_NO 중복 방지
+    ä�ù� (CHAT_ROOM)
+   ========================================================= */
+CREATE TABLE CHAT_ROOM (
+    ROOM_ID             VARCHAR2(100) PRIMARY KEY,    -- ä�ù� Ű
+    PRODUCT_NO          NUMBER NOT NULL,              -- ��ǰ��ȣ(FK)
+
+    SELLER_EMAIL        VARCHAR2(100) NOT NULL,       -- �Ǹ���
+    BUYER_EMAIL         VARCHAR2(100) NOT NULL,       -- ������
+
+    RESERVE_TIME        DATE,                         -- ����ð�?
+    RESERVE_PLACE       VARCHAR2(300),                -- �������?
+
+    LAST_MESSAGE        VARCHAR2(1000),               -- �ֱٴ�ȭ����(�̸�����)
+    LAST_MESSAGE_AT     DATE,                         -- �ֱٴ�ȭ�ð�(���? ���Ŀ� ĳ��)
+
+    MUTE_YN             VARCHAR2(1) DEFAULT 'N' NOT NULL, -- �˸�����(Y/N)
+
+    CONSTRAINT FK_CHAT_PRODUCT FOREIGN KEY (PRODUCT_NO)
+      REFERENCES PRODUCTS(PRODUCT_NO) ON DELETE CASCADE,
+
+    CONSTRAINT FK_CHAT_SELLER FOREIGN KEY (SELLER_EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT FK_CHAT_BUYER FOREIGN KEY (BUYER_EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT UQ_CHAT_ROOM_PAIR UNIQUE (PRODUCT_NO, SELLER_EMAIL, BUYER_EMAIL),
+    CONSTRAINT CK_CHAT_ROOM_SELF CHECK (SELLER_EMAIL <> BUYER_EMAIL),
+    CONSTRAINT CK_CHAT_ROOM_MUTE CHECK (MUTE_YN IN ('Y','N'))
+);
+
+
+/* =========================================================
+    �޸հ��� (USER_DORMANT)
+   ========================================================= */
+CREATE TABLE USER_DORMANT (
+    EMAIL              VARCHAR2(100) PRIMARY KEY,     -- �̸���(PK �� FK)
+    DORMANT_DATE       DATE DEFAULT SYSDATE,          -- �޸���ȯ�Ͻ�
+    PHONE              VARCHAR2(20),                  -- �޴�����ȣ
+    BIRTH_DATE         VARCHAR2(8),                   -- �������?
+    GENDER             VARCHAR2(1),                       -- ����
+    USER_NAME          VARCHAR2(50) NOT NULL,         -- �̸�
+    ORIGINAL_REG_DATE  DATE,                          -- ���������Ͻ�
+    CASH_BALANCE       NUMBER DEFAULT 0,              -- ����ĳ��
+
+    CONSTRAINT FK_DORMANT_MEMBER FOREIGN KEY (EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE
+);
+
+
+/* =========================================================
+   �α��� ���? (LOGIN_HISTORY)
+   ========================================================= */
+CREATE TABLE LOGIN_HISTORY (
+    HISTORY_NO     NUMBER NOT NULL,                       -- ��Ϲ��?(PK)
+    EMAIL          VARCHAR2(100) NOT NULL,                 -- ȸ���̸���(FK)
+    LOGIN_DATE     DATE DEFAULT SYSDATE NOT NULL,          -- �α����Ͻ�
+    LOGIN_IP       VARCHAR2(45) NOT NULL,                  -- ����IP
+
+    CONSTRAINT PK_LOGIN_HISTORY PRIMARY KEY (HISTORY_NO),
+
+    CONSTRAINT FK_LOGIN_MEMBER FOREIGN KEY (EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE
+);
+
+CREATE SEQUENCE SEQ_HISTORYNO
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+/* =========================================================
+    ���� (USER_BLOCK)
+   - ���� ���� �����? ȸ���̾��? �Ѵٸ� BLOCKED_EMAIL FK �߰�
+   - �ڱ� �ڽ� ���� ���� üũ �߰�
+   ========================================================= */
+CREATE TABLE USER_BLOCK (
+    BLOCK_NO       NUMBER PRIMARY KEY,               -- ���ܽĺ��ڵ�(PK)
+    EMAIL          VARCHAR2(100) NOT NULL,            -- ���� ������(FK)
+    BLOCKED_EMAIL  VARCHAR2(100) NOT NULL,            -- ������ �̸���(FK)
+    BLOCK_DATE     DATE DEFAULT SYSDATE,             -- �����Ͻ�
+
+    CONSTRAINT FK_BLOCK_MEMBER FOREIGN KEY (EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT FK_BLOCK_BLOCKED_MEMBER FOREIGN KEY (BLOCKED_EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT CK_BLOCK_NOT_SELF CHECK (EMAIL <> BLOCKED_EMAIL)
+);
+
+
+
+/* =========================================================
+    ��ǰ�̹��� (PRODUCT_IMAGE)
+   - ��ǥ�̹����� IS_MAIN='Y' �θ� ����
+   - ����/URL �� �ϳ��� �ݵ��? ����
    ========================================================= */
 CREATE TABLE PRODUCT_IMAGE (
-  PRD_IMG_NO       NUMBER           NOT NULL,        -- 상품이미지번호(PK)
-  PRODUCT_NO       NUMBER           NOT NULL,        -- 상품번호(FK)
+  PRD_IMG_NO       NUMBER           NOT NULL,        -- ��ǰ�̹�����ȣ(PK)
+  PRODUCT_NO       NUMBER           NOT NULL,        -- ��ǰ��ȣ(FK)
 
-  IMG_URL          VARCHAR2(500)    NULL,            -- 이미지 URL/경로
-  ORGFILENAME      VARCHAR2(255)    NULL,            -- 업로드 원본파일명
-  FILENAME         VARCHAR2(255)    NULL,            -- 서버 저장파일명
+  IMG_URL          VARCHAR2(500)    NULL,            -- �̹��� URL/���?(���� ���� ���? ��)
+  ORGFILENAME      VARCHAR2(255)    NULL,            -- ���ε� �������ϸ�
+  FILENAME         VARCHAR2(255)    NULL,            -- ���� �������ϸ�
 
-  SORT_NO          NUMBER DEFAULT 1 NOT NULL,        -- 정렬순서(1부터)
-  IS_MAIN          CHAR(1) DEFAULT 'N' NOT NULL,     -- 대표여부(Y/N)
+  SORT_NO          NUMBER DEFAULT 1 NOT NULL,        -- ���ļ���(1����)
+  IS_MAIN          VARCHAR2(1) DEFAULT 'N' NOT NULL,     -- ��ǥ����(Y/N)
 
   CONSTRAINT PK_PRODUCT_IMAGE PRIMARY KEY (PRD_IMG_NO),
 
@@ -260,10 +412,7 @@ CREATE TABLE PRODUCT_IMAGE (
 
   CONSTRAINT CK_PRODUCT_IMAGE_SORT CHECK (SORT_NO >= 1),
   CONSTRAINT CK_PRODUCT_IMAGE_IS_MAIN CHECK (IS_MAIN IN ('Y','N')),
-  CONSTRAINT CK_PRODUCT_IMAGE_FILE CHECK (IMG_URL IS NOT NULL OR FILENAME IS NOT NULL),
-
-  -- 같은 상품에서 정렬순서 중복 방지
-  CONSTRAINT UQ_PRODUCT_IMAGE_SORT UNIQUE (PRODUCT_NO, SORT_NO)
+  CONSTRAINT CK_PRODUCT_IMAGE_FILE CHECK (IMG_URL IS NOT NULL OR FILENAME IS NOT NULL)
 );
 
 CREATE SEQUENCE SEQ_PRODUCT_IMAGE_NO
@@ -274,103 +423,29 @@ NOMINVALUE
 NOCYCLE
 NOCACHE;
 
--- (권장) 대표이미지(Y)는 상품당 1개만 허용 (Oracle: 함수 기반 유니크 인덱스)
+-- (����) ��ǥ�̹���(Y)�� ��ǰ�� 1���� ���? (Oracle: �Լ� ���? ����ũ �ε���)
 CREATE UNIQUE INDEX UQ_PRODUCT_MAIN_IMAGE
 ON PRODUCT_IMAGE (
   CASE WHEN IS_MAIN = 'Y' THEN PRODUCT_NO END
 );
 
--- (권장) 목록 조회/정렬 성능용
+-- (����) ���? ��ȸ/���� ���ɿ�
 CREATE INDEX IDX_PRODUCT_IMAGE_PRODUCT ON PRODUCT_IMAGE(PRODUCT_NO);
 CREATE INDEX IDX_PRODUCT_IMAGE_MAIN   ON PRODUCT_IMAGE(PRODUCT_NO, IS_MAIN);
 
-select * from PRODUCT_SHIPPING_OPTION
 
 /* =========================================================
-   상품 배송 옵션 (PRODUCT_SHIPPING_OPTION)
-   - 상품 1개당 배송옵션 N개 저장
-   - 같은 상품에서 같은 PARCEL_TYPE 중복 금지
-   ========================================================= */
-CREATE TABLE PRODUCT_SHIPPING_OPTION (
-  OPTION_NO    NUMBER        NOT NULL,              -- 옵션번호(PK)
-  PRODUCT_NO   NUMBER        NOT NULL,              -- 상품번호(FK)
-  PARCEL_TYPE  VARCHAR2(50)  NOT NULL,              -- '일반택배','CU반값','GS반값','무료배송'
-  SHIPPING_FEE NUMBER        NOT NULL,              -- 배송비(무료배송=0)
-
-  CONSTRAINT PK_PSO PRIMARY KEY (OPTION_NO),
-
-  CONSTRAINT FK_PSO_PRODUCT FOREIGN KEY (PRODUCT_NO)
-    REFERENCES PRODUCTS(PRODUCT_NO) ON DELETE CASCADE,
-
-  CONSTRAINT CK_PSO_PARCEL CHECK (PARCEL_TYPE IN ('일반택배','CU반값','GS반값','무료배송')),
-  CONSTRAINT CK_PSO_FEE CHECK (SHIPPING_FEE >= 0),
-
-  CONSTRAINT UQ_PSO UNIQUE (PRODUCT_NO, PARCEL_TYPE)
-);
-
-CREATE SEQUENCE SEQ_PSO_NO
-START WITH 1
-INCREMENT BY 1
-NOMAXVALUE
-NOMINVALUE
-NOCYCLE
-NOCACHE;
-
-select * from PRODUCT_MEET_LOCATION
-
-/* =========================================================
-   상품 직거래 위치 (PRODUCT_MEET_LOCATION)
-   - 상품당 1~3개 (수량 제한은 서비스/트리거로)
-   - 대표 위치 개념 제거
-   ========================================================= */
-CREATE TABLE PRODUCT_MEET_LOCATION (
-  LOCATION_NO   NUMBER          NOT NULL,           -- 위치번호(PK)
-  PRODUCT_NO    NUMBER          NOT NULL,           -- 상품번호(FK)
-
-  PLACE_NAME    VARCHAR2(200)   NULL,               -- 장소명(예: OO역 3번출구)
-  FULL_ADDRESS  VARCHAR2(300)   NOT NULL,           -- 주소(도로명/지번 등)
-  LATITUDE      NUMBER(10,7)    NOT NULL,           -- 위도
-  LONGITUDE     NUMBER(10,7)    NOT NULL,           -- 경도
-
-  SORT_NO       NUMBER DEFAULT 1 NOT NULL,          -- 정렬순서(1부터, 선택)
-
-  CONSTRAINT PK_PML PRIMARY KEY (LOCATION_NO),
-
-  CONSTRAINT FK_PML_PRODUCT FOREIGN KEY (PRODUCT_NO)
-    REFERENCES PRODUCTS(PRODUCT_NO) ON DELETE CASCADE,
-
-  CONSTRAINT CK_PML_SORT CHECK (SORT_NO >= 1),
-
-  -- 같은 상품에서 정렬순서 중복 방지
-  CONSTRAINT UQ_PML_SORT UNIQUE (PRODUCT_NO, SORT_NO)
-);
-
--- (권장) FK 조회/조인 성능
-CREATE INDEX IX_PML_PRODUCT_NO 
-ON PRODUCT_MEET_LOCATION (PRODUCT_NO);
-
--- 시퀀스
-CREATE SEQUENCE SEQ_PML_NO
-START WITH 1 
-INCREMENT BY 1 
-NOMAXVALUE 
-NOMINVALUE 
-NOCYCLE 
-NOCACHE;
-
-
-/* =========================================================
-    경매 (AUCTION)
+    ���? (AUCTION)
    ========================================================= */
 CREATE TABLE AUCTION (
-  AUCTION_NO       NUMBER          NOT NULL,         -- 경매번호(PK)
-  PRODUCT_NO       NUMBER          NOT NULL,         -- 상품번호(FK)
+  AUCTION_NO       NUMBER          NOT NULL,         -- ��Ź��?(PK)
+  PRODUCT_NO       NUMBER          NOT NULL,         -- ��ǰ��ȣ(FK)
 
-  TOP_BIDDER_EMAIL VARCHAR2(100)   NULL,             -- 현재최고입찰자 이메일(FK)
-  START_AT         TIMESTAMP       NOT NULL,         -- 시작일시
-  END_AT           TIMESTAMP       NOT NULL,         -- 종료일시
-  BID_UNIT         NUMBER DEFAULT 5000 NOT NULL,     -- 입찰단위(고정)
-  BUY_NOW_PRICE    NUMBER          NULL,             -- 즉시구매가
+  TOP_BIDDER_EMAIL VARCHAR2(100)   NULL,             -- �����ְ������� �̸���(FK)
+  START_AT         TIMESTAMP       NOT NULL,         -- �����Ͻ�
+  END_AT           TIMESTAMP       NOT NULL,         -- �����Ͻ�
+  BID_UNIT         NUMBER DEFAULT 5000 NOT NULL,     -- ��������(����)
+  BUY_NOW_PRICE    NUMBER          NULL,             -- ��ñ��Ű�?
 
   CONSTRAINT PK_AUCTION PRIMARY KEY (AUCTION_NO),
 
@@ -391,16 +466,15 @@ NOMAXVALUE NOMINVALUE
 NOCYCLE NOCACHE;
 
 
-
 /* =========================================================
-    경매입찰 (AUCTION_BID)
+    �������? (AUCTION_BID)
    ========================================================= */
 CREATE TABLE AUCTION_BID (
-  AUCTION_BID_NO   NUMBER          NOT NULL,         -- 입찰번호(PK)
-  AUCTION_NO       NUMBER          NOT NULL,         -- 경매번호(FK)
-  BIDDER_EMAIL     VARCHAR2(100)   NOT NULL,         -- 입찰자 이메일(FK)
-  BID_AMOUNT       NUMBER          NOT NULL,         -- 입찰금액
-  BID_AT           TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- 입찰일시
+  AUCTION_BID_NO   NUMBER          NOT NULL,         -- ������ȣ(PK)
+  AUCTION_NO       NUMBER          NOT NULL,         -- ��Ź��?(FK)
+  BIDDER_EMAIL     VARCHAR2(100)   NOT NULL,         -- ������ �̸���(FK)
+  BID_AMOUNT       NUMBER          NOT NULL,         -- �����ݾ�
+  BID_AT           TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- �����Ͻ�
 
   CONSTRAINT PK_AUCTION_BID PRIMARY KEY (AUCTION_BID_NO),
 
@@ -419,43 +493,55 @@ NOMAXVALUE NOMINVALUE
 NOCYCLE NOCACHE;
 
 
-
 /* =========================================================
-    인기검색어 (POPULAR_KEYWORD)
+    ��ȸ�� ��ġ (GUEST_REGION)
    ========================================================= */
-CREATE TABLE SEARCH_KEYWORD (
-  SEARCH_ID       NUMBER          NOT NULL,
-  KEYWORD         VARCHAR2(100)   NOT NULL,
-  SEARCH_TYPE     VARCHAR2(20)    NOT NULL,                 -- 'GENERAL' / 'PRICE'
-  MEMBER_EMAIL    VARCHAR2(100)   NULL,                     -- 회원이면 값, 비회원이면 NULL
-  SESSION_ID      VARCHAR2(100)   NULL,                     -- 비회원 식별(쿠키/세션)
-  IP_ADDRESS      VARCHAR2(45)    NULL,                     -- IPv4/IPv6 (보조)
-  USER_AGENT      VARCHAR2(300)   NULL,                     -- 보조(선택)
-  SEARCHED_AT     TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
+CREATE TABLE GUEST_REGION (
+  GUEST_REGION_NO   NUMBER          NOT NULL,        -- PK
+  GUEST_KEY         VARCHAR2(100)   NOT NULL,        -- ����/����̽�?/��ŰŰ
+  REGION_NO         NUMBER          NOT NULL,        -- ������ȣ(FK)
 
-  CONSTRAINT PK_SEARCH_KEYWORD PRIMARY KEY (SEARCH_ID),
-  CONSTRAINT CK_SEARCH_TYPE CHECK (SEARCH_TYPE IN ('GENERAL','PRICE')),
-  CONSTRAINT CK_SEARCH_ACTOR CHECK (MEMBER_EMAIL IS NOT NULL OR SESSION_ID IS NOT NULL),
-  CONSTRAINT FK_SEARCH_MEMBER_EMAIL
-  FOREIGN KEY (MEMBER_EMAIL) REFERENCES MEMBER(EMAIL)
+  LATITUDE          NUMBER(10,7)    NULL,            -- ����
+  LONGITUDE         NUMBER(10,7)    NULL,            -- �浵
+  UPDATED_AT        TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- ���Žð�
+
+  CONSTRAINT PK_GUEST_REGION PRIMARY KEY (GUEST_REGION_NO),
+  CONSTRAINT UQ_GUEST_REGION_KEY UNIQUE (GUEST_KEY),
+  CONSTRAINT FK_GUEST_REGION_REGION FOREIGN KEY (REGION_NO)
+    REFERENCES REGION(REGION_NO)
 );
 
-CREATE SEQUENCE SEQ_SEARCH_KEYWORD_ID
-START WITH 1 
-INCREMENT BY 1
-NOMAXVALUE 
-NOMINVALUE
-NOCYCLE
-NOCACHE;
-
+CREATE SEQUENCE SEQ_GUEST_REGION_NO
+START WITH 1 INCREMENT BY 1
+NOMAXVALUE NOMINVALUE
+NOCYCLE NOCACHE;
 
 
 /* =========================================================
-    찜 (WISHLIST)
+    �α�˻���? (POPULAR_KEYWORD)
+   ========================================================= */
+CREATE TABLE POPULAR_KEYWORD (
+  KEYWORD_NO      NUMBER          NOT NULL,          -- �˻�����?(PK)
+  KEYWORD_TEXT    VARCHAR2(200)   NOT NULL,          -- �˻���
+  SEARCHED_AT     TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL, -- �˻��Ͻ�
+  SEARCH_COUNT    NUMBER DEFAULT 1 NOT NULL,         -- �˻�Ƚ��
+
+  CONSTRAINT PK_POPULAR_KEYWORD PRIMARY KEY (KEYWORD_NO),
+  CONSTRAINT CK_POPULAR_KEYWORD_COUNT CHECK (SEARCH_COUNT >= 1)
+);
+
+CREATE SEQUENCE SEQ_POPULAR_KEYWORD_NO
+START WITH 1 INCREMENT BY 1
+NOMAXVALUE NOMINVALUE
+NOCYCLE NOCACHE;
+
+
+/* =========================================================
+    �� (WISHLIST)
    ========================================================= */
 CREATE TABLE WISHLIST (
-  MEMBER_EMAIL   VARCHAR2(100)  NOT NULL,            -- 회원이메일(FK)
-  PRODUCT_NO     NUMBER         NOT NULL,            -- 상품번호(FK)
+  MEMBER_EMAIL   VARCHAR2(100)  NOT NULL,            -- ȸ���̸���(FK)
+  PRODUCT_NO     NUMBER         NOT NULL,            -- ��ǰ��ȣ(FK)
 
   CONSTRAINT PK_WISHLIST PRIMARY KEY (MEMBER_EMAIL, PRODUCT_NO),
 
@@ -468,32 +554,831 @@ CREATE TABLE WISHLIST (
 
 CREATE INDEX IDX_WISHLIST_MEMBER  ON WISHLIST(MEMBER_EMAIL);
 CREATE INDEX IDX_WISHLIST_PRODUCT ON WISHLIST(PRODUCT_NO);
------------------------------------------------------------------------
 
--------- **** 매장찾기(카카오지도) 테이블 생성하기 **** ----------
-create table tbl_map 
-(storeID       varchar2(20) not null   --  매장id
-,storeName     varchar2(100) not null  --  매장명
-,storeUrl      varchar2(200)            -- 매장 홈페이지(URL)주소
-,storeImg      varchar2(200) not null   -- 매장소개 이미지파일명  
-,storeAddress  varchar2(200) not null   -- 매장주소 및 매장전화번호
-,lat           number not null          -- 위도
-,lng           number not null          -- 경도 
-,zindex        number not null          -- zindex 
-,constraint PK_tbl_map primary key(storeID)
-,constraint UQ_tbl_map_zindex unique(zindex)
+
+/* =========================================================
+    �Ű����� (REPORT_TYPES)
+   ========================================================= */
+CREATE TABLE REPORT_TYPES (
+    TYPE_ID    NUMBER PRIMARY KEY,                   -- �Ű�������ȣ(PK)
+    TYPE_NAME  VARCHAR2(100) NOT NULL                -- �Ű������� (��: �弳, ����, ���?)
+
 );
--- Table TBL_MAP이(가) 생성되었습니다.
-
-create sequence seq_tbl_map_zindex
-start with 1
-increment by 1
-nomaxvalue
-nominvalue
-nocycle
-nocache;
--- Sequence SEQ_TBL_MAP_ZINDEX이(가) 생성되었습니다.
 
 
 
- 
+
+
+/* =========================================================
+    �������� (NOTICES)  �� 1���� ����
+   ========================================================= */
+CREATE TABLE NOTICES (
+    NOTICE_ID     NUMBER PRIMARY KEY,                 -- �������׹�ȣ(PK)
+    ADMIN_EMAIL   VARCHAR2(100) NOT NULL,             -- �ۼ� ������ �̸���(FK: MEMBER.EMAIL)
+    TITLE         VARCHAR2(400) NOT NULL,             -- ����
+    CONTENT       CLOB NOT NULL,                      -- ����
+    VIEW_COUNT    NUMBER DEFAULT 0,                   -- ��ȸ��
+    IMAGE_PATH    VARCHAR2(500),                      -- �̹��� ���?
+    IMPORTANCE    NUMBER(1) DEFAULT 0,                -- �߿䵵(0/1)
+    STATUS        VARCHAR2(20) DEFAULT 'PUBLISHED',   -- �Խû���
+    IS_DELETED    VARCHAR2(1) DEFAULT 'N',                -- ��������(Y/N)
+    CREATED_AT    DATE DEFAULT SYSDATE,               -- �����?
+
+    CONSTRAINT FK_NOTICE_ADMIN_EMAIL FOREIGN KEY (ADMIN_EMAIL)
+      REFERENCES MEMBER(EMAIL),
+
+    CONSTRAINT CK_NOTICE_IMPORTANCE CHECK (IMPORTANCE IN (0,1)),
+    CONSTRAINT CK_NOTICE_DELETED CHECK (IS_DELETED IN ('Y','N'))
+);
+
+CREATE SEQUENCE SEQ_NOTICE_ID
+START WITH 1 INCREMENT BY 1
+NOMAXVALUE NOMINVALUE
+NOCYCLE NOCACHE;
+
+
+
+/* =========================================================
+    �̺�Ʈ (EVENTS)
+   - BANNER_IMAGE_URL : ����/���? ��ʿ�?
+   - IMAGE_URL        : �� ������ ��ǥ �̹���(�Ǵ� �� �����?)
+   ========================================================= */
+CREATE TABLE EVENTS (
+    EVENT_ID          NUMBER PRIMARY KEY,               -- �̺�Ʈ��ȣ(PK)
+    ADMIN_EMAIL       VARCHAR2(100) NOT NULL,           -- ���? ������ �̸���(FK: MEMBER.EMAIL)
+
+    TITLE             VARCHAR2(200) NOT NULL,           -- ����
+    CONTENT           CLOB NOT NULL,                    -- ����
+
+    BANNER_IMAGE_URL  VARCHAR2(512),                    -- ���? �̹��� (���?/�����̵��?)
+    IMAGE_URL         VARCHAR2(512),                    -- �� �̹��� (����������)
+
+    START_DATE        DATE NOT NULL,                    -- ������
+    END_DATE          DATE NOT NULL,                    -- ������
+    CREATED_AT        DATE DEFAULT SYSDATE,             -- �����?
+
+    REWARD_CASH       NUMBER DEFAULT 0,                 -- ����ĳ��
+    STATUS            VARCHAR2(20) DEFAULT 'READY',     -- ����
+    VIEW_COUNT        NUMBER DEFAULT 0,                 -- ��ȸ��
+
+    CONSTRAINT FK_EVENT_ADMIN_EMAIL FOREIGN KEY (ADMIN_EMAIL)
+      REFERENCES MEMBER(EMAIL),
+
+    CONSTRAINT CHK_EVENT_DATE CHECK (END_DATE > START_DATE)
+);
+
+CREATE SEQUENCE SEQ_EVENT_ID
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE 
+NOMINVALUE
+NOCYCLE 
+NOCACHE;
+
+
+/* =========================================================
+    �̺�Ʈ ���? (EVENT_COMMENTS)
+   ========================================================= */
+CREATE TABLE EVENT_COMMENTS (
+    COMMENT_ID   NUMBER PRIMARY KEY,                -- ��۹��?(PK)
+    EVENT_ID     NUMBER NOT NULL,                   -- �̺�Ʈ��ȣ(FK)
+    MEMBER_EMAIL VARCHAR2(100) NOT NULL,            -- ȸ���̸���(FK)
+    CONTENT      VARCHAR2(600) NOT NULL,            -- ��۳���?
+    CREATED_AT   DATE DEFAULT SYSDATE,              -- �ۼ���
+
+    CONSTRAINT UK_EVENT_MEMBER UNIQUE (EVENT_ID, MEMBER_EMAIL),
+
+    CONSTRAINT FK_COMM_EVENT FOREIGN KEY (EVENT_ID)
+      REFERENCES EVENTS(EVENT_ID),
+
+    CONSTRAINT FK_COMM_MEMBER FOREIGN KEY (MEMBER_EMAIL)
+      REFERENCES MEMBER(EMAIL)
+);
+
+CREATE SEQUENCE SEQ_COMMENT_ID
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE 
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+/* =========================================================
+   ���� (INQUIRIES)
+   ========================================================= */
+CREATE TABLE INQUIRIES (
+    INQUIRY_ID       NUMBER NOT NULL,                     -- ���ǹ�ȣ(PK)
+    MEMBER_EMAIL     VARCHAR2(100) NOT NULL,               -- ȸ���̸���(FK)
+    TITLE            VARCHAR2(200) NOT NULL,               -- ����
+    CONTENT          CLOB NOT NULL,                        -- ����
+    CREATED_AT       DATE DEFAULT SYSDATE NOT NULL,        -- �ۼ���
+
+    INQUIRY_STATUS   VARCHAR2(20) DEFAULT '���?' NOT NULL, -- �亯����(���?, �亯�Ϸ�)
+    ADMIN_ANSWER     CLOB,                                 -- ������ �亯
+    ANSWERED_AT      DATE,                                 -- �亯 �ۼ� �ð�
+
+    CONSTRAINT PK_INQUIRIES PRIMARY KEY (INQUIRY_ID),
+
+    CONSTRAINT FK_INQ_MEMBER FOREIGN KEY (MEMBER_EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT CK_INQUIRY_STATUS CHECK (INQUIRY_STATUS IN ('���?','�亯�Ϸ�')),
+
+    -- ���º� ���ռ�(�ٽ�)
+    CONSTRAINT CK_INQUIRY_STATUS_DETAIL CHECK (
+        (INQUIRY_STATUS = '���?'     AND ADMIN_ANSWER IS NULL AND ANSWERED_AT IS NULL)
+     OR (INQUIRY_STATUS = '�亯�Ϸ�' AND ADMIN_ANSWER IS NOT NULL AND ANSWERED_AT IS NOT NULL)
+    )
+);
+
+CREATE SEQUENCE SEQ_INQUIRY_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+/* =========================================================
+   ���� ���� (ACCOUNTS)
+   ========================================================= */
+CREATE TABLE ACCOUNTS (
+    ACCOUNT_ID      NUMBER          PRIMARY KEY,     -- ���¹�ȣ(PK)
+    EMAIL           VARCHAR2(100)   NOT NULL,        -- ������ �̸���(FK)
+    BANK_NAME       VARCHAR2(50)    NOT NULL,        -- �����?
+    ACCOUNT_NUM     VARCHAR2(50)    NOT NULL,        -- ���¹�ȣ
+    ACCOUNT_HOLDER  VARCHAR2(50)    NOT NULL,        -- ������
+    IS_PRIMARY      VARCHAR2(1) DEFAULT 'N'
+                    CHECK (IS_PRIMARY IN ('Y','N')), -- ��ǥ����(Y/N)
+
+    CONSTRAINT FK_ACCT_MEMBER FOREIGN KEY (EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE
+);
+
+CREATE SEQUENCE SEQ_ACCOUNT_ID
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE 
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+/* =========================================================
+    �ŷ�/���� (TRANSACTIONS)
+   - �佺 ���� �ĺ�/���¸� �ּ� ����
+   - ��(ī��/�������?/��������/�α�)�� ���� ���̺����� ����
+   - ä��(������ü) / ĳ�ð��� / �佺����(ī��/����/����) ���? ����
+   ========================================================= */
+CREATE TABLE TRANSACTIONS (
+    TRANSACTION_ID   NUMBER          NOT NULL,                 -- �ŷ�/������ȣ(PK)
+    PRODUCT_NO       NUMBER          NOT NULL,                 -- ��ǰ��ȣ(FK)
+    SELLER_EMAIL     VARCHAR2(100)   NOT NULL,                 -- �Ǹ��� �̸���(FK)
+    BUYER_EMAIL      VARCHAR2(100),                            -- ������ �̸���(FK, ������ NULL ����)
+    ACCOUNT_ID       NUMBER,                                   -- ���� ����(FK, ���� �����? ����)
+
+    PAYMENT_TYPE     VARCHAR2(30)    NOT NULL,                 -- ��������
+    AMOUNT           NUMBER(12,0)    NOT NULL,                 -- �����ݾ�(0 �̻�)
+    TRADE_STATUS     VARCHAR2(20)    DEFAULT '�ŷ���' NOT NULL,-- �ŷ�����
+    TRADE_DATE       TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    COMPLETE_DATE    TIMESTAMP,
+
+    /* ===== �佺 �ּ� �÷�(���� �ĺ�/���� ĳ��) ===== */
+    TOSS_PAY_KEY     VARCHAR2(200),                            -- (�佺) ����Ű
+    TOSS_ORDER_ID    VARCHAR2(200),                            -- (�佺) �ֹ�ID(�佺 ��û/������)
+    PAY_STATUS       VARCHAR2(20)    DEFAULT 'READY' NOT NULL, -- (�佺) �������� ĳ��
+    APPROVED_AT      TIMESTAMP,                                -- (�佺) ���νð�(ĳ��)
+
+    USE_ESCROW       VARCHAR2(1) DEFAULT 'N' NOT NULL,             -- ��������(����ũ��) ����(Y/N)
+
+    CONSTRAINT PK_TRANSACTIONS PRIMARY KEY (TRANSACTION_ID),
+
+    CONSTRAINT FK_TXN_PRODUCT  FOREIGN KEY (PRODUCT_NO)
+      REFERENCES PRODUCTS(PRODUCT_NO),
+
+    CONSTRAINT FK_TXN_SELLER   FOREIGN KEY (SELLER_EMAIL)
+      REFERENCES MEMBER(EMAIL),
+
+    CONSTRAINT FK_TXN_BUYER    FOREIGN KEY (BUYER_EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE SET NULL,
+
+    CONSTRAINT FK_TXN_ACCOUNT  FOREIGN KEY (ACCOUNT_ID)
+      REFERENCES ACCOUNTS(ACCOUNT_ID) ON DELETE SET NULL,
+
+    /* ===== �� ���� ===== */
+    CONSTRAINT CK_TXN_AMOUNT CHECK (AMOUNT >= 0),
+
+    CONSTRAINT CK_TXN_PAYMENT_TYPE CHECK (
+      PAYMENT_TYPE IN ('������ü','ĳ�ð���','ī�����?','�������?','��������')
+    ),
+
+    CONSTRAINT CK_TXN_TRADE_STATUS CHECK (
+      TRADE_STATUS IN ('�ŷ���','�ŷ��Ϸ�','���?','ȯ����','ȯ�ҿϷ�')
+    ),
+
+    CONSTRAINT CK_TXN_PAY_STATUS CHECK (
+      PAY_STATUS IN ('READY','IN_PROGRESS','WAITING_FOR_DEPOSIT',
+                     'DONE','CANCELED','PARTIAL_CANCELED','ABORTED','EXPIRED')
+    ),
+
+    CONSTRAINT CK_TXN_USE_ESCROW CHECK (USE_ESCROW IN ('Y','N')),
+
+    /* ===== �佺 �ּ� ���ռ�(�佺 ���������� ���� �佺 �ֹ�ID/����Ű ���?) ===== */
+    CONSTRAINT CK_TXN_TOSS_MINIMAL CHECK (
+      (PAYMENT_TYPE IN ('ī�����?','�������?','��������')
+        AND TOSS_ORDER_ID IS NOT NULL
+        AND TOSS_PAY_KEY  IS NOT NULL)
+      OR
+      (PAYMENT_TYPE IN ('������ü','ĳ�ð���')
+        AND TOSS_ORDER_ID IS NULL
+        AND TOSS_PAY_KEY  IS NULL)
+    )
+);
+
+CREATE SEQUENCE SEQ_TRANSACTION_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+/* =========================================================
+    �佺 ī�����? �� (TOSS_CARD_PAYMENTS)
+   ========================================================= */
+CREATE TABLE TOSS_CARD_PAYMENTS (
+    CARD_PAY_ID     NUMBER          NOT NULL, -- ī������󼼹��?(PK)
+    TRANSACTION_ID  NUMBER          NOT NULL, -- �ŷ�/������ȣ(FK �� TRANSACTIONS.TRANSACTION_ID)
+
+    CARD_COMPANY_CD VARCHAR2(20),             -- ī���? �ڵ�
+    CARD_COMPANY    VARCHAR2(50),             -- ī����
+    CARD_NUM        VARCHAR2(25),             -- ī����?(����ŷ�� ��)
+    CARD_TYPE       VARCHAR2(20),             -- ī�� ����(�ſ�/üũ ��)
+    INSTALLMENT     NUMBER(2,0) DEFAULT 0,    -- �Һ� ������(�Ͻú�=0)
+    IS_NO_INTEREST  VARCHAR2(1) DEFAULT 'N',      -- ������ ����(Y/N)
+    POINT_USED      NUMBER(10,0) DEFAULT 0,   -- ī�� ����Ʈ ���ݾ�
+    OWNER_TYPE      VARCHAR2(20),             -- ī�� ������ ����(����/����)
+    ACQUIRE_STATUS  VARCHAR2(20),             -- ���� ����
+    RECEIPT_URL     VARCHAR2(1000),           -- ī�� ������ URL
+
+    CONSTRAINT PK_TOSS_CARD_PAYMENTS PRIMARY KEY (CARD_PAY_ID), -- PK
+    CONSTRAINT FK_CARD_TXN FOREIGN KEY (TRANSACTION_ID)         -- FK
+      REFERENCES TRANSACTIONS(TRANSACTION_ID) ON DELETE CASCADE,
+
+    CONSTRAINT CK_CARD_NO_INTEREST CHECK (IS_NO_INTEREST IN ('Y','N'))
+);
+
+CREATE SEQUENCE SEQ_CARD_PAY_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+/* =========================================================
+    �佺 �������? �� (TOSS_VIRTUAL_ACCOUNTS)
+   ========================================================= */
+CREATE TABLE TOSS_VIRTUAL_ACCOUNTS (
+    VACCOUNT_ID       NUMBER NOT NULL, -- ������»󼼹��?(PK)
+    TRANSACTION_ID    NUMBER NOT NULL, -- �ŷ�/������ȣ(FK �� TRANSACTIONS.TRANSACTION_ID)
+
+    BANK_CODE         VARCHAR2(20),    -- ���� �ڵ�
+    BANK_NAME         VARCHAR2(50),    -- �����?
+    VACCOUNT_NUM      VARCHAR2(50),    -- �߱޵� ������¹��?
+    CUSTOMER_NAME     VARCHAR2(50),    -- �Ա��ڸ�
+    DEPOSIT_DEADLINE  TIMESTAMP,       -- �Ա� ��������
+    DEPOSIT_STATUS    VARCHAR2(20),    -- �Ա� ����(���?/�Ϸ� ��)
+    DEPOSITED_AT      TIMESTAMP,       -- ���� �Ա� �ð�
+    REFUND_BANK       VARCHAR2(50),    -- ȯ�� �����?
+    REFUND_ACCT_NUM   VARCHAR2(50),    -- ȯ�� ���¹�ȣ
+    REFUND_HOLDER     VARCHAR2(50),    -- ȯ�� ���� ������
+    CASH_RECEIPT_TYPE VARCHAR2(20),    -- ���ݿ����� ����(�ҵ����?/�������� ��)
+    CASH_RECEIPT_NUM  VARCHAR2(50),    -- ���ݿ����� ��ȣ
+
+    CONSTRAINT PK_TOSS_VIRTUAL_ACCOUNTS PRIMARY KEY (VACCOUNT_ID), -- PK
+    CONSTRAINT FK_VACCT_TXN FOREIGN KEY (TRANSACTION_ID)           -- FK
+      REFERENCES TRANSACTIONS(TRANSACTION_ID) ON DELETE CASCADE
+);
+
+CREATE SEQUENCE SEQ_VACCOUNT_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+/* =========================================================
+   �佺 �������� �� (TOSS_EASY_PAYMENTS)
+   ========================================================= */
+CREATE TABLE TOSS_EASY_PAYMENTS (
+    EASY_PAY_ID     NUMBER NOT NULL, -- ���������󼼹�ȣ(PK)
+    TRANSACTION_ID  NUMBER NOT NULL, -- �ŷ�/������ȣ(FK �� TRANSACTIONS.TRANSACTION_ID)
+
+    PROVIDER        VARCHAR2(50),    -- �������� ������(īī������/���̹����� ��)
+    APPROVAL_NUM    VARCHAR2(50),    -- ���ι�ȣ
+    DISCOUNT_AMT    NUMBER(10,0) DEFAULT 0, -- �������� ���αݾ�
+
+    CONSTRAINT PK_TOSS_EASY_PAYMENTS PRIMARY KEY (EASY_PAY_ID), -- PK
+    CONSTRAINT FK_EASY_PAY_TXN FOREIGN KEY (TRANSACTION_ID)     -- FK
+      REFERENCES TRANSACTIONS(TRANSACTION_ID) ON DELETE CASCADE,
+
+    CONSTRAINT CK_EASY_DISCOUNT CHECK (DISCOUNT_AMT >= 0)
+);
+
+CREATE SEQUENCE SEQ_EASY_PAY_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+/* =========================================================
+    �佺 ���� �α� (TOSS_PAYMENT_LOGS)
+   ========================================================= */
+CREATE TABLE TOSS_PAYMENT_LOGS (
+    LOG_ID          NUMBER NOT NULL, -- �����α׹�ȣ(PK)
+    TRANSACTION_ID  NUMBER,          -- �ŷ�/������ȣ(FK �� TRANSACTIONS.TRANSACTION_ID, ����)
+
+    LOG_TYPE        VARCHAR2(20),    -- �α� ����(��û/����/���� ��)
+    API_ENDPOINT    VARCHAR2(200),   -- ȣ�� API ��������Ʈ
+    HTTP_METHOD     VARCHAR2(10),    -- HTTP �޼ҵ�(GET/POST ��)
+    REQUEST_DATA    CLOB,            -- ��û ������(JSON ����)
+    RESPONSE_DATA   CLOB,            -- ���� ������(JSON ����)
+    HTTP_STATUS     NUMBER(3,0),     -- HTTP �����ڵ�
+    ERROR_CODE      VARCHAR2(50),    -- ���� �ڵ�
+    ERROR_MSG       VARCHAR2(500),   -- ���� �޽���
+    REQUESTED_AT    TIMESTAMP DEFAULT SYSTIMESTAMP, -- ��û �ð�
+    RESPONDED_AT    TIMESTAMP,       -- ���� �ð�
+    REQUEST_IP      VARCHAR2(50),    -- ��û IP �ּ�
+
+    CONSTRAINT PK_TOSS_PAYMENT_LOGS PRIMARY KEY (LOG_ID), -- PK
+    CONSTRAINT FK_PAYLOG_TXN FOREIGN KEY (TRANSACTION_ID) -- FK
+      REFERENCES TRANSACTIONS(TRANSACTION_ID) ON DELETE SET NULL
+);
+
+CREATE SEQUENCE SEQ_PAYLOG_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+/* =========================================================
+   ȯ�� (REFUNDS)
+   ========================================================= */
+CREATE TABLE REFUNDS (
+    REFUND_ID           NUMBER          NOT NULL, -- ȯ�ҹ�ȣ(PK)
+    TRANSACTION_ID      NUMBER          NOT NULL, -- �ŷ�/������ȣ(FK �� TRANSACTIONS.TRANSACTION_ID)
+
+    TOSS_CANCEL_ID      VARCHAR2(200),            -- �佺 ���? ID
+    TOSS_CANCEL_KEY     VARCHAR2(200),            -- �佺 ���? Ű
+
+    REFUND_REASON       VARCHAR2(500),            -- ȯ�� ����
+    REFUND_AMT          NUMBER(12,0)  NOT NULL,   -- ȯ�� �ݾ�
+
+    REQUESTED_AT        TIMESTAMP DEFAULT SYSTIMESTAMP, -- ȯ�� ��û�Ͻ�
+    COMPLETED_AT        TIMESTAMP,                -- ȯ�� �Ϸ��Ͻ�
+
+    REFUND_STATUS       VARCHAR2(20) DEFAULT '��û' NOT NULL, -- ȯ�� ����(��û/ó����/�Ϸ�/����)
+    IS_PARTIAL          VARCHAR2(1) DEFAULT 'N',      -- �κ�ȯ�� ����(Y/N)
+    CANCEL_AVAIL_BAL    NUMBER(12,0),             -- ���? ���� �ܾ�
+    RETURN_STATUS       VARCHAR2(50),             -- ��ǰ ����(�ù�ȸ����/�Ϸ� ��)
+
+    HANDLER_EMAIL       VARCHAR2(100),            -- ó�� ������ �̸���(FK �� MEMBER.EMAIL)
+    BANK_NAME           VARCHAR2(50),             -- ȯ�� �����?
+    REFUND_ACCT_NUM     VARCHAR2(50),             -- ȯ�� ���¹�ȣ
+    ACCOUNT_HOLDER      VARCHAR2(50),             -- �����ָ�
+
+    REFUND_SUPPLY_PRICE NUMBER(12,0),             -- ���ް��� ���� ȯ�ұ�
+    REFUND_VAT          NUMBER(12,0),             -- �ΰ��� ȯ�ұ�
+
+    CONSTRAINT PK_REFUNDS PRIMARY KEY (REFUND_ID), -- PK
+
+    CONSTRAINT FK_REFUND_TXN FOREIGN KEY (TRANSACTION_ID) -- FK
+      REFERENCES TRANSACTIONS(TRANSACTION_ID) ON DELETE CASCADE,
+
+    CONSTRAINT FK_REFUND_HANDLER_EMAIL FOREIGN KEY (HANDLER_EMAIL) -- FK
+      REFERENCES MEMBER(EMAIL) ON DELETE SET NULL,
+
+    CONSTRAINT CK_REFUND_STATUS CHECK (REFUND_STATUS IN ('��û','ó����','�Ϸ�','����')),
+    CONSTRAINT CK_REFUND_IS_PARTIAL CHECK (IS_PARTIAL IN ('Y','N'))
+);
+
+CREATE SEQUENCE SEQ_REFUND_ID
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE 
+NOMINVALUE
+NOCYCLE 
+NOCACHE;
+
+
+/* =========================================================
+   ������ı�? (REVIEWS)
+   ========================================================= */
+CREATE TABLE REVIEWS (
+    REVIEW_NO        NUMBER          NOT NULL,             -- �ı���?(PK)
+    EMAIL            VARCHAR2(100)   NOT NULL,             -- ȸ���̸���(FK)
+    TRANSACTION_ID   NUMBER          NOT NULL,             -- ������ȣ(FK)
+    RATING           NUMBER(2,1)     NOT NULL,             -- ����
+    ONE_LINE_CAT     VARCHAR2(50)    NOT NULL,             -- ������ ī�װ���
+    REVIEW_CONTENT   CLOB            NULL,                 -- ���䳻��
+    CREATED_AT       DATE DEFAULT SYSDATE NOT NULL,        -- �ۼ���¥
+
+    CONSTRAINT PK_REVIEWS PRIMARY KEY (REVIEW_NO),
+
+    CONSTRAINT FK_REVIEWS_MEMBER FOREIGN KEY (EMAIL)
+      REFERENCES MEMBER(EMAIL) ON DELETE CASCADE,
+
+    CONSTRAINT FK_REVIEWS_TXN FOREIGN KEY (TRANSACTION_ID)
+      REFERENCES TRANSACTIONS(TRANSACTION_ID) ON DELETE CASCADE,
+
+    CONSTRAINT CK_REVIEWS_RATING CHECK (RATING BETWEEN 1 AND 5),
+    CONSTRAINT UQ_REVIEWS_TXN UNIQUE (TRANSACTION_ID)
+);
+
+CREATE SEQUENCE SEQ_REVIEW_NO
+START WITH 1 
+INCREMENT BY 1
+NOMAXVALUE 
+NOMINVALUE
+NOCYCLE 
+NOCACHE;
+
+
+
+/* =========================================================
+   �Ű� (REPORTS)  - MESSAGES ���̺� �̻��?(=NoSQL �޽���)
+   ========================================================= */
+CREATE TABLE REPORTS (
+    REPORT_ID        NUMBER PRIMARY KEY,                    -- �Ű���ȣ(PK)
+    REPORTER_EMAIL   VARCHAR2(100) NOT NULL,                -- �Ű��� �̸���(FK)
+    TARGET_EMAIL     VARCHAR2(100) NOT NULL,                -- �ǽŰ��� �̸���(FK)
+    TYPE_ID          NUMBER NOT NULL,                       -- �Ű�����(FK)
+
+    PRODUCT_NUM      NUMBER,                                -- ��ǰ��ȣ(FK)
+    REVIEW_NUM       NUMBER,                                -- �ı���?(FK)
+
+    ROOM_ID          VARCHAR2(100),                         -- ä�ù�Ű(FK: CHAT_ROOM.ROOM_ID)
+    NOSQL_MSG_KEY    VARCHAR2(200),                         -- NoSQL �޽��� ����Ű/ID (FK �Ұ�)
+
+    REPORT_DETAIL    VARCHAR2(600) NOT NULL,                -- �Ű�����
+    REPORT_STATUS    VARCHAR2(20) DEFAULT '����' NOT NULL,   -- ó������
+    REPORT_DATE      DATE DEFAULT SYSDATE NOT NULL,          -- �����Ͻ�
+    REPORT_IMG       VARCHAR2(255),                         -- �����̹��� ���?
+
+    CONSTRAINT FK_REP_REPORTER FOREIGN KEY (REPORTER_EMAIL) REFERENCES MEMBER(EMAIL),
+    CONSTRAINT FK_REP_TARGET   FOREIGN KEY (TARGET_EMAIL)   REFERENCES MEMBER(EMAIL),
+    CONSTRAINT FK_REP_TYPE     FOREIGN KEY (TYPE_ID)        REFERENCES REPORT_TYPES(TYPE_ID),
+
+    CONSTRAINT FK_REP_PRODUCT  FOREIGN KEY (PRODUCT_NUM) REFERENCES PRODUCTS(PRODUCT_NO) ON DELETE SET NULL,
+    CONSTRAINT FK_REP_REVIEW   FOREIGN KEY (REVIEW_NUM)  REFERENCES REVIEWS(REVIEW_NO)   ON DELETE SET NULL,
+
+    CONSTRAINT FK_REP_ROOM     FOREIGN KEY (ROOM_ID) REFERENCES CHAT_ROOM(ROOM_ID) ON DELETE SET NULL,
+
+    CONSTRAINT CK_REPORT_STATUS CHECK (REPORT_STATUS IN ('����','ó����','�Ϸ�')),
+
+    -- �޽��� �Ű��� ROOM_ID + NOSQL_MSG_KEY �� �� �־��? ��(�� �� �ϳ��� ������ �ҿ���)
+    CONSTRAINT CK_REPORT_MSG_PAIR CHECK (
+        (ROOM_ID IS NULL AND NOSQL_MSG_KEY IS NULL)
+     OR (ROOM_ID IS NOT NULL AND NOSQL_MSG_KEY IS NOT NULL)
+    ),
+
+    -- �Ű� �����? �ּ� 1���� �־��? �Ѵ�(��ǰ/�ı�/�޽���(ROOM_ID+NOSQL_MSG_KEY))
+    CONSTRAINT CK_REPORT_TARGET_EXISTS CHECK (
+        PRODUCT_NUM IS NOT NULL
+     OR REVIEW_NUM  IS NOT NULL
+     OR (ROOM_ID IS NOT NULL AND NOSQL_MSG_KEY IS NOT NULL)
+    )
+);
+
+CREATE SEQUENCE SEQ_REPORT_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+
+
+/* =========================================================
+    ���� ���̺� (�����ڰ� ����/���� ����)
+   ========================================================= */
+
+
+CREATE TABLE ADS (
+    AD_ID           NUMBER PRIMARY KEY,                 -- ���� ���� ��ȣ (PK)
+    MANAGER_NAME    VARCHAR2(50) NOT NULL,              -- ��ü �����? �̸�
+    COMPANY_EMAIL   VARCHAR2(100) NOT NULL,             -- ��ü �̸���
+    PHONE           VARCHAR2(20) NOT NULL,              -- ��ü ����ó
+    CONTENT         CLOB NOT NULL,                      -- ���� ���� �� �� ����
+    START_DATE      DATE NOT NULL,                      -- ���� �Խ� ������
+    END_DATE        DATE NOT NULL,                      -- ���� �Խ� ������
+    DURATION_WEEKS  NUMBER(1) NOT NULL,                 -- ���� ���� �Ⱓ (1~4��)
+    AMOUNT          NUMBER(15) DEFAULT 1000000 NOT NULL, -- ������
+    FILE_PATH       VARCHAR2(500),                      -- ���� �̹��� ���? ���?
+    AGREED_YN       VARCHAR2(1) DEFAULT 'Y' NOT NULL,       -- �������? (Y/N)
+    STATUS          VARCHAR2(20) DEFAULT 'WAIT' NOT NULL,-- ���� (WAIT/CONFIRM/REJECT)
+    REJECTED_REASON VARCHAR2(300),                      -- ���� ����
+    CREATED_AT      DATE DEFAULT SYSDATE NOT NULL,      -- ��û��
+    APPROVED_AT     DATE,                               -- ����/���� ó����
+
+    -- [���� ����]
+    CONSTRAINT CHK_AD_DURATION CHECK (DURATION_WEEKS BETWEEN 1 AND 4),
+    CONSTRAINT CHK_AD_STATUS   CHECK (STATUS IN ('WAIT', 'CONFIRM', 'REJECT')),
+    CONSTRAINT CHK_AD_DATE     CHECK (END_DATE > START_DATE),
+    CONSTRAINT CHK_AD_AGREED   CHECK (AGREED_YN IN ('Y','N')),
+
+    -- ���º� �ʼ��� ����(�ٽ�)
+    CONSTRAINT CHK_AD_STATUS_DETAIL CHECK (
+        (STATUS = 'WAIT'    AND APPROVED_AT IS NULL AND REJECTED_REASON IS NULL)
+     OR (STATUS = 'CONFIRM' AND APPROVED_AT IS NOT NULL AND REJECTED_REASON IS NULL)
+     OR (STATUS = 'REJECT'  AND APPROVED_AT IS NOT NULL AND REJECTED_REASON IS NOT NULL)
+    )
+);
+
+CREATE SEQUENCE SEQ_AD_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+
+select *
+from PRODUCTS;
+
+delete PRODUCTS
+where PRODUCT_NO = 8;
+
+commit;
+
+select *
+from member;
+
+desc REPORT_TYPES;
+
+select *
+from REPORT_TYPES;
+
+select *
+from REPORTS;
+
+DROP TABLE REPORTS;
+
+commit;
+
+CREATE TABLE REPORTS (
+    REPORT_ID        NUMBER PRIMARY KEY,                    -- �Ű���ȣ(PK)
+    REPORTER_EMAIL   VARCHAR2(100) NOT NULL,                -- �Ű��� �̸���(FK)
+    TARGET_EMAIL     VARCHAR2(100) NOT NULL,                -- �ǽŰ��� �̸���(FK)
+    TYPE_ID          NUMBER NOT NULL,                       -- �Ű�����(FK)
+
+    PRODUCT_NUM      NUMBER,                                -- ��ǰ��ȣ(FK)
+    REVIEW_NUM       NUMBER,                                -- �ı���?(FK)
+
+    ROOM_ID          VARCHAR2(100),                         -- ä�ù�Ű(FK: CHAT_ROOM.ROOM_ID)
+    NOSQL_MSG_KEY    VARCHAR2(200),                         -- NoSQL �޽��� ����Ű/ID (FK �Ұ�)
+
+    REPORT_DETAIL    VARCHAR2(600) NOT NULL,                -- �Ű�����
+    REPORT_STATUS    VARCHAR2(20) DEFAULT '����' NOT NULL,   -- ó������
+    REPORT_DATE      DATE DEFAULT SYSDATE NOT NULL,         -- �����Ͻ�
+    REPORT_IMG       VARCHAR2(255),                         -- �����̹��� ���?
+
+    CONSTRAINT FK_REP_REPORTER FOREIGN KEY (REPORTER_EMAIL) REFERENCES MEMBER(EMAIL),
+    CONSTRAINT FK_REP_TARGET   FOREIGN KEY (TARGET_EMAIL)   REFERENCES MEMBER(EMAIL),
+    CONSTRAINT FK_REP_TYPE     FOREIGN KEY (TYPE_ID)        REFERENCES REPORT_TYPES(TYPE_ID),
+
+    CONSTRAINT FK_REP_PRODUCT  FOREIGN KEY (PRODUCT_NUM) REFERENCES PRODUCTS(PRODUCT_NO) ON DELETE SET NULL,
+    CONSTRAINT FK_REP_REVIEW   FOREIGN KEY (REVIEW_NUM)  REFERENCES REVIEWS(REVIEW_NO)   ON DELETE SET NULL,
+    CONSTRAINT FK_REP_ROOM     FOREIGN KEY (ROOM_ID) REFERENCES CHAT_ROOM(ROOM_ID) ON DELETE SET NULL,
+
+    CONSTRAINT CK_REPORT_STATUS CHECK (REPORT_STATUS IN ('����','ó����','�Ϸ�')),
+
+    CONSTRAINT CK_REPORT_MSG_PAIR CHECK (
+        (NOSQL_MSG_KEY IS NOT NULL AND ROOM_ID IS NOT NULL) 
+        OR (NOSQL_MSG_KEY IS NULL)
+    ),
+
+    CONSTRAINT CK_REPORT_TARGET_EXISTS CHECK (
+        PRODUCT_NUM IS NOT NULL
+     OR REVIEW_NUM  IS NOT NULL
+     OR ROOM_ID IS NOT NULL
+    )
+);
+
+CREATE SEQUENCE SEQ_REPORT_ID
+START WITH 1
+INCREMENT BY 1
+NOMAXVALUE
+NOMINVALUE
+NOCYCLE
+NOCACHE;
+
+commit;
+DROP TABLE REPORTS CASCADE CONSTRAINTS;
+
+-- ? �����̾��� �������� ���� �����?
+DROP SEQUENCE SEQ_REPORT_ID;
+
+
+select *
+from PRODUCTS;
+
+select *
+from member;
+
+update member set email = 'dltlgud112@naver.com'
+WHERE PHONE = '01045261348';
+
+commit;
+
+ALTER TABLE MEMBER MODIFY PHONE VARCHAR2(100);
+ALTER TABLE USER_DORMANT MODIFY PHONE VARCHAR2(100);
+
+UPDATE MEMBER
+  SET LAST_LOGIN_DATE = ADD_MONTHS(SYSDATE, -14)
+  WHERE EMAIL = 'dltlgud112@naver.com';
+  
+  commit;
+  
+  select *
+  from member;
+  
+  
+  UPDATE MEMBER
+  SET status = 1
+  WHERE EMAIL = 'dltlgud999@naver.com';
+  COMMIT;
+  
+  select *
+  from USER_DORMANT;
+
+/* =========================================================
+   PRODUCTS ?��?��블에 ?��?��?�� 채팅�? ID 컬럼 추�?
+   - ?��?�� ?��?�� ?�� ?��?�� 채팅�?(구매?��)?�� ?��?��?��?��?���? 추적
+   ========================================================= */
+ALTER TABLE PRODUCTS ADD RESERVED_ROOM_ID VARCHAR2(100);
+COMMIT;
+
+  SELECT EMAIL, PHONE, STATUS, IDLE FROM MEMBER WHERE EMAIL = 'dltlgud112@naver.com';
+  
+  
+  ALTER TABLE DELIVERY_ADDRESS ADD IS_PRIMARY VARCHAR2(1) DEFAULT 'N' NOT NULL CHECK (IS_PRIMARY IN ('Y','N'));
+  commit;
+  select *
+  from DELIVERY_ADDRESS;
+  
+  select *
+  from ACCOUNTS;
+  
+  update TRANSACTIONS set TRADE_STATUS = '�ŷ��Ϸ�' where TRANSACTION_ID = 112;
+  
+  commit;
+  
+  ALTER TABLE MEMBER ADD (
+      SOCIAL_TYPE VARCHAR2(20) DEFAULT NULL,
+      SOCIAL_ID   VARCHAR2(100) DEFAULT NULL
+  );
+  
+  commit;
+  
+  delete member 
+  where email = 'dltlgud693@naver.com';
+  
+  select *
+  from member;
+  
+  update member set STATUS = 1
+  where email = 'dltlgud691@naver.com';
+  
+  commit;
+  
+  ALTER TABLE CHAT_ROOM ADD BUYER_UNREAD NUMBER DEFAULT 0;
+  ALTER TABLE CHAT_ROOM ADD SELLER_UNREAD NUMBER DEFAULT 0;
+  UPDATE CHAT_ROOM SET BUYER_UNREAD = 0, SELLER_UNREAD = 0;
+  COMMIT;
+  
+  ALTER TABLE PRODUCTS ADD CARRIER_CODE VARCHAR2(10);
+  ALTER TABLE PRODUCTS ADD INVOICE_NO VARCHAR2(50);
+  commit;
+  
+  desc member;
+  
+  ALTER TABLE TRANSACTIONS ADD CARRIER_CODE VARCHAR2(10);
+  ALTER TABLE TRANSACTIONS ADD INVOICE_NO VARCHAR2(50);
+  COMMIT;
+  
+   SELECT col.table_name, col.column_name, col.data_type,
+         col.nullable,
+         CASE WHEN pk.column_name IS NOT NULL THEN 'PK' END AS pk,
+         CASE WHEN fk.column_name IS NOT NULL THEN 'FK �� ' || fk.ref_table END AS fk
+  FROM user_tab_columns col
+  LEFT JOIN (
+      SELECT c.table_name, cc.column_name
+      FROM user_constraints c JOIN user_cons_columns cc ON c.constraint_name = cc.constraint_name
+      WHERE c.constraint_type = 'P'
+  ) pk ON col.table_name = pk.table_name AND col.column_name = pk.column_name
+  LEFT JOIN (
+      SELECT a.table_name, a.column_name, b.table_name AS ref_table
+      FROM user_cons_columns a
+      JOIN user_constraints c ON a.constraint_name = c.constraint_name
+      JOIN user_cons_columns b ON c.r_constraint_name = b.constraint_name
+      WHERE c.constraint_type = 'R'
+  ) fk ON col.table_name = fk.table_name AND col.column_name = fk.column_name
+  ORDER BY col.table_name, col.column_id;
+  
+  
+    ALTER TABLE TRANSACTIONS DROP CONSTRAINT CK_TXN_PAYMENT_TYPE;
+  ALTER TABLE TRANSACTIONS ADD CONSTRAINT CK_TXN_PAYMENT_TYPE CHECK (
+    PAYMENT_TYPE IN ('��������','ĳ�ð���','ī�����','�������','�������','���ŷ�','����')
+  );
+
+  ALTER TABLE TRANSACTIONS DROP CONSTRAINT CK_TXN_TOSS_MINIMAL;
+  ALTER TABLE TRANSACTIONS ADD CONSTRAINT CK_TXN_TOSS_MINIMAL CHECK (
+    (PAYMENT_TYPE IN ('ī�����','�������','�������')
+      AND TOSS_ORDER_ID IS NOT NULL
+      AND TOSS_PAY_KEY  IS NOT NULL)
+    OR
+    (PAYMENT_TYPE IN ('��������','ĳ�ð���','���ŷ�','����')
+      AND TOSS_ORDER_ID IS NULL
+      AND TOSS_PAY_KEY  IS NULL)
+  );
+
+  COMMIT;
+  
+  select *
+  from member;
+  
+  select *
+  from products;
+  
+  delete from products
+  where product_no = 125;
+  
+  select *
+  from TRANSACTIONS;
+  
+  delete from TRANSACTIONS
+  where product_no = 125;
+  
+  select *
+  from CHAT_ROOM;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ---------------------------------------------------------------------------------------------
+  
+  show user;
+-- USER��(��) "SYS"�Դϴ�.
+
+alter session set "_ORACLE_SCRIPT"=true;
+-- Session��(��) ����Ǿ����ϴ�.
+
+--  final_orauser1
+--  final_orauser2
+--  final_orauser3 �̶�� ����Ŭ �Ϲݻ���� ������ �����մϴ�. ��ȣ�� sistsix ��� �ϰڽ��ϴ�.
+--create user final_orauser1 identified by sistsix default tablespace users;
+-- create user final_orauser2 identified by sistsix default tablespace users;
+create user semi_orauser3 identified by sistsix default tablespace users;
+
+-- User FINAL_ORAUSER1��(��) �����Ǿ����ϴ�.
+
+
+-- �����Ǿ��� ����Ŭ �Ϲݻ���� ������ final_orauser1 ���� ����Ŭ������ ������ �Ǿ�����, 
+-- ������ �Ǿ��� �� ���̺� ���� ������ �� �ֵ��� ������ �ο����ְڴ�.
+grant connect, resource, unlimited tablespace to final_orauser1;
+-- grant connect, resource, unlimited tablespace to final_orauser2;
+grant connect, resource, unlimited tablespace to semi_orauser3;
+
+-- Grant��(��) �����߽��ϴ�.
+
+show user;
+-- USER��(��) "FINAL_ORAUSER1"�Դϴ�.
+

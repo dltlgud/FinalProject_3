@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html
 	th:replace="~{layout/layout_main :: layout(~{::head}, ~{::main}, ~{::script})}"
 	xmlns:th="http://www.thymeleaf.org" lang="ko">
@@ -696,8 +696,8 @@ $(function () {
 			let sigungu = "";
 			let dong = "";
 
-			for (let i = 0; i < parts.length; i++) {
-				const word = parts[i].trim();
+			for (const part of parts) {
+				const word = part.trim();
 				if (!word) continue;
 
 				if (!sido && (word.endsWith("특별시") || word.endsWith("광역시") || word.endsWith("특별자치시") || word.endsWith("특별자치도") || word.endsWith("도") || word.endsWith("시"))) {
@@ -1228,59 +1228,6 @@ $(function () {
 	const pageSize = 12;
 	let isLoadingMore = false;
 
-	function makeProductCard(p) {
-		const placeName = (p.placeName && String(p.placeName).trim() !== "") ? p.placeName : "택배거래";
-		const imgUrl = p.imgUrl ? p.imgUrl : "";
-		const regDate = p.regDate ? p.regDate : "";
-		const isLogin = /*[[${isLogin}]]*/ false;
-		const wished = Number(p.wished || 0) === 1;
-		const canAccessDetail = Number(p.canAccessDetail || 0);
-
-		let finalImgUrl;
-		if (!imgUrl) { finalImgUrl = ctxPath + "/images/no-image.png"; }
-		else if (imgUrl.startsWith("http://") || imgUrl.startsWith("https://")) { finalImgUrl = imgUrl; }
-		else { finalImgUrl = ctxPath + imgUrl; }
-
-		const thumbImgUrl = finalImgUrl.replace('/images/', '/images/thumb_');
-
-		return `
-			<a class="card"
-			   href="${ctxPath}/product/product_detail/${p.productNo}"
-			   data-trade-status="${escapeHtml(p.tradeStatus)}"
-			   data-can-access="${canAccessDetail}">
-				<div class="thumb">
-					${makeTradeStatusBadge(p.tradeStatus)}
-					<button class="heart ${wished ? "on" : ""}"
-					        type="button"
-					        aria-label="찜"
-					        data-product-no="${p.productNo}"
-					        data-login="${isLogin}">
-						<i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i>
-					</button>
-					<img src="${escapeHtml(thumbImgUrl)}" class="product-thumb-img" alt="상품 이미지">
-				</div>
-				<div class="card-body">
-					<div class="item-title">${escapeHtml(p.productName)}</div>
-					<div class="price">${formatPrice(p.saleType, p.productPrice)}</div>
-					<div class="meta">
-						<span>
-							<i class="fa-solid fa-location-dot"></i>
-							<span>${escapeHtml(placeName)}</span>
-						</span>
-						<span>
-							<i class="fa-regular fa-clock"></i>
-							<span class="time-ago" data-time="${escapeHtml(regDate)}">${formatTimeAgo(regDate)}</span>
-						</span>
-						<span>
-							<i class="fa-solid fa-eye"></i>
-							<span>${p.viewCount == null ? 0 : p.viewCount}</span>
-						</span>
-					</div>
-				</div>
-			</a>
-		`;
-	}
-
 	function loadMoreProducts() {
 		if (isLoadingMore) return;
 
@@ -1356,6 +1303,58 @@ $(function () {
 	}
 });
 
+function makeProductCard(p) {
+	const placeName = (p.placeName && String(p.placeName).trim() !== "") ? p.placeName : "택배거래";
+	const imgUrl = p.imgUrl ? p.imgUrl : "";
+	const regDate = p.regDate ? p.regDate : "";
+	const isLogin = /*[[${isLogin}]]*/ false;
+	const wished = Number(p.wished || 0) === 1;
+	const canAccessDetail = Number(p.canAccessDetail || 0);
+
+	let finalImgUrl;
+	if (!imgUrl) { finalImgUrl = ctxPath + "/images/no-image.png"; }
+	else if (imgUrl.startsWith("http://") || imgUrl.startsWith("https://")) { finalImgUrl = imgUrl; }
+	else { finalImgUrl = ctxPath + imgUrl; }
+
+	const thumbImgUrl = finalImgUrl.replace('/images/', '/images/thumb_');
+
+	return `
+		<a class="card"
+		   href="${ctxPath}/product/product_detail/${p.productNo}"
+		   data-trade-status="${escapeHtml(p.tradeStatus)}"
+		   data-can-access="${canAccessDetail}">
+			<div class="thumb">
+				${makeTradeStatusBadge(p.tradeStatus)}
+				<button class="heart ${wished ? "on" : ""}"
+				        type="button"
+				        aria-label="찜"
+				        data-product-no="${p.productNo}"
+				        data-login="${isLogin}">
+					<i class="${wished ? "fa-solid" : "fa-regular"} fa-heart"></i>
+				</button>
+				<img src="${escapeHtml(thumbImgUrl)}" class="product-thumb-img" alt="상품 이미지">
+			</div>
+			<div class="card-body">
+				<div class="item-title">${escapeHtml(p.productName)}</div>
+				<div class="price">${formatPrice(p.saleType, p.productPrice)}</div>
+				<div class="meta">
+					<span>
+						<i class="fa-solid fa-location-dot"></i>
+						<span>${escapeHtml(placeName)}</span>
+					</span>
+					<span>
+						<i class="fa-regular fa-clock"></i>
+						<span class="time-ago" data-time="${escapeHtml(regDate)}">${formatTimeAgo(regDate)}</span>
+					</span>
+					<span>
+						<i class="fa-solid fa-eye"></i>
+						<span>${p.viewCount == null ? 0 : p.viewCount}</span>
+					</span>
+				</div>
+			</div>
+		</a>
+	`;
+}
 globalThis.addEventListener("pageshow", function (event) {
 	if (event.persisted) {
 		globalThis.location.reload();
