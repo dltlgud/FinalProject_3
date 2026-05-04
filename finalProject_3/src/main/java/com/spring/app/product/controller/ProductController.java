@@ -181,8 +181,9 @@ public class ProductController {
 
     // 판매하기
     @GetMapping("/sell")
-    public String sellPage() {
-        return "product/sell";
+    public String sellPage(Model model) {
+        model.addAttribute("saleType", "판매");
+        return "product/product_form";
     }
 
     // 상품등록하기
@@ -391,8 +392,9 @@ public class ProductController {
 
     // 나눔하기
     @GetMapping("/share")
-    public String share() {
-        return "product/share";
+    public String share(Model model) {
+        model.addAttribute("saleType", "나눔");
+        return "product/product_form";
     }
 
     @GetMapping("/product_detail/{productNo}")
