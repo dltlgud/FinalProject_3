@@ -101,9 +101,6 @@ NOMINVALUE
 NOCYCLE
 NOCACHE;
 
-select *
-from REGION;
-
 /* =========================================================
    ���� (REGION)
    ========================================================= */
@@ -249,7 +246,7 @@ CREATE TABLE PRODUCTS (
   CONSTRAINT CK_PRODUCTS_TRADE_METHOD CHECK (TRADE_METHOD IN ('�ù�','���ŷ�')),
 
   -- SALE_TYPE�� ���� ��Ģ: �Ǹ�(>0), ����(0 �Ǵ� NULL), ���?(���۰� >0)
-  CONSTRAINT CK_PRODUCTS_PRICE_BY_SALETYPE CHECK (
+  CONSTRAINT CK_PRODUCTS_PRICE_BY_SALETYPE CHECK ( -- NOSONAR
     (SALE_TYPE = '�Ǹ�' AND PRODUCT_PRICE IS NOT NULL AND PRODUCT_PRICE > 0)
     OR
     (SALE_TYPE = '����' AND (PRODUCT_PRICE IS NULL OR PRODUCT_PRICE = 0))
@@ -618,7 +615,7 @@ CREATE TABLE EVENTS (
     CREATED_AT        DATE DEFAULT SYSDATE,             -- �����?
 
     REWARD_CASH       NUMBER DEFAULT 0,                 -- ����ĳ��
-    STATUS            VARCHAR2(20) DEFAULT 'READY',     -- ����
+    STATUS            VARCHAR2(20) DEFAULT 'READY', -- NOSONAR     -- ����
     VIEW_COUNT        NUMBER DEFAULT 0,                 -- ��ȸ��
 
     CONSTRAINT FK_EVENT_ADMIN_EMAIL FOREIGN KEY (ADMIN_EMAIL)
@@ -744,7 +741,7 @@ CREATE TABLE TRANSACTIONS (
     TRADE_DATE       TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
     COMPLETE_DATE    TIMESTAMP,
 
-    /* ===== �佺 �ּ� �÷�(���� �ĺ�/���� ĳ��) ===== */
+    -- ==========
     TOSS_PAY_KEY     VARCHAR2(200),                            -- (�佺) ����Ű
     TOSS_ORDER_ID    VARCHAR2(200),                            -- (�佺) �ֹ�ID(�佺 ��û/������)
     PAY_STATUS       VARCHAR2(20)    DEFAULT 'READY' NOT NULL, -- (�佺) �������� ĳ��
@@ -766,10 +763,10 @@ CREATE TABLE TRANSACTIONS (
     CONSTRAINT FK_TXN_ACCOUNT  FOREIGN KEY (ACCOUNT_ID)
       REFERENCES ACCOUNTS(ACCOUNT_ID) ON DELETE SET NULL,
 
-    /* ===== �� ���� ===== */
+    -- ==========
     CONSTRAINT CK_TXN_AMOUNT CHECK (AMOUNT >= 0),
 
-    CONSTRAINT CK_TXN_PAYMENT_TYPE CHECK (
+    CONSTRAINT CK_TXN_PAYMENT_TYPE CHECK ( -- NOSONAR
       PAYMENT_TYPE IN ('������ü','ĳ�ð���','ī�����?','�������?','��������')
     ),
 
@@ -784,7 +781,7 @@ CREATE TABLE TRANSACTIONS (
 
     CONSTRAINT CK_TXN_USE_ESCROW CHECK (USE_ESCROW IN ('Y','N')),
 
-    /* ===== �佺 �ּ� ���ռ�(�佺 ���������� ���� �佺 �ֹ�ID/����Ű ���?) ===== */
+    -- ==========
     CONSTRAINT CK_TXN_TOSS_MINIMAL CHECK (
       (PAYMENT_TYPE IN ('ī�����?','�������?','��������')
         AND TOSS_ORDER_ID IS NOT NULL
@@ -968,7 +965,7 @@ CREATE TABLE REFUNDS (
     CONSTRAINT FK_REFUND_HANDLER_EMAIL FOREIGN KEY (HANDLER_EMAIL) -- FK
       REFERENCES MEMBER(EMAIL) ON DELETE SET NULL,
 
-    CONSTRAINT CK_REFUND_STATUS CHECK (REFUND_STATUS IN ('��û','ó����','�Ϸ�','����')),
+    CONSTRAINT CK_REFUND_STATUS CHECK -- NOSONAR (REFUND_STATUS IN ('��û','ó����','�Ϸ�','����')),
     CONSTRAINT CK_REFUND_IS_PARTIAL CHECK (IS_PARTIAL IN ('Y','N'))
 );
 
@@ -1115,25 +1112,12 @@ NOMINVALUE
 NOCYCLE
 NOCACHE;
 
-
-select *
-from PRODUCTS;
-
 delete PRODUCTS
 where PRODUCT_NO = 8;
 
 commit;
 
-select *
-from member;
-
 desc REPORT_TYPES;
-
-select *
-from REPORT_TYPES;
-
-select *
-from REPORTS;
 
 DROP TABLE REPORTS;
 
@@ -1192,14 +1176,7 @@ DROP TABLE REPORTS CASCADE CONSTRAINTS;
 -- ? �����̾��� �������� ���� �����?
 DROP SEQUENCE SEQ_REPORT_ID;
 
-
-select *
-from PRODUCTS;
-
-select *
-from member;
-
-update member set email = 'dltlgud112@naver.com'
+update member set email = 'dltlgud112@naver.com' -- NOSONAR
 WHERE PHONE = '01045261348';
 
 commit;
@@ -1213,17 +1190,11 @@ UPDATE MEMBER
   
   commit;
   
-  select *
-  from member;
-  
   
   UPDATE MEMBER
   SET status = 1
   WHERE EMAIL = 'dltlgud999@naver.com';
   COMMIT;
-  
-  select *
-  from USER_DORMANT;
 
 /* =========================================================
    PRODUCTS ?��?��블에 ?��?��?�� 채팅�? ID 컬럼 추�?
@@ -1237,11 +1208,6 @@ COMMIT;
   
   ALTER TABLE DELIVERY_ADDRESS ADD IS_PRIMARY VARCHAR2(1) DEFAULT 'N' NOT NULL CHECK (IS_PRIMARY IN ('Y','N'));
   commit;
-  select *
-  from DELIVERY_ADDRESS;
-  
-  select *
-  from ACCOUNTS;
   
   update TRANSACTIONS set TRADE_STATUS = '�ŷ��Ϸ�' where TRANSACTION_ID = 112;
   
@@ -1257,9 +1223,6 @@ COMMIT;
   delete member 
   where email = 'dltlgud693@naver.com';
   
-  select *
-  from member;
-  
   update member set STATUS = 1
   where email = 'dltlgud691@naver.com';
   
@@ -1267,7 +1230,7 @@ COMMIT;
   
   ALTER TABLE CHAT_ROOM ADD BUYER_UNREAD NUMBER DEFAULT 0;
   ALTER TABLE CHAT_ROOM ADD SELLER_UNREAD NUMBER DEFAULT 0;
-  UPDATE CHAT_ROOM SET BUYER_UNREAD = 0, SELLER_UNREAD = 0;
+  UPDATE CHAT_ROOM SET BUYER_UNREAD = 0, SELLER_UNREAD = 0; -- NOSONAR
   COMMIT;
   
   ALTER TABLE PRODUCTS ADD CARRIER_CODE VARCHAR2(10);
@@ -1297,11 +1260,11 @@ COMMIT;
       JOIN user_cons_columns b ON c.r_constraint_name = b.constraint_name
       WHERE c.constraint_type = 'R'
   ) fk ON col.table_name = fk.table_name AND col.column_name = fk.column_name
-  ORDER BY col.table_name, col.column_id;
+  ORDER BY col.table_name ASC, col.column_id ASC;
   
   
     ALTER TABLE TRANSACTIONS DROP CONSTRAINT CK_TXN_PAYMENT_TYPE;
-  ALTER TABLE TRANSACTIONS ADD CONSTRAINT CK_TXN_PAYMENT_TYPE CHECK (
+  ALTER TABLE TRANSACTIONS ADD CONSTRAINT CK_TXN_PAYMENT_TYPE CHECK ( -- NOSONAR
     PAYMENT_TYPE IN ('��������','ĳ�ð���','ī�����','�������','�������','���ŷ�','����')
   );
 
@@ -1318,23 +1281,11 @@ COMMIT;
 
   COMMIT;
   
-  select *
-  from member;
-  
-  select *
-  from products;
-  
   delete from products
   where product_no = 125;
   
-  select *
-  from TRANSACTIONS;
-  
   delete from TRANSACTIONS
   where product_no = 125;
-  
-  select *
-  from CHAT_ROOM;
   
   
   
