@@ -53,10 +53,47 @@
 
 <br />
 
-## 💁‍♂️ 프로젝트 팀원
+## 📌 프로젝트 개요
 
-| 정민정 (팀장) | 김태일 (팀원) | 양소라 (팀원) | 이시형 (팀원) |
-|:-------------:|:-------------:|:-------------:|:-------------:|
-| <img src="프로필이미지" width="120"/> <br> <a href="https://github.com/jjmj188">@jjmj188</a> | <img src="프로필이미지" width="120"/> <br> <a href="https://github.com/taylorkim0904">@taylorkim0904</a> | <img src="프로필이미지" width="120"/> <br> <a href="https://github.com/dorapizza1234">@dorapizza1234</a> | <img src="프로필이미지" width="120"/> <br> <a href="https://github.com/dltlgud">@dltlgud</a> |
+  | 항목 | 내용 |
+  |------|------|
+  | 기간 | 2026.02.24 – 2026.03.31 |
+  | 구성 | 4인 팀 프로젝트 |
+  | 담당 | 회원 · 마이페이지 · 채팅 · 챗봇 |
+
+  ## 🏗️ 아키텍처
+
+  `finalProject_3` (회원·채팅·결제) + `board_service` (게시판) 를 독립 서비스로 분리하고
+  **API Gateway**를 통해 단일 진입점으로 연결한 **MSA 구조**
+
+  ## ✨ 담당 기능
+
+  **👤 회원**
+  - Spring Security + JWT 로그인/로그아웃, 인증·인가
+  - OAuth2 소셜 로그인 (Google · Kakao · Naver)
+  - CoolSMS 연동 SMS 인증번호 발송 및 세션 검증
+  - 이메일·닉네임·휴대폰 중복 확인 API
+
+  **📋 마이페이지**
+  - 내 판매/구매 상품 조회 · 수정 · 삭제
+  - 계좌 정보 관리 (AES-256 암호화)
+  - 배송지 관리 · 찜 목록
+
+  **💬 채팅**
+  - WebSocket + STOMP 실시간 1:1 채팅
+  - Firebase Realtime Database 메시지 저장 · 조회
+
+  **🤖 챗봇**
+  - Gemini AI API 연동
+
+  ## 🔧 기술 스택
+
+  `Spring Security` `JWT` `OAuth2` `MyBatis` `WebSocket(STOMP)`
+  `Firebase` `Gemini AI` `CoolSMS` `AES-256` `Thymeleaf`
+  `SonarCloud` `Grafana` `Swagger` `Docker` `Jenkins` `Portainer`
+
+  ## 🚀 CI/CD 파이프라인
+
+  GitHub Push → Webhook → Jenkins → Docker Build → Portainer 배포
 
 
