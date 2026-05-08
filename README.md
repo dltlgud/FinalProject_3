@@ -101,7 +101,7 @@ Client
   <details>
   <summary><b>🤖 챗봇 (Chatbot)</b></summary>
 
-  - Gemini AI API 연동 챗봇
+  - Botpress 기반 챗봇 연동
 
   </details>
 
