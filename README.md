@@ -58,9 +58,9 @@
 
   <br/>
 
-  ## 🏗️ 아키텍처
+## 🏗️ 아키텍처
 
-  Client
+Client
     └── API Gateway
           ├── finalProject_3   (회원 · 마이페이지 · 채팅 · 챗봇 · 결제)
           └── board_service    (게시판)
