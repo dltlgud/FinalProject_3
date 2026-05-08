@@ -7,9 +7,7 @@
   ### 좋은 거래를 쉽게 발견할 수 있도록 돕는 중고거래 플랫폼
   <br/>
 
-  [![Figma](https://img.shields.io/badge/화면설계서_보러가기-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](htt
-  ps://www.figma.com/design/3elTa5MZ25dqlrLrhep50n/final-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-3%ED%8C%80?node-id=0-1&t=W
-  HLyiQ6VYw61t32R-1)
+  [![Figma](https://img.shields.io/badge/화면설계서_보러가기-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/3elTa5MZ25dqlrLrhep50n/final-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-3%ED%8C%80?node-id=0-1&t=WHLyiQ6VYw61t32R-1)
 
   </div>
 
