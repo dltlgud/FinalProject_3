@@ -1,11 +1,8 @@
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=
-  header&text=PICRO&fontSize=70&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=중고%20거래%20플랫폼&descAlignY=
-  60&descSize=20" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=PICRO&fontSize=70&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=중고%20거래%20플랫폼&descAlignY=60&descSize=20" width="100%"/>
 
-  <img src="https://raw.githubusercontent.com/jjmj188/FinalProject_3/main/finalProject_3/src/main/resources/static/image
-  s/logo.png" width="300"/>
+  <img src="https://raw.githubusercontent.com/jjmj188/FinalProject_3/main/finalProject_3/src/main/resources/static/images/logo.png" width="300"/>
 
   ### 좋은 거래를 쉽게 발견할 수 있도록 돕는 중고거래 플랫폼
   <br/>
